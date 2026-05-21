@@ -1,0 +1,157 @@
+{
+  "features": [
+    "transfer_quality",
+    "rumor_count",
+    "max_credibility",
+    "avg_credibility",
+    "max_rumor_strength",
+    "avg_rumor_strength",
+    "direction",
+    "transfer_type",
+    "is_loan",
+    "club"
+  ],
+  "live_unlabeled_count": 0,
+  "model": {
+    "categorical_counts": {
+      "neutral": {
+        "club": {
+          "Juventus": 5,
+          "Manchester United": 5
+        },
+        "direction": {
+          "in": 8,
+          "out": 2
+        },
+        "transfer_type": {
+          "permanent": 10
+        }
+      },
+      "positive": {
+        "club": {
+          "Juventus": 1,
+          "Manchester United": 1
+        },
+        "direction": {
+          "in": 1,
+          "out": 1
+        },
+        "transfer_type": {
+          "permanent": 2
+        }
+      }
+    },
+    "categorical_vocab": {
+      "club": [
+        "Juventus",
+        "Manchester United"
+      ],
+      "direction": [
+        "in",
+        "out"
+      ],
+      "transfer_type": [
+        "permanent"
+      ]
+    },
+    "class_counts": {
+      "neutral": 10,
+      "positive": 2
+    },
+    "labels": [
+      "neutral",
+      "positive"
+    ],
+    "n_train": 12,
+    "numeric_stats": {
+      "neutral": {
+        "avg_credibility": [
+          0.5,
+          0.0001
+        ],
+        "avg_rumor_strength": [
+          0.507,
+          0.084
+        ],
+        "is_loan": [
+          0.0,
+          0.0001
+        ],
+        "max_credibility": [
+          0.5,
+          0.0001
+        ],
+        "max_rumor_strength": [
+          0.507,
+          0.084
+        ],
+        "rumor_count": [
+          1.0,
+          0.0001
+        ],
+        "transfer_quality": [
+          0.66507,
+          0.049733872762936934
+        ]
+      },
+      "positive": {
+        "avg_credibility": [
+          0.5,
+          0.0001
+        ],
+        "avg_rumor_strength": [
+          0.465,
+          0.0001
+        ],
+        "is_loan": [
+          0.0,
+          0.0001
+        ],
+        "max_credibility": [
+          0.5,
+          0.0001
+        ],
+        "max_rumor_strength": [
+          0.465,
+          0.0001
+        ],
+        "rumor_count": [
+          1.0,
+          0.0001
+        ],
+        "transfer_quality": [
+          0.6285000000000001,
+          0.031899999999999984
+        ]
+      }
+    }
+  },
+  "test": {
+    "accuracy": 0.3333,
+    "label_counts": {
+      "negative": 6,
+      "neutral": 11,
+      "positive": 7
+    },
+    "n": 24,
+    "predicted_counts": {
+      "neutral": 6,
+      "positive": 18
+    }
+  },
+  "train": {
+    "accuracy": 0.3333,
+    "label_counts": {
+      "neutral": 10,
+      "positive": 2
+    },
+    "n": 12,
+    "predicted_counts": {
+      "neutral": 2,
+      "positive": 10
+    }
+  },
+  "train_end_season": "2022-23",
+  "unlabeled_count": 0,
+  "warning": "Small/noisy dataset; proxy dates and sparse rumor coverage can dominate results."
+}

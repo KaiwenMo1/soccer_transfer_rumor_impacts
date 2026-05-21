@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "transfer-stock-research"
+version = "0.1.0"
+description = "Football transfer news and publicly traded club stock impact research scaffold"
+requires-python = ">=3.10"
+dependencies = [
+  "requests>=2.31",
+  "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+scrape_v2 = [
+  "fundus",
+  "scrapy",
+  "scrapy-playwright",
+  "playwright",
+]
+ai_scrape = [
+  "crawl4ai",
+]
+claim_ai = [
+  "dspy>=3.0",
+]
+market_research = [
+  "numpy>=1.24",
+  "pandas>=2.0",
+  "vectorbt>=0.27",
+]
+ml_pipeline = [
+  "numpy>=1.24",
+  "scikit-learn>=1.4",
+  "xgboost>=2.0",
+]
+api_server = [
+  "fastapi>=0.115",
+  "uvicorn>=0.30",
+]
+
+[tool.setuptools]
+packages = ["transfer_stock"]
+package-dir = {"" = "src"}

@@ -1,0 +1,91 @@
+source,n_claims,n_matched,match_rate,smoothed_rate,avg_match_score
+wsnewspublishers.com,1,0,0.0,0.4167,0.0
+bignewsnetwork.com,1,0,0.0,0.4167,0.0
+hypebeast.com,1,0,0.0,0.4167,0.0
+sportsmole.co.uk,1,0,0.0,0.4167,0.0
+pressandjournal.co.uk,1,1,1.0,0.5833,0.88
+kickoff.com,1,0,0.0,0.4167,0.0
+caughtoffside.com,8,5,0.625,0.5769,0.56
+thepeoplesperson.com,2,2,1.0,0.6429,0.9
+teamtalk.com,4,1,0.25,0.3889,0.225
+telecomasia.net,1,0,0.0,0.4167,0.0
+punchng.com,1,0,0.0,0.4167,0.0
+nigerianeye.com,1,0,0.0,0.4167,0.0
+the42.ie,1,0,0.0,0.4167,0.0
+dostor.org,1,0,0.0,0.4167,0.0
+economictimes.indiatimes.com,1,0,0.0,0.4167,0.0
+thehardtackle.com,3,1,0.3333,0.4375,0.2933
+90min.com,3,3,1.0,0.6875,0.9133
+pakobserver.net,1,0,0.0,0.4167,0.0
+dailypost.ng,2,2,1.0,0.6429,0.89
+tsn.ca,1,0,0.0,0.4167,0.0
+arabnews.com,1,1,1.0,0.5833,0.78
+weaintgotnohistory.sbnation.com,1,0,0.0,0.4167,0.0
+joe.co.uk,1,0,0.0,0.4167,0.0
+menafn.com,1,0,0.0,0.4167,0.0
+daijiworld.com,1,1,1.0,0.5833,0.98
+The Guardian / David Tindall,1,0,0.0,0.4167,0.0
+The Guardian / Fabrizio Romano,11,8,0.7273,0.6562,0.6436
+The Guardian / Sid Lowe in Madrid,2,0,0.0,0.3571,0.0
+The Guardian / Daniel Gallan,1,0,0.0,0.4167,0.0
+The Guardian / Jamie Jackson,18,10,0.5556,0.5435,0.5467
+The Guardian / Gregg Bakowski,2,1,0.5,0.5,0.49
+"The Guardian / Jamie Jackson, Fabrizio Romano and Jacob Steinberg",1,1,1.0,0.5833,0.96
+The Guardian / PA Media and Guardian sport,1,1,1.0,0.5833,0.68
+"The Guardian / Fabrizio Romano, Will Unwin, Jacob Steinberg and PA Media",1,1,1.0,0.5833,0.88
+The Guardian / Andy Hunter and Fabrizio Romano,1,0,0.0,0.4167,0.0
+The Guardian / Guardian sport,3,2,0.6667,0.5625,0.7067
+The Guardian / Fabrizio Romano and Jamie Jackson,1,1,1.0,0.5833,0.96
+The Guardian / Ed Aarons,4,2,0.5,0.5,0.48
+The Guardian / John Brewin and PA Media,1,1,1.0,0.5833,1.06
+The Guardian / Jamie Jackson in Houston,1,1,1.0,0.5833,0.96
+The Guardian / Jacob Steinberg,10,3,0.3,0.3667,0.268
+The Guardian / Will Unwin,11,7,0.6364,0.5938,0.6491
+The Guardian / Andy Martin,1,1,1.0,0.5833,1.06
+The Guardian / Andy Brassell,1,0,0.0,0.4167,0.0
+The Guardian / Louise Taylor and Will Unwin,1,0,0.0,0.4167,0.0
+The Guardian / Jamie Jackson and Jacob Steinberg,1,0,0.0,0.4167,0.0
+The Guardian / Jonathan Liew,1,0,0.0,0.4167,0.0
+"The Guardian / Jamie Jackson, Fabrizio Romano, Will Unwin and agencies",1,1,1.0,0.5833,0.78
+The Guardian / Andy Hunter at Old Trafford,1,0,0.0,0.4167,0.0
+The Guardian / Scott Murray,1,0,0.0,0.4167,0.0
+"The Guardian / Jacob Steinberg, Jamie Jackson and Fabrizio Romano",1,1,1.0,0.5833,0.88
+The Guardian / Jamie Jackson and Fabrizio Romano,1,1,1.0,0.5833,1.06
+The Guardian / Barry Glendenning,1,0,0.0,0.4167,0.0
+The Guardian / Rob Smyth,1,1,1.0,0.5833,0.88
+The Guardian / Jamie Jackson at Murrayfield,1,0,0.0,0.4167,0.0
+The Guardian / Fabrizio Romano and Will Unwin,1,0,0.0,0.4167,0.0
+The Guardian / Luke McLaughlin,1,0,0.0,0.4167,0.0
+The Guardian / Will Unwin (now) and Yara El-Shaboury (earlier),1,0,0.0,0.4167,0.0
+The Guardian / Daniel Harris,1,1,1.0,0.5833,0.96
+The Guardian / Jamie Jackson in Melbourne,2,2,1.0,0.6429,1.0
+The Guardian / John Brewin,1,0,0.0,0.4167,0.0
+The Guardian / Jacob Steinberg in Philadelphia,1,0,0.0,0.4167,0.0
+The Guardian / Jacob Steinberg and Ed Aarons,1,0,0.0,0.4167,0.0
+The Guardian / Jacob Steinberg and Ben Fisher,1,1,1.0,0.5833,0.86
+The Guardian / Ben Fisher,1,0,0.0,0.4167,0.0
+The Guardian / Thiago Rabelo,1,0,0.0,0.4167,0.0
+The Guardian / Tom Garry,2,1,0.5,0.5,0.49
+The Guardian / Ed Aarons and Jacob Steinberg,1,0,0.0,0.4167,0.0
+The Guardian / Jacob Steinberg and Ed Aarons in Los Angeles,1,1,1.0,0.5833,1.0
+The Guardian / Jamie Jackson in New York,1,1,1.0,0.5833,0.98
+"The Guardian / Emillia Hawkins (now), with David Tindall, Niall McVeigh and Xaymaca Awoyungbo (earlier)",1,0,0.0,0.4167,0.0
+"The Guardian / Jamie Jackson, Jacob Steinberg and David Hytner",1,1,1.0,0.5833,1.06
+"The Guardian / Andy Hunter, Ed Aarons and Jacob Steinberg",1,0,0.0,0.4167,0.0
+The Guardian / Mark Dobson,1,0,0.0,0.4167,0.0
+The Guardian / Xaymaca Awoyungbo (earlier) and Rob Smyth (later),1,0,0.0,0.4167,0.0
+The Guardian / Fabrizio Romano and Andy Hunter,1,1,1.0,0.5833,0.78
+theathletic.com,1,0,0.0,0.4167,0.0
+msn.com,2,0,0.0,0.3571,0.0
+goal.com,3,0,0.0,0.3125,0.0
+liverpoolecho.co.uk,1,0,0.0,0.4167,0.0
+usa.chinadaily.com.cn,1,0,0.0,0.4167,0.0
+global.chinadaily.com.cn,1,0,0.0,0.4167,0.0
+ruhrnachrichten.de,1,0,0.0,0.4167,0.0
+bundesliga.com,1,0,0.0,0.4167,0.0
+derwesten.de,3,0,0.0,0.3125,0.0
+foot01.com,1,0,0.0,0.4167,0.0
+transfermarkt.com,1,0,0.0,0.4167,0.0
+hitc.com,1,1,1.0,0.5833,0.63
+manchestereveningnews.co.uk,1,0,0.0,0.4167,0.0
+the-sun.com,1,0,0.0,0.4167,0.0

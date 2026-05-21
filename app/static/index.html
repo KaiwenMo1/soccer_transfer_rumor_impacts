@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Transfer Impact Dashboard</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <div class="shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Transfer + Club Stock Research</p>
+          <h1>Transfer Impact Dashboard</h1>
+        </div>
+        <div class="topbar-meta">
+          <div class="meta-block">
+            <span class="meta-label">Season View</span>
+            <strong id="seasonLabel">-</strong>
+          </div>
+          <div class="meta-block">
+            <span class="meta-label" id="countLabel">Signals</span>
+            <strong id="signalCount">-</strong>
+          </div>
+        </div>
+      </header>
+
+      <section class="overview-band">
+        <div class="metric-card">
+          <span class="metric-label">Avg Realized CAR t+3</span>
+          <strong id="metricSeasonReturn">-</strong>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Realized Positive Share</span>
+          <strong id="metricSeasonPositive">-</strong>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">XGBoost Holdout Accuracy</span>
+          <strong id="metricAccuracy">-</strong>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">XGBoost Holdout Macro F1</span>
+          <strong id="metricF1">-</strong>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Best Backtest</span>
+          <strong id="metricBestStrategy">-</strong>
+          <span class="metric-sub" id="metricBestReturn">-</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Historical References</span>
+          <strong id="metricHistory">-</strong>
+        </div>
+      </section>
+
+      <section class="controls-band">
+        <div class="control">
+          <span class="control-label">View</span>
+          <div class="segmented" id="viewTabs">
+            <button data-view="rumors" class="is-active">Rumor Signals</button>
+            <button data-view="transfers">Past Transfers</button>
+          </div>
+        </div>
+        <div class="control search-wrap">
+          <label for="searchInput">Search</label>
+          <input id="searchInput" type="search" placeholder="Player, club, journalist">
+        </div>
+        <div class="control">
+          <span class="control-label">Season</span>
+          <div class="segmented" id="seasonFilters"></div>
+        </div>
+        <div class="control">
+          <span class="control-label">Club</span>
+          <div class="segmented" id="clubFilters"></div>
+        </div>
+        <div class="control">
+          <span class="control-label">Sort</span>
+          <div class="segmented" id="sortFilters">
+            <button data-sort="impact" class="is-active">Impact</button>
+            <button data-sort="latest">Latest</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <div class="table-pane">
+          <div class="section-head">
+            <h2 id="workspaceTitle">Season Signals</h2>
+            <span class="section-meta" id="tableMeta"></span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr id="workspaceTableHead"></tr>
+              </thead>
+              <tbody id="workspaceTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <aside class="detail-pane" id="detailPane">
+          <div class="empty-detail">
+            <h2>Signal Detail</h2>
+            <p>Select a rumor row to inspect the extracted fields, credibility, indicators, and similar historical examples.</p>
+          </div>
+        </aside>
+      </section>
+
+      <section class="report-band">
+        <div class="section-head">
+          <h2>Live Watchlist</h2>
+          <span class="section-meta" id="watchlistMeta">Current direct-target rumors ranked by recency and blended signal strength.</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Published</th>
+                <th>Target Club</th>
+                <th>Player</th>
+                <th>Journalist</th>
+                <th>Stage</th>
+                <th>Credibility</th>
+                <th>Model</th>
+                <th>Blend</th>
+              </tr>
+            </thead>
+            <tbody id="watchlistTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="report-band">
+        <div class="section-head">
+          <h2>Credibility Leaderboards</h2>
+          <span class="section-meta">Historical journalist and source conversion quality from the credibility engine.</span>
+        </div>
+        <div class="leaderboard-grid">
+          <div class="leaderboard-pane">
+            <h3>Journalists</h3>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Journalist</th>
+                    <th>Claims</th>
+                    <th>Smoothed</th>
+                    <th>Match</th>
+                  </tr>
+                </thead>
+                <tbody id="journalistLeaderboard"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="leaderboard-pane">
+            <h3>Sources</h3>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Source</th>
+                    <th>Claims</th>
+                    <th>Smoothed</th>
+                    <th>Match</th>
+                  </tr>
+                </thead>
+                <tbody id="sourceLeaderboard"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="leaderboard-pane">
+            <h3>Club-Journalist</h3>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Club</th>
+                    <th>Journalist</th>
+                    <th>Smoothed</th>
+                    <th>Match</th>
+                  </tr>
+                </thead>
+                <tbody id="clubJournalistLeaderboard"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="report-band">
+        <div class="section-head">
+          <h2 id="seasonHistoryTitle">Season History</h2>
+          <span class="section-meta" id="seasonHistoryMeta">Switch years above, or use this table to compare them side by side.</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr id="seasonHistoryHead"></tr>
+            </thead>
+            <tbody id="seasonHistoryTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="report-band">
+        <div class="section-head">
+          <h2>Backtest Summary</h2>
+          <span class="section-meta">Backtests are still the 2025-26 holdout view; older seasons below are for historical inspection.</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Strategy</th>
+                <th>Trades</th>
+                <th>Win Rate</th>
+                <th>Avg Trade</th>
+                <th>Total Return</th>
+                <th>Sharpe</th>
+                <th>Max DD</th>
+              </tr>
+            </thead>
+            <tbody id="backtestTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="report-band">
+        <div class="section-head">
+          <h2>Data Flow</h2>
+        </div>
+        <div class="flow-grid" id="dataFlow"></div>
+      </section>
+    </div>
+
+    <script src="./dashboard.js" defer></script>
+  </body>
+</html>

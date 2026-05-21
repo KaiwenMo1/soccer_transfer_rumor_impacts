@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Local fetched data can be large or rate-limited to reproduce.
+data/raw/news/*.jsonl
+data/raw/stocks/*.csv
+data/processed/*.csv
+

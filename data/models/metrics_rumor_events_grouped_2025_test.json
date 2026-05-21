@@ -1,0 +1,326 @@
+{
+  "features": [
+    "transfer_indicator",
+    "rumor_indicator",
+    "stock_context_indicator",
+    "fee_to_market",
+    "pre_stock_return_7d",
+    "pre_stock_return_30d",
+    "pre_stock_volatility_30d",
+    "pre_market_return_30d",
+    "transfer_quality",
+    "rumor_count",
+    "source_diversity",
+    "max_credibility",
+    "avg_credibility",
+    "max_rumor_strength",
+    "avg_rumor_strength",
+    "direction",
+    "transfer_type",
+    "is_loan",
+    "club"
+  ],
+  "live_unlabeled_count": 0,
+  "model": {
+    "categorical_counts": {
+      "negative": {
+        "club": {
+          "Borussia Dortmund": 3,
+          "Juventus": 9,
+          "Manchester United": 16
+        },
+        "direction": {
+          "in": 23,
+          "out": 5
+        },
+        "transfer_type": {
+          "permanent": 28
+        }
+      },
+      "neutral": {
+        "club": {
+          "Borussia Dortmund": 8,
+          "Juventus": 10,
+          "Manchester United": 22
+        },
+        "direction": {
+          "in": 29,
+          "out": 11
+        },
+        "transfer_type": {
+          "permanent": 40
+        }
+      },
+      "positive": {
+        "club": {
+          "Borussia Dortmund": 2,
+          "Juventus": 14,
+          "Manchester United": 21
+        },
+        "direction": {
+          "in": 33,
+          "out": 4
+        },
+        "transfer_type": {
+          "permanent": 37
+        }
+      }
+    },
+    "categorical_vocab": {
+      "club": [
+        "Borussia Dortmund",
+        "Juventus",
+        "Manchester United"
+      ],
+      "direction": [
+        "in",
+        "out"
+      ],
+      "transfer_type": [
+        "permanent"
+      ]
+    },
+    "class_counts": {
+      "negative": 28,
+      "neutral": 40,
+      "positive": 37
+    },
+    "labels": [
+      "negative",
+      "neutral",
+      "positive"
+    ],
+    "n_train": 105,
+    "numeric_stats": {
+      "negative": {
+        "avg_credibility": [
+          0.7780357142857143,
+          0.13878515825930818
+        ],
+        "avg_rumor_strength": [
+          0.6682214285714286,
+          0.10418405196417285
+        ],
+        "fee_to_market": [
+          1.2884607142857143,
+          0.3394875543051044
+        ],
+        "is_loan": [
+          0.0,
+          0.0001
+        ],
+        "max_credibility": [
+          0.815,
+          0.13594904507624483
+        ],
+        "max_rumor_strength": [
+          0.69225,
+          0.09717872893356269
+        ],
+        "pre_market_return_30d": [
+          0.0017916428571428569,
+          0.07025211307661565
+        ],
+        "pre_stock_return_30d": [
+          0.10428257142857142,
+          0.14136882544844698
+        ],
+        "pre_stock_return_7d": [
+          0.027512785714285715,
+          0.05694746471991102
+        ],
+        "pre_stock_volatility_30d": [
+          0.033370107142857146,
+          0.011202964219792411
+        ],
+        "rumor_count": [
+          1.2857142857142858,
+          0.5248906591678238
+        ],
+        "rumor_indicator": [
+          0.6926071428571429,
+          0.11158614202416325
+        ],
+        "source_diversity": [
+          1.2857142857142858,
+          0.5248906591678238
+        ],
+        "stock_context_indicator": [
+          0.6030821428571429,
+          0.09077236856779801
+        ],
+        "transfer_indicator": [
+          0.5101321428571428,
+          0.09095555843209296
+        ],
+        "transfer_quality": [
+          0.641125,
+          0.08792839060849458
+        ]
+      },
+      "neutral": {
+        "avg_credibility": [
+          0.786145,
+          0.14981319192581138
+        ],
+        "avg_rumor_strength": [
+          0.702625,
+          0.12622071888164796
+        ],
+        "fee_to_market": [
+          1.14006,
+          0.40013044110639717
+        ],
+        "is_loan": [
+          0.0,
+          0.0001
+        ],
+        "max_credibility": [
+          0.81075,
+          0.15067162141558044
+        ],
+        "max_rumor_strength": [
+          0.7247375,
+          0.13180364123858643
+        ],
+        "pre_market_return_30d": [
+          -0.0034205499999999988,
+          0.07175105037173672
+        ],
+        "pre_stock_return_30d": [
+          0.020625024999999998,
+          0.11504862303076198
+        ],
+        "pre_stock_return_7d": [
+          0.004855874999999999,
+          0.062060372456660094
+        ],
+        "pre_stock_volatility_30d": [
+          0.025398625,
+          0.011501408560883967
+        ],
+        "rumor_count": [
+          1.3,
+          0.6403124237432849
+        ],
+        "rumor_indicator": [
+          0.7124925,
+          0.12221296041643866
+        ],
+        "source_diversity": [
+          1.275,
+          0.6319612329882269
+        ],
+        "stock_context_indicator": [
+          0.57042,
+          0.11906457323654253
+        ],
+        "transfer_indicator": [
+          0.5228375,
+          0.10527478018856178
+        ],
+        "transfer_quality": [
+          0.6447775,
+          0.09311101032504158
+        ]
+      },
+      "positive": {
+        "avg_credibility": [
+          0.8581081081081081,
+          0.06471717420408035
+        ],
+        "avg_rumor_strength": [
+          0.7431756756756757,
+          0.11059966865060918
+        ],
+        "fee_to_market": [
+          1.2345486486486488,
+          0.673124842290778
+        ],
+        "is_loan": [
+          0.0,
+          0.0001
+        ],
+        "max_credibility": [
+          0.8672972972972972,
+          0.046999059717371144
+        ],
+        "max_rumor_strength": [
+          0.7491486486486487,
+          0.10418051283676139
+        ],
+        "pre_market_return_30d": [
+          -0.0015468918918918916,
+          0.05996759230315122
+        ],
+        "pre_stock_return_30d": [
+          0.05309756756756757,
+          0.11387660029255958
+        ],
+        "pre_stock_return_7d": [
+          -0.005762648648648649,
+          0.06052787677578539
+        ],
+        "pre_stock_volatility_30d": [
+          0.02490418918918919,
+          0.009786845058927351
+        ],
+        "rumor_count": [
+          1.135135135135135,
+          0.41343401461563123
+        ],
+        "rumor_indicator": [
+          0.724372972972973,
+          0.08127809335072396
+        ],
+        "source_diversity": [
+          1.135135135135135,
+          0.41343401461563123
+        ],
+        "stock_context_indicator": [
+          0.5796,
+          0.1103606299757692
+        ],
+        "transfer_indicator": [
+          0.5652837837837837,
+          0.13495186832371517
+        ],
+        "transfer_quality": [
+          0.6803648648648649,
+          0.126936315627096
+        ]
+      }
+    }
+  },
+  "test": {
+    "accuracy": 0.1034,
+    "label_counts": {
+      "negative": 11,
+      "neutral": 15,
+      "positive": 3
+    },
+    "n": 29,
+    "predicted_counts": {
+      "negative": 11,
+      "neutral": 6,
+      "positive": 12
+    }
+  },
+  "train": {
+    "accuracy": 0.6,
+    "label_counts": {
+      "negative": 28,
+      "neutral": 40,
+      "positive": 37
+    },
+    "n": 105,
+    "predicted_counts": {
+      "negative": 17,
+      "neutral": 27,
+      "positive": 61
+    }
+  },
+  "train_end_season": "2024-25",
+  "unlabeled_count": 0,
+  "warning": "Small/noisy dataset; proxy dates and sparse rumor coverage can dominate results."
+}

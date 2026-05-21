@@ -1,0 +1,52 @@
+journalist,n_claims,n_matched,match_rate,smoothed_rate,avg_match_score
+David Tindall,1,0,0.0,0.4167,0.0
+Fabrizio Romano,11,8,0.7273,0.6562,0.6436
+Sid Lowe in Madrid,2,0,0.0,0.3571,0.0
+Daniel Gallan,1,0,0.0,0.4167,0.0
+Jamie Jackson,18,10,0.5556,0.5435,0.5467
+Gregg Bakowski,2,1,0.5,0.5,0.49
+"Jamie Jackson, Fabrizio Romano and Jacob Steinberg",1,1,1.0,0.5833,0.96
+PA Media and Guardian sport,1,1,1.0,0.5833,0.68
+"Fabrizio Romano, Will Unwin, Jacob Steinberg and PA Media",1,1,1.0,0.5833,0.88
+Andy Hunter and Fabrizio Romano,1,0,0.0,0.4167,0.0
+Guardian sport,3,2,0.6667,0.5625,0.7067
+Fabrizio Romano and Jamie Jackson,1,1,1.0,0.5833,0.96
+Ed Aarons,4,2,0.5,0.5,0.48
+John Brewin and PA Media,1,1,1.0,0.5833,1.06
+Jamie Jackson in Houston,1,1,1.0,0.5833,0.96
+Jacob Steinberg,10,3,0.3,0.3667,0.268
+Will Unwin,11,7,0.6364,0.5938,0.6491
+Andy Martin,1,1,1.0,0.5833,1.06
+Andy Brassell,1,0,0.0,0.4167,0.0
+Louise Taylor and Will Unwin,1,0,0.0,0.4167,0.0
+Jamie Jackson and Jacob Steinberg,1,0,0.0,0.4167,0.0
+Jonathan Liew,1,0,0.0,0.4167,0.0
+"Jamie Jackson, Fabrizio Romano, Will Unwin and agencies",1,1,1.0,0.5833,0.78
+Andy Hunter at Old Trafford,1,0,0.0,0.4167,0.0
+Scott Murray,1,0,0.0,0.4167,0.0
+"Jacob Steinberg, Jamie Jackson and Fabrizio Romano",1,1,1.0,0.5833,0.88
+Jamie Jackson and Fabrizio Romano,1,1,1.0,0.5833,1.06
+Barry Glendenning,1,0,0.0,0.4167,0.0
+Rob Smyth,1,1,1.0,0.5833,0.88
+Jamie Jackson at Murrayfield,1,0,0.0,0.4167,0.0
+Fabrizio Romano and Will Unwin,1,0,0.0,0.4167,0.0
+Luke McLaughlin,1,0,0.0,0.4167,0.0
+Will Unwin (now) and Yara El-Shaboury (earlier),1,0,0.0,0.4167,0.0
+Daniel Harris,1,1,1.0,0.5833,0.96
+Jamie Jackson in Melbourne,2,2,1.0,0.6429,1.0
+John Brewin,1,0,0.0,0.4167,0.0
+Jacob Steinberg in Philadelphia,1,0,0.0,0.4167,0.0
+Jacob Steinberg and Ed Aarons,1,0,0.0,0.4167,0.0
+Jacob Steinberg and Ben Fisher,1,1,1.0,0.5833,0.86
+Ben Fisher,1,0,0.0,0.4167,0.0
+Thiago Rabelo,1,0,0.0,0.4167,0.0
+Tom Garry,2,1,0.5,0.5,0.49
+Ed Aarons and Jacob Steinberg,1,0,0.0,0.4167,0.0
+Jacob Steinberg and Ed Aarons in Los Angeles,1,1,1.0,0.5833,1.0
+Jamie Jackson in New York,1,1,1.0,0.5833,0.98
+"Emillia Hawkins (now), with David Tindall, Niall McVeigh and Xaymaca Awoyungbo (earlier)",1,0,0.0,0.4167,0.0
+"Jamie Jackson, Jacob Steinberg and David Hytner",1,1,1.0,0.5833,1.06
+"Andy Hunter, Ed Aarons and Jacob Steinberg",1,0,0.0,0.4167,0.0
+Mark Dobson,1,0,0.0,0.4167,0.0
+Xaymaca Awoyungbo (earlier) and Rob Smyth (later),1,0,0.0,0.4167,0.0
+Fabrizio Romano and Andy Hunter,1,1,1.0,0.5833,0.78

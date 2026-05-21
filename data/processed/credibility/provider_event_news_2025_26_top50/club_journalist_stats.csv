@@ -1,0 +1,78 @@
+club,journalist,n_claims,n_matched,match_rate,smoothed_rate,avg_match_score
+Manchester United,Will Unwin,8,5,0.625,0.5769,0.6625
+Manchester United,Andy Martin,1,1,1.0,0.5833,1.06
+Manchester United,Andy Brassell,1,0,0.0,0.4167,0.0
+Manchester United,Louise Taylor and Will Unwin,1,0,0.0,0.4167,0.0
+Manchester United,Jamie Jackson,3,1,0.3333,0.4375,0.3267
+Manchester United,Jamie Jackson and Jacob Steinberg,1,0,0.0,0.4167,0.0
+Manchester United,Jonathan Liew,1,0,0.0,0.4167,0.0
+Borussia Dortmund,Jacob Steinberg in Philadelphia,1,0,0.0,0.4167,0.0
+Borussia Dortmund,Jacob Steinberg and Ed Aarons,1,0,0.0,0.4167,0.0
+Borussia Dortmund,Jacob Steinberg and Ben Fisher,1,1,1.0,0.5833,0.86
+Borussia Dortmund,Jacob Steinberg,3,2,0.6667,0.5625,0.4933
+Manchester United,Jacob Steinberg,1,1,1.0,0.5833,0.86
+Manchester United,"Jamie Jackson, Jacob Steinberg and David Hytner",1,1,1.0,0.5833,1.06
+Manchester United,"Andy Hunter, Ed Aarons and Jacob Steinberg",1,0,0.0,0.4167,0.0
+Manchester United,Ed Aarons,1,1,1.0,0.5833,0.96
+Juventus,"Ed Aarons, Will Unwin and Jacob Steinberg",1,1,1.0,0.5833,0.96
+Juventus,Tom Bassam,1,1,1.0,0.5833,0.88
+Juventus,Michael Butler,1,1,1.0,0.5833,0.98
+Juventus,John Brewin,1,0,0.0,0.4167,0.0
+Borussia Dortmund,Michael Butler,1,0,0.0,0.4167,0.0
+Borussia Dortmund,Louise Taylor,1,0,0.0,0.4167,0.0
+Borussia Dortmund,Ed Aarons,4,2,0.5,0.5,0.44
+Borussia Dortmund,Will Unwin and Andy Hunter,1,0,0.0,0.4167,0.0
+Lazio,Jacob Steinberg,4,3,0.75,0.6111,0.565
+Lazio,Tom Davies,1,1,1.0,0.5833,0.9
+Lazio,Will Unwin,5,4,0.8,0.65,0.7
+Juventus,Andy Hunter and Agencies,1,1,1.0,0.5833,0.88
+Lazio,John Brewin,1,1,1.0,0.5833,0.9
+Lazio,Exclusive by Tom Garry,1,0,0.0,0.4167,0.0
+Borussia Dortmund,Will Unwin,1,1,1.0,0.5833,0.98
+Borussia Dortmund,"Jacob Steinberg, Ben Fisher and Ed Aarons",1,1,1.0,0.5833,0.98
+Borussia Dortmund,Ben Fisher,2,2,1.0,0.6429,0.88
+Borussia Dortmund,"Louise Taylor, Ben Fisher and Jacob Steinberg",1,1,1.0,0.5833,1.04
+Manchester United,Dominic Booth,1,1,1.0,0.5833,0.78
+Manchester United,Jamie Jackson and Will Unwin,1,1,1.0,0.5833,0.84
+Manchester United,Exclusive by Jamie Jackson,1,1,1.0,0.5833,1.04
+Manchester United,Ben Fisher,1,0,0.0,0.4167,0.0
+Manchester United,Daniel Harris,1,1,1.0,0.5833,0.98
+Borussia Dortmund,Alexander Abnos at MetLife Stadium,1,0,0.0,0.4167,0.0
+Borussia Dortmund,Ben Fisher and Jacob Steinberg,1,1,1.0,0.5833,0.88
+Borussia Dortmund,John Brewin,1,0,0.0,0.4167,0.0
+Borussia Dortmund,Ewan Murray and Jacob Steinberg,1,0,0.0,0.4167,0.0
+Lazio,Jamie Jackson and Ed Aarons,1,1,1.0,0.5833,0.76
+Juventus,Exclusive by Will Unwin,1,1,1.0,0.5833,0.96
+Juventus,Jacob Steinberg and Ben Fisher,1,1,1.0,0.5833,0.86
+Juventus,"Will Magee, John Brewin, Daniel Harris and Niall McVeigh",1,0,0.0,0.4167,0.0
+Juventus,Rob Smyth,1,1,1.0,0.5833,0.96
+Juventus,Jacob Steinberg and Ed Aarons,1,1,1.0,0.5833,1.06
+Juventus,Alexander Abnos,1,0,0.0,0.4167,0.0
+Juventus,"Jamie Jackson at the Camping World Stadium, Orlando",1,0,0.0,0.4167,0.0
+Juventus,"Sid Lowe at Hard Rock Stadium, Miami",1,0,0.0,0.4167,0.0
+Juventus,Jacob Steinberg and agencies,1,1,1.0,0.5833,0.9
+Juventus,Ed Aarons,1,1,1.0,0.5833,0.88
+Lazio,"Will Magee, Niall McVeigh and Billy Munday",1,1,1.0,0.5833,0.9
+Lazio,Guardian staff and agencies,1,1,1.0,0.5833,0.98
+Lazio,Hannah Ellis-Petersen in Delhi and Jennifer Rankin in Brussels,1,0,0.0,0.4167,0.0
+Lazio,Will Unwin and David Hytner,1,0,0.0,0.4167,0.0
+Lazio,Ben Fisher and Mark Dobson,1,0,0.0,0.4167,0.0
+Lazio,Patrick Wintour Diplomatic editor,1,0,0.0,0.4167,0.0
+Lazio,Sarah Martin,1,1,1.0,0.5833,0.88
+Lazio,Tom Garry,1,1,1.0,0.5833,0.86
+Lazio,Guardian sport,1,1,1.0,0.5833,0.88
+Manchester United,"Jamie Jackson, Louise Taylor, Ed Aarons and agencies",1,0,0.0,0.4167,0.0
+Manchester United,John Brewin,1,1,1.0,0.5833,0.98
+Manchester United,Tom Davies,1,1,1.0,0.5833,0.9
+Borussia Dortmund,Yara El-Shaboury,1,1,1.0,0.5833,0.9
+Borussia Dortmund,"John Brewin , Tom Bassam, Tom Davies and Taha Hashim",1,0,0.0,0.4167,0.0
+Lazio,Yara El-Shaboury,1,1,1.0,0.5833,0.98
+Juventus,Lisa O’Carroll,1,0,0.0,0.4167,0.0
+Juventus,Dani Anguiano,1,0,0.0,0.4167,0.0
+Juventus,Tom Ambrose (now) and Taz Ali (earlier),1,0,0.0,0.4167,0.0
+Juventus,Martin Belam,1,0,0.0,0.4167,0.0
+Juventus,Kelly Burke Arts reporter,1,0,0.0,0.4167,0.0
+Juventus,Jacob Steinberg,1,1,1.0,0.5833,0.98
+Juventus,Tom Garry,1,1,1.0,0.5833,0.86
+Juventus,"Coral Murphy Marcos, Chris Stein, Erum Salam and Tom Ambrose (earlier)",1,0,0.0,0.4167,0.0
+Juventus,,1,1,1.0,0.5833,0.88

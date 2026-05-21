@@ -1,0 +1,100 @@
+journalist,n_claims,n_matched,match_rate,smoothed_rate,avg_match_score
+Simon Burnton,1,0,0.0,0.4167,0.0
+Jacob Steinberg,6,0,0.0,0.2273,0.0
+Jonathan Wilson,6,0,0.0,0.2273,0.0
+David Hytner,4,0,0.0,0.2778,0.0
+Guardian sport,21,0,0.0,0.0962,0.0
+John Brewin,6,0,0.0,0.2273,0.0
+Sid Lowe at the Camp Nou,1,0,0.0,0.4167,0.0
+Rob Smyth,10,0,0.0,0.1667,0.0
+Ben Bloom at Wembley,1,0,0.0,0.4167,0.0
+Tom Garry at St Helens Stadium,1,0,0.0,0.4167,0.0
+Emillia Hawkins,3,0,0.0,0.3125,0.0
+Barry Glendenning,7,0,0.0,0.2083,0.0
+John Brewin at Craven Cottage,1,0,0.0,0.4167,0.0
+Ross Heppenstall at the Stadium of Light,1,0,0.0,0.4167,0.0
+Scott Murray,4,0,0.0,0.2778,0.0
+Barry Glendenning (now) Emillia Hawkins (earlier),1,0,0.0,0.4167,0.0
+Ed Aarons,4,0,0.0,0.2778,0.0
+Guardian sport and agencies,4,0,0.0,0.2778,0.0
+Suzanne Wrack,3,0,0.0,0.3125,0.0
+"Niall McVeigh (now), Dominic Booth, Yara El-Shaboury and David Tindall (earlier)",1,0,0.0,0.4167,0.0
+Niall McVeigh,1,0,0.0,0.4167,0.0
+Ben Fisher,8,0,0.0,0.1923,0.0
+Dominic Booth,2,0,0.0,0.3571,0.0
+Sam Cunningham,2,0,0.0,0.3571,0.0
+Will Unwin at Villa Park,1,0,0.0,0.4167,0.0
+Will Unwin,7,0,0.0,0.2083,0.0
+Jonathan Liew,1,0,0.0,0.4167,0.0
+Tom Garry,6,0,0.0,0.2273,0.0
+Suzanne Wrack at the Broadfield Stadium,1,0,0.0,0.4167,0.0
+Graham Ruthven,1,0,0.0,0.4167,0.0
+Jamie Jackson,6,0,0.0,0.2273,0.0
+Andy Hunter,7,0,0.0,0.2083,0.0
+Jack Snape,3,0,0.0,0.3125,0.0
+Will Unwin and Andy Hunter,1,0,0.0,0.4167,0.0
+Luke McLaughlin,1,0,0.0,0.4167,0.0
+Jamie Jackson at Old Trafford,5,1,0.2,0.35,0.16
+Andy Hunter at Old Trafford,1,0,0.0,0.4167,0.0
+Ed Aarons at the Emirates Stadium,1,0,0.0,0.4167,0.0
+John Brewin at the Vitality Stadium,1,0,0.0,0.4167,0.0
+"Tom Bassam (now), Xaymaca Awoyungbo and Emillia Hawkins (earlier)",1,0,0.0,0.4167,0.0
+Tom Garry in Lyon,1,0,0.0,0.4167,0.0
+Jacob Steinberg at the Gtech Community Stadium,1,0,0.0,0.4167,0.0
+David Tindall,1,0,0.0,0.4167,0.0
+Daniel Lavelle,1,0,0.0,0.4167,0.0
+Arthur Renard in Barcelona,1,0,0.0,0.4167,0.0
+"Luke McLaughlin (now), John Brewin, Dominic Booth and Tom Davies (earlier)",1,0,0.0,0.4167,0.0
+Interviews by Ben Fisher,1,0,0.0,0.4167,0.0
+Ben Fisher at The City Ground,1,0,0.0,0.4167,0.0
+Jacob Steinberg and Jamie Jackson,1,0,0.0,0.4167,0.0
+Thiago Rabelo,1,0,0.0,0.4167,0.0
+Exclusive by Matt Hughes,4,0,0.0,0.2778,0.0
+Leander Schaerlaeckens,1,0,0.0,0.4167,0.0
+Emanuele Giulianelli,1,0,0.0,0.4167,0.0
+Exclusive by Matt Hughes in Vancouver,1,0,0.0,0.4167,0.0
+Louise Taylor,5,0,0.0,0.25,0.0
+Sid Lowe in Madrid,1,0,0.0,0.4167,0.0
+John Duerden,1,0,0.0,0.4167,0.0
+Daniel Harris,1,0,0.0,0.4167,0.0
+Alexander Abnos and Pablo Iglesias Maurer,1,0,0.0,0.4167,0.0
+Luke Entwistle,1,0,0.0,0.4167,0.0
+Barney Ronay,1,0,0.0,0.4167,0.0
+"Graham Searles (now), John Brewin and Will Unwin (earlier)",1,0,0.0,0.4167,0.0
+Tom Garry at Goodison Park,1,0,0.0,0.4167,0.0
+John Brewin at Wembley,1,0,0.0,0.4167,0.0
+Jacob Steinberg at the London Stadium,3,0,0.0,0.3125,0.0
+Exclusive by Jamie Jackson,1,0,0.0,0.4167,0.0
+Tim de Lisle,1,0,0.0,0.4167,0.0
+"Yara El-Shaboury, Barry Glendenning and John Brewin",1,0,0.0,0.4167,0.0
+Andy Brassell,4,0,0.0,0.2778,0.0
+Agencies,2,0,0.0,0.3571,0.0
+Sid Lowe,3,0,0.0,0.3125,0.0
+Joey Lynch,1,0,0.0,0.4167,0.0
+Jeff Rueter,2,0,0.0,0.3571,0.0
+Michael Butler,2,0,0.0,0.3571,0.0
+Ed Aarons at Selhurst Park,1,0,0.0,0.4167,0.0
+Tom Bassam,1,0,0.0,0.4167,0.0
+Exclusive by Jacob Steinberg,1,0,0.0,0.4167,0.0
+"Simon Burnton, David Tindall, Dominic Booth and Taha Hashim",1,0,0.0,0.4167,0.0
+Nicky Bandini,6,0,0.0,0.2273,0.0
+Matt Hughes,1,0,0.0,0.4167,0.0
+Alexander Abnos,1,0,0.0,0.4167,0.0
+Andy McGrath (now) and Tom Bassam,1,0,0.0,0.4167,0.0
+"Dominic Booth, Barry Glendenning and Michael Butler",1,0,0.0,0.4167,0.0
+Sid Lowe in Barcelona,1,0,0.0,0.4167,0.0
+Yara El-Shaboury,1,0,0.0,0.4167,0.0
+Exclusive by Tom Garry,1,0,0.0,0.4167,0.0
+Alex Ibaceta in Barcelona,1,0,0.0,0.4167,0.0
+John Brewin and Rob Smyth,1,0,0.0,0.4167,0.0
+Billy Munday at Portman Road,1,0,0.0,0.4167,0.0
+Philipp Lahm,1,0,0.0,0.4167,0.0
+Peter Lansley,1,0,0.0,0.4167,0.0
+Nick Ames,2,0,0.0,0.3571,0.0
+Guardian writers and agencies,1,0,0.0,0.4167,0.0
+Donald McRae,1,0,0.0,0.4167,0.0
+Guardian sport with agencies,1,0,0.0,0.4167,0.0
+"Tom Garry, Réshma Rao, Sophie Downey and Mitul Samji",1,0,0.0,0.4167,0.0
+Arthur Renard in Enschede,1,0,0.0,0.4167,0.0
+Michael Yokhin,1,0,0.0,0.4167,0.0
+"Luke McLaughlin, Billy Munday and Taha Hashim",1,0,0.0,0.4167,0.0

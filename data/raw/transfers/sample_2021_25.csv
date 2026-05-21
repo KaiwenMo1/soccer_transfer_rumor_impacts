@@ -1,0 +1,6 @@
+date,club,player,direction,from_club,to_club,age,position,market_value_eur,transfer_fee_eur,wage_eur_annual,transfer_type,is_loan,source,source_url
+2021-08-27,Manchester United,Cristiano Ronaldo,in,Juventus,Manchester United,36,Centre-Forward,45000000,17000000,28000000,permanent,0,sample,
+2023-07-01,Borussia Dortmund,Jude Bellingham,out,Borussia Dortmund,Real Madrid,20,Central Midfield,120000000,103000000,12000000,permanent,0,sample,
+2022-07-20,Juventus,Matthijs de Ligt,out,Juventus,Bayern Munich,22,Centre-Back,70000000,67000000,16000000,permanent,0,sample,
+2023-08-16,Lazio,Sergej Milinkovic-Savic,out,Lazio,Al Hilal,28,Central Midfield,50000000,40000000,20000000,permanent,0,sample,
+2024-01-12,Manchester United,Jadon Sancho,out,Manchester United,Borussia Dortmund,23,Right Winger,25000000,0,13000000,loan,1,sample,

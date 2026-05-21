@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760" fill="none">
+  <rect width="1280" height="760" rx="24" fill="#F5F1EA"/>
+  <rect x="28" y="28" width="1224" height="704" rx="20" fill="#FFFDF9" stroke="#D9CEC0"/>
+  <rect x="52" y="52" width="1176" height="96" rx="16" fill="#F2EBE1"/>
+  <text x="76" y="88" fill="#6D665C" font-family="Arial, sans-serif" font-size="15">Transfer + Club Stock Research</text>
+  <text x="76" y="120" fill="#1D1A16" font-family="Arial, sans-serif" font-size="34" font-weight="700">Transfer Impact Dashboard</text>
+  <rect x="954" y="72" width="118" height="56" rx="12" fill="#FFFDF9" stroke="#D9CEC0"/>
+  <rect x="1086" y="72" width="118" height="56" rx="12" fill="#FFFDF9" stroke="#D9CEC0"/>
+  <text x="972" y="94" fill="#6D665C" font-family="Arial, sans-serif" font-size="12">Season View</text>
+  <text x="972" y="116" fill="#1D1A16" font-family="Arial, sans-serif" font-size="20" font-weight="700">2025-26</text>
+  <text x="1104" y="94" fill="#6D665C" font-family="Arial, sans-serif" font-size="12">Signals</text>
+  <text x="1104" y="116" fill="#1D1A16" font-family="Arial, sans-serif" font-size="20" font-weight="700">23</text>
+
+  <g transform="translate(52 172)">
+    <rect width="1176" height="104" rx="16" fill="#FBF8F2" stroke="#E6DCCD"/>
+    <g transform="translate(22 18)">
+      <rect width="166" height="68" rx="12" fill="#FFFDF9" stroke="#D9CEC0"/>
+      <rect x="188" width="166" height="68" rx="12" fill="#FFFDF9" stroke="#D9CEC0"/>
+      <rect x="376" width="166" height="68" rx="12" fill="#FFFDF9" stroke="#D9CEC0"/>
+      <rect x="564" width="166" height="68" rx="12" fill="#FFFDF9" stroke="#D9CEC0"/>
+      <rect x="752" width="166" height="68" rx="12" fill="#FFFDF9" stroke="#D9CEC0"/>
+      <rect x="940" width="190" height="68" rx="12" fill="#FFFDF9" stroke="#D9CEC0"/>
+      <text x="16" y="22" fill="#6D665C" font-family="Arial, sans-serif" font-size="12">Avg Realized CAR t+3</text>
+      <text x="16" y="48" fill="#1D1A16" font-family="Arial, sans-serif" font-size="24" font-weight="700">-0.0193</text>
+      <text x="204" y="22" fill="#6D665C" font-family="Arial, sans-serif" font-size="12">Positive Share</text>
+      <text x="204" y="48" fill="#1D1A16" font-family="Arial, sans-serif" font-size="24" font-weight="700">8.2%</text>
+      <text x="392" y="22" fill="#6D665C" font-family="Arial, sans-serif" font-size="12">XGBoost Accuracy</text>
+      <text x="392" y="48" fill="#1D1A16" font-family="Arial, sans-serif" font-size="24" font-weight="700">43.8%</text>
+      <text x="580" y="22" fill="#6D665C" font-family="Arial, sans-serif" font-size="12">Macro F1</text>
+      <text x="580" y="48" fill="#1D1A16" font-family="Arial, sans-serif" font-size="24" font-weight="700">0.296</text>
+      <text x="768" y="22" fill="#6D665C" font-family="Arial, sans-serif" font-size="12">Best Backtest</text>
+      <text x="768" y="48" fill="#1D1A16" font-family="Arial, sans-serif" font-size="20" font-weight="700">heuristic_long_short</text>
+      <text x="956" y="22" fill="#6D665C" font-family="Arial, sans-serif" font-size="12">Historical References</text>
+      <text x="956" y="48" fill="#1D1A16" font-family="Arial, sans-serif" font-size="24" font-weight="700">103</text>
+    </g>
+  </g>
+
+  <g transform="translate(52 296)">
+    <rect width="800" height="218" rx="16" fill="#FFFDF9" stroke="#D9CEC0"/>
+    <text x="20" y="28" fill="#1D1A16" font-family="Arial, sans-serif" font-size="20" font-weight="700">Confirmed Transfer Index</text>
+    <text x="20" y="52" fill="#6D665C" font-family="Arial, sans-serif" font-size="12">Target-aware historical transfer view with realized CAR t+3.</text>
+    <rect x="20" y="70" width="760" height="32" rx="8" fill="#F2EBE1"/>
+    <text x="32" y="91" fill="#6D665C" font-family="Arial, sans-serif" font-size="12">Date</text>
+    <text x="106" y="91" fill="#6D665C" font-family="Arial, sans-serif" font-size="12">Target Club</text>
+    <text x="248" y="91" fill="#6D665C" font-family="Arial, sans-serif" font-size="12">Player</text>
+    <text x="454" y="91" fill="#6D665C" font-family="Arial, sans-serif" font-size="12">Fee</text>
+    <text x="548" y="91" fill="#6D665C" font-family="Arial, sans-serif" font-size="12">Value</text>
+    <text x="640" y="91" fill="#6D665C" font-family="Arial, sans-serif" font-size="12">T-Index</text>
+    <text x="714" y="91" fill="#6D665C" font-family="Arial, sans-serif" font-size="12">Actual</text>
+
+    <g font-family="Arial, sans-serif" font-size="13" fill="#1D1A16">
+      <text x="32" y="128">2026-05-18</text><text x="106" y="128">Manchester United</text><text x="248" y="128">Bryan Mbeumo</text><text x="454" y="128">EUR 55M</text><text x="548" y="128">EUR 50M</text><text x="646" y="128">0.74</text><text x="714" y="128">neutral</text>
+      <text x="32" y="160">2026-03-02</text><text x="106" y="160">Juventus</text><text x="248" y="160">Dusan Vlahovic</text><text x="454" y="160">EUR 70M</text><text x="548" y="160">EUR 68M</text><text x="646" y="160">0.69</text><text x="714" y="160">positive</text>
+      <text x="32" y="192">2025-08-07</text><text x="106" y="192">Borussia Dortmund</text><text x="248" y="192">Jamie Gittens</text><text x="454" y="192">EUR 32M</text><text x="548" y="192">EUR 30M</text><text x="646" y="192">0.58</text><text x="714" y="192">neutral</text>
+    </g>
+  </g>
+
+  <g transform="translate(872 296)">
+    <rect width="356" height="218" rx="16" fill="#FFFDF9" stroke="#D9CEC0"/>
+    <text x="18" y="28" fill="#1D1A16" font-family="Arial, sans-serif" font-size="20" font-weight="700">Live Watchlist</text>
+    <text x="18" y="50" fill="#6D665C" font-family="Arial, sans-serif" font-size="12">Clustered current direct-target rumors.</text>
+    <g transform="translate(18 72)">
+      <rect width="320" height="38" rx="10" fill="#F2EBE1"/>
+      <text x="12" y="24" fill="#1D1A16" font-family="Arial, sans-serif" font-size="13" font-weight="700">Benjamin Sesko · Manchester United</text>
+      <text x="12" y="102" fill="#1D1A16" font-family="Arial, sans-serif" font-size="13" font-weight="700">Jobe Bellingham · Borussia Dortmund</text>
+      <text x="12" y="180" fill="#1D1A16" font-family="Arial, sans-serif" font-size="13" font-weight="700">Viktor Gyokeres · Sporting CP</text>
+      <text x="12" y="40" fill="#6D665C" font-family="Arial, sans-serif" font-size="11">4 articles · medical · credibility 0.81</text>
+      <text x="12" y="118" fill="#6D665C" font-family="Arial, sans-serif" font-size="11">3 articles · advanced · credibility 0.76</text>
+      <text x="12" y="196" fill="#6D665C" font-family="Arial, sans-serif" font-size="11">5 articles · agreed · credibility 0.84</text>
+      <rect y="0" width="320" height="54" rx="10" fill="transparent" stroke="#D9CEC0"/>
+      <rect y="78" width="320" height="54" rx="10" fill="transparent" stroke="#D9CEC0"/>
+      <rect y="156" width="320" height="54" rx="10" fill="transparent" stroke="#D9CEC0"/>
+    </g>
+  </g>
+
+  <g transform="translate(52 536)">
+    <rect width="1176" height="168" rx="16" fill="#FFFDF9" stroke="#D9CEC0"/>
+    <text x="20" y="30" fill="#1D1A16" font-family="Arial, sans-serif" font-size="20" font-weight="700">Credibility Leaderboards</text>
+    <text x="20" y="52" fill="#6D665C" font-family="Arial, sans-serif" font-size="12">Historical journalist and source conversion quality learned from matched rumor outcomes.</text>
+    <g transform="translate(20 72)">
+      <rect width="368" height="74" rx="12" fill="#F2EBE1"/>
+      <rect x="384" width="368" height="74" rx="12" fill="#F2EBE1"/>
+      <rect x="768" width="368" height="74" rx="12" fill="#F2EBE1"/>
+      <text x="14" y="22" fill="#1D1A16" font-family="Arial, sans-serif" font-size="14" font-weight="700">Journalists</text>
+      <text x="14" y="46" fill="#6D665C" font-family="Arial, sans-serif" font-size="12">Fabrizio Romano · 0.656</text>
+      <text x="398" y="22" fill="#1D1A16" font-family="Arial, sans-serif" font-size="14" font-weight="700">Sources</text>
+      <text x="398" y="46" fill="#6D665C" font-family="Arial, sans-serif" font-size="12">The Guardian · 0.617</text>
+      <text x="782" y="22" fill="#1D1A16" font-family="Arial, sans-serif" font-size="14" font-weight="700">Club-Journalist</text>
+      <text x="782" y="46" fill="#6D665C" font-family="Arial, sans-serif" font-size="12">Man United / Jamie Jackson · 0.611</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,130 @@
+sources:
+  guardian_api:
+    name: The Guardian API
+    kind: guardian_api
+    provider: guardian
+    crawl_method: provider_api
+    enabled: true
+  gnews_api:
+    name: GNews API
+    kind: gnews_api
+    provider: gnews
+    crawl_method: provider_api
+    enabled: true
+  guardian_rss:
+    name: The Guardian Football RSS
+    kind: rss
+    url: https://www.theguardian.com/football/rss
+    crawl_method: rss
+    enabled: true
+  bbc_football_rss:
+    name: BBC Sport Football RSS
+    kind: rss
+    url: https://feeds.bbci.co.uk/sport/football/rss.xml
+    crawl_method: rss
+    enabled: true
+  google_news_global_en:
+    name: Google News Global EN
+    kind: rss
+    url: https://news.google.com/rss/search?q={query}&hl={hl}&gl={gl}&ceid={ceid}
+    query_template: ({club_terms}) (transfer OR transfers OR rumor OR rumours OR bid OR agreement OR talks OR medical OR loan)
+    hl: en-US
+    gl: US
+    ceid: US:en
+    language: English
+    crawl_method: rss
+    enabled: true
+  google_news_ajax_nl:
+    name: Google News Ajax NL
+    kind: rss
+    url: https://news.google.com/rss/search?q={query}&hl={hl}&gl={gl}&ceid={ceid}
+    query_template: ({club_terms}) (transfer OR transfers OR gerucht OR geruchten OR bod OR akkoord OR medische keuring OR huur)
+    hl: nl
+    gl: NL
+    ceid: NL:nl
+    language: Dutch
+    crawl_method: rss
+    club_keys:
+      - ajax
+    enabled: true
+  google_news_portugal_pt:
+    name: Google News Portugal PT
+    kind: rss
+    url: https://news.google.com/rss/search?q={query}&hl={hl}&gl={gl}&ceid={ceid}
+    query_template: ({club_terms}) (transferência OR transferências OR mercado OR rumor OR rumores OR proposta OR acordo OR negociações OR empréstimo OR reforço)
+    hl: pt-PT
+    gl: PT
+    ceid: PT:pt-150
+    language: Portuguese
+    crawl_method: rss
+    club_keys:
+      - sporting_cp
+      - fc_porto
+      - benfica
+    enabled: true
+  fundus_uk:
+    name: Fundus UK Publishers
+    kind: fundus
+    language: English
+    publisher_groups:
+      - uk
+    club_keys:
+      - manchester_united
+      - celtic
+    enabled: true
+  fundus_de:
+    name: Fundus Germany Publishers
+    kind: fundus
+    language: German
+    publisher_groups:
+      - de
+    club_keys:
+      - borussia_dortmund
+    enabled: true
+  fundus_it:
+    name: Fundus Italy Publishers
+    kind: fundus
+    language: Italian
+    publisher_groups:
+      - it
+    club_keys:
+      - juventus
+      - lazio
+    enabled: true
+  fundus_nl:
+    name: Fundus Netherlands Publishers
+    kind: fundus
+    language: Dutch
+    publisher_groups:
+      - nl
+    club_keys:
+      - ajax
+    enabled: true
+  fundus_pt:
+    name: Fundus Portugal Publishers
+    kind: fundus
+    language: Portuguese
+    publisher_groups:
+      - pt
+    club_keys:
+      - sporting_cp
+      - fc_porto
+      - benfica
+    enabled: true
+  fundus_fr:
+    name: Fundus France Publishers
+    kind: fundus
+    language: French
+    publisher_groups:
+      - fr
+    club_keys:
+      - eagle_football_group
+    enabled: true
+  crawl4ai_fallback:
+    name: Crawl4AI Fallback
+    kind: crawl4ai
+    enabled: false
+  scrapy_playwright_spider:
+    name: Scrapy Playwright Spider
+    kind: scrapy_playwright
+    enabled: false

@@ -1,0 +1,266 @@
+date,season,club,player,direction,from_club,to_club,age,position,market_value_eur,transfer_fee_eur,wage_eur_annual,transfer_type,is_loan,source,source_url
+2021-07-01,2021-22,Borussia Dortmund,Ansgar Knauff,in,B. Dortmund II,Borussia Dortmund,19,Right Winger,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2021-07-01,2021-22,Borussia Dortmund,Donyell Malen,in,PSV Eindhoven,Borussia Dortmund,22,Centre-Forward,,30000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2021-07-01,2021-22,Borussia Dortmund,Gregor Kobel,in,VfB Stuttgart,Borussia Dortmund,23,Goalkeeper,,15000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2021-07-01,2021-22,Borussia Dortmund,Immanuel Pherai,in,PEC Zwolle,Borussia Dortmund,20,Attacking Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2021-07-01,2021-22,Borussia Dortmund,Immanuel Pherai,out,Borussia Dortmund,B. Dortmund II,20,Attacking Midfield,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2021-07-01,2021-22,Borussia Dortmund,Jadon Sancho,out,Borussia Dortmund,Man Utd,21,Left Winger,,85000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2021-07-01,2021-22,Borussia Dortmund,Jeremy Toljan,in,Sassuolo,Borussia Dortmund,26,Right-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2021-07-01,2021-22,Borussia Dortmund,Jeremy Toljan,out,Borussia Dortmund,Sassuolo,26,Right-Back,,3500000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2021-07-01,2021-22,Borussia Dortmund,Leonardo Balerdi,in,Marseille,Borussia Dortmund,22,Centre-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2021-07-01,2021-22,Borussia Dortmund,Leonardo Balerdi,out,Borussia Dortmund,Marseille,22,Centre-Back,,11000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2021-07-01,2021-22,Borussia Dortmund,Lukasz Piszczek,out,Borussia Dortmund,Goczalkowice,36,Right-Back,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2021-07-01,2021-22,Borussia Dortmund,Marin Pongracic,in,VfL Wolfsburg,Borussia Dortmund,23,Centre-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2021-07-01,2021-22,Borussia Dortmund,Marius Wolf,in,1. FC Köln,Borussia Dortmund,26,Right Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2021-07-01,2021-22,Borussia Dortmund,Sergio Gómez,in,SD Huesca,Borussia Dortmund,20,Left-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2021-07-01,2021-22,Borussia Dortmund,Sergio Gómez,out,Borussia Dortmund,RSC Anderlecht,20,Left-Back,,2250000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2021-07-01,2021-22,Borussia Dortmund,Thomas Delaney,out,Borussia Dortmund,Sevilla FC,29,Defensive Midfield,,6000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2021-07-01,2021-22,Juventus FC,Cristian Romero,out,Juventus FC,Atalanta BC,23,Centre-Back,,17000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,Juventus FC,Cristiano Ronaldo,out,Juventus FC,Man Utd,36,Centre-Forward,,15000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,Juventus FC,Gianluca Frabotta,out,Juventus FC,Hellas Verona,22,Left-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,Juventus FC,Gianluigi Buffon,out,Juventus FC,Parma,43,Goalkeeper,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,Juventus FC,Kaio Jorge,in,Santos FC,Juventus FC,19,Centre-Forward,,1500000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,Juventus FC,Manuel Locatelli,in,Sassuolo,Juventus FC,23,Defensive Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,Juventus FC,Marko Pjaca,out,Juventus FC,Torino,26,Left Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,Juventus FC,Merih Demiral,out,Juventus FC,Atalanta BC,23,Centre-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,Juventus FC,Mohamed Ihattaren,in,PSV Eindhoven,Juventus FC,19,Attacking Midfield,,1900000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,Juventus FC,Mohamed Ihattaren,out,Juventus FC,Sampdoria,19,Attacking Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,Juventus FC,Moise Kean,in,Everton,Juventus FC,21,Centre-Forward,,7000000.0,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,Juventus FC,Nicolò Fagioli,out,Juventus FC,Cremonese,20,Central Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,Juventus FC,Radu Dragusin,out,Juventus FC,Sampdoria,19,Centre-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,Juventus FC,Stefano Gori,out,Juventus FC,Como,25,Goalkeeper,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,Juventus FC,Weston McKennie,in,FC Schalke 04,Juventus FC,22,Central Midfield,,20500000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,Juventus FC,Weston McKennie,out,Juventus FC,FC Schalke 04,22,Central Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,Manchester United,Amad Diallo,in,Rangers,Manchester United,19,Right Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,Andreas Pereira,in,Lazio,Manchester United,25,Attacking Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,Andreas Pereira,out,Manchester United,Flamengo,25,Attacking Midfield,,1000000.0,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,Anthony Elanga,in,Man Utd U23,Manchester United,19,Left Winger,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,Axel Tuanzebe,in,Aston Villa,Manchester United,24,Centre-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,Axel Tuanzebe,out,Manchester United,Aston Villa,23,Centre-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,Brandon Williams,in,Norwich,Manchester United,21,Left-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,Brandon Williams,out,Manchester United,Norwich,20,Left-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,Cristiano Ronaldo,in,Juventus,Manchester United,36,Centre-Forward,,15000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,Daniel James,out,Manchester United,Leeds,23,Right Winger,,29100000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,Diogo Dalot,in,AC Milan,Manchester United,22,Right-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,Donny van de Beek,in,Everton,Manchester United,25,Central Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,Facundo Pellistri,in,Alavés,Manchester United,19,Right Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,Facundo Pellistri,out,Manchester United,Alavés,19,Right Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,Hannibal Mejbri,in,Man Utd U23,Manchester United,18,Attacking Midfield,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,Jadon Sancho,in,Bor. Dortmund,Manchester United,21,Left Winger,,85000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,James Garner,in,Nottm Forest,Manchester United,21,Defensive Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,James Garner,out,Manchester United,Nottm Forest,20,Defensive Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,Joel Pereira,out,Manchester United,RKC Waalwijk,25,Goalkeeper,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,Raphaël Varane,in,Real Madrid,Manchester United,28,Centre-Back,,40000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,Sergio Romero,out,Manchester United,Without Club,34,Goalkeeper,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,Shola Shoretire,in,Man Utd U23,Manchester United,17,Right Winger,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,Tahith Chong,in,Birmingham,Manchester United,22,Right Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,Tahith Chong,in,Club Brugge,Manchester United,21,Right Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,Tahith Chong,out,Manchester United,Birmingham,21,Right Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,Teden Mengi,in,Birmingham,Manchester United,20,Centre-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,Manchester United,Tom Heaton,in,Aston Villa,Manchester United,35,Goalkeeper,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2021-07-01,2021-22,SS Lazio,Abukar Mohamed,out,SS Lazio,Without Club,22,Central Midfield,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Andreas Pereira,out,SS Lazio,Man Utd,25,Attacking Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Biagio Morrone,out,SS Lazio,Monopoli,21,Defensive Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Cedric Gondo,out,SS Lazio,Without Club,24,Centre-Forward,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Dimitrije Kamenovic,in,Cukaricki,SS Lazio,20,Left-Back,,3000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Djavan Anderson,out,SS Lazio,Cosenza,26,Right-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Elseid Hysaj,in,SSC Napoli,SS Lazio,27,Right-Back,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Emanuele Cicerelli,out,SS Lazio,Frosinone,27,Left Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Fabio Maistro,out,SS Lazio,Ascoli,23,Central Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Felipe Anderson,in,West Ham,SS Lazio,28,Right Winger,,3000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Felipe Caicedo,out,SS Lazio,Genoa,32,Centre-Forward,,2000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Joaquín Correa,out,SS Lazio,Inter,27,Second Striker,,6000000.0,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Joseph Marie Minala,out,SS Lazio,Without Club,24,Defensive Midfield,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Luka Romero,in,RCD Mallorca B,SS Lazio,16,Right Winger,,200000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Marco Alia,out,SS Lazio,Monterosi,21,Goalkeeper,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Marco Parolo,out,SS Lazio,Retired,36,Central Midfield,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Mateo Musacchio,out,SS Lazio,Without Club,30,Centre-Back,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Mattia Zaccagni,in,Hellas Verona,SS Lazio,26,Attacking Midfield,,200000.0,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Mohamed Fares,out,SS Lazio,Genoa,25,Left Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Nicolò Armini,out,SS Lazio,Piacenza,20,Centre-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Nikolaos Baxevanos,out,SS Lazio,Chindia,21,Centre-Back,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Pedro,in,AS Roma,SS Lazio,34,Right Winger,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Raúl Moro,in,Lazio U19,SS Lazio,18,Left Winger,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Senad Lulic,out,SS Lazio,Without Club,35,Left Midfield,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Sergio Kalaj,out,SS Lazio,Carrarese,21,Centre-Back,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Simone Palombi,out,SS Lazio,Alessandria,25,Centre-Forward,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Sofian Kiyine,out,SS Lazio,Venezia,23,Central Midfield,,400000.0,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Tiago Casasola,out,SS Lazio,Frosinone,26,Right-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Toma Basic,in,G. Bordeaux,SS Lazio,24,Central Midfield,,7100000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2021-07-01,2021-22,SS Lazio,Wesley Hoedt,out,SS Lazio,Southampton,27,Centre-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-01-01,2021-22,Borussia Dortmund,Ansgar Knauff,out,Borussia Dortmund,E. Frankfurt,20,Right Winger,,400000.0,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2022-01-01,2021-22,Borussia Dortmund,Tobias Raschl,out,Borussia Dortmund,Greuther Fürth,21,Central Midfield,,100000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2022-01-01,2021-22,Juventus FC,Aaron Ramsey,out,Juventus FC,Rangers,31,Central Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-01-01,2021-22,Juventus FC,Dejan Kulusevski,out,Juventus FC,Spurs,21,Right Winger,,10000000.0,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-01-01,2021-22,Juventus FC,Denis Zakaria,in,Bor. M'gladbach,Juventus FC,25,Defensive Midfield,,8600000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-01-01,2021-22,Juventus FC,Dušan Vlahović,in,Fiorentina,Juventus FC,22,Centre-Forward,,81600000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-01-01,2021-22,Juventus FC,Federico Gatti,in,Frosinone,Juventus FC,23,Centre-Back,,5400000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-01-01,2021-22,Juventus FC,Federico Gatti,out,Juventus FC,Frosinone,23,Centre-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-01-01,2021-22,Juventus FC,Marley Aké,in,Juventus U23,Juventus FC,21,Left Winger,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-01-01,2021-22,Juventus FC,Mohamed Ihattaren,out,Juventus FC,Ajax,19,Attacking Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-01-01,2021-22,Juventus FC,Radu Dragusin,out,Juventus FC,Salernitana,19,Centre-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-01-01,2021-22,Juventus FC,Rodrigo Bentancur,out,Juventus FC,Spurs,24,Central Midfield,,19000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-01-01,2021-22,Manchester United,Amad Diallo,out,Manchester United,Rangers,19,Right Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-01-01,2021-22,Manchester United,Anthony Martial,out,Manchester United,Sevilla FC,26,Centre-Forward,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-01-01,2021-22,Manchester United,Axel Tuanzebe,out,Manchester United,SSC Napoli,24,Centre-Back,,600000.0,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-01-01,2021-22,Manchester United,Donny van de Beek,out,Manchester United,Everton,24,Central Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-01-01,2021-22,Manchester United,Teden Mengi,out,Manchester United,Birmingham,19,Centre-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-01-01,2021-22,SS Lazio,Alessandro Rossi,out,SS Lazio,Monopoli,25,Centre-Forward,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-01-01,2021-22,SS Lazio,André Anderson,out,SS Lazio,São Paulo,22,Attacking Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-01-01,2021-22,SS Lazio,Bobby Adekanye,out,SS Lazio,Crotone,22,Right Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-01-01,2021-22,SS Lazio,Cristiano Lombardi,out,SS Lazio,Reggina,26,Right Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-01-01,2021-22,SS Lazio,Denis Vavro,out,SS Lazio,FC Copenhagen,25,Centre-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-01-01,2021-22,SS Lazio,Djavan Anderson,out,SS Lazio,PEC Zwolle,26,Right-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-01-01,2021-22,SS Lazio,Gonzalo Escalante,out,SS Lazio,Alavés,28,Central Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-01-01,2021-22,SS Lazio,Jony,out,SS Lazio,Sporting Gijón,30,Left Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-01-01,2021-22,SS Lazio,Jordan Lukaku,out,SS Lazio,LR Vicenza,27,Left-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-01-01,2021-22,SS Lazio,Jovane Cabral,in,Sporting CP,SS Lazio,23,Left Winger,,300000.0,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-01-01,2021-22,SS Lazio,Mohamed Fares,out,SS Lazio,Torino,25,Left Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-01-01,2021-22,SS Lazio,Riza Durmisi,out,SS Lazio,Sparta R.,28,Left-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-01-01,2021-22,SS Lazio,Vedat Muriqi,out,SS Lazio,RCD Mallorca,27,Centre-Forward,,500000.0,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Borussia Dortmund,Alexander Meyer,in,Jahn Regensburg,Borussia Dortmund,31,Goalkeeper,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2022-07-01,2022-23,Borussia Dortmund,Anthony Modeste,in,1. FC Köln,Borussia Dortmund,34,Centre-Forward,,5100000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2022-07-01,2022-23,Borussia Dortmund,Axel Witsel,out,Borussia Dortmund,Atlético Madrid,33,Defensive Midfield,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2022-07-01,2022-23,Borussia Dortmund,Dan-Axel Zagadou,out,Borussia Dortmund,Without Club,23,Centre-Back,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2022-07-01,2022-23,Borussia Dortmund,Erling Haaland,out,Borussia Dortmund,Man City,21,Centre-Forward,,60000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2022-07-01,2022-23,Borussia Dortmund,Jamie Bynoe-Gittens,in,B. Dortmund U19,Borussia Dortmund,17,Right Winger,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2022-07-01,2022-23,Borussia Dortmund,Karim Adeyemi,in,RB Salzburg,Borussia Dortmund,20,Centre-Forward,,30000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2022-07-01,2022-23,Borussia Dortmund,Manuel Akanji,out,Borussia Dortmund,Man City,27,Centre-Back,,17500000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2022-07-01,2022-23,Borussia Dortmund,Marcel Lotka,in,Hertha BSC,Borussia Dortmund,21,Goalkeeper,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2022-07-01,2022-23,Borussia Dortmund,Marcel Schmelzer,out,Borussia Dortmund,Retired,34,Left-Back,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2022-07-01,2022-23,Borussia Dortmund,Marin Pongracic,out,Borussia Dortmund,VfL Wolfsburg,24,Centre-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2022-07-01,2022-23,Borussia Dortmund,Marwin Hitz,out,Borussia Dortmund,FC Basel,34,Goalkeeper,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2022-07-01,2022-23,Borussia Dortmund,Nico Schlotterbeck,in,SC Freiburg,Borussia Dortmund,22,Centre-Back,,20000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2022-07-01,2022-23,Borussia Dortmund,Niklas Süle,in,Bayern Munich,Borussia Dortmund,26,Centre-Back,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2022-07-01,2022-23,Borussia Dortmund,Reinier,out,Borussia Dortmund,Real Madrid,20,Attacking Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2022-07-01,2022-23,Borussia Dortmund,Roman Bürki,out,Borussia Dortmund,St. Louis CITY,31,Goalkeeper,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2022-07-01,2022-23,Borussia Dortmund,Salih Özcan,in,1. FC Köln,Borussia Dortmund,24,Defensive Midfield,,5000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2022-07-01,2022-23,Borussia Dortmund,Steffen Tigges,out,Borussia Dortmund,1. FC Köln,23,Centre-Forward,,1200000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2022-07-01,2022-23,Borussia Dortmund,Sébastien Haller,in,Ajax,Borussia Dortmund,28,Centre-Forward,,31000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2022-07-01,2022-23,Borussia Dortmund,Tom Rothe,in,B. Dortmund U19,Borussia Dortmund,17,Left-Back,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2022-07-01,2022-23,Juventus FC,Aaron Ramsey,out,Juventus FC,OGC Nice,31,Central Midfield,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Andrea Cambiaso,in,Genoa,Juventus FC,22,Left-Back,,8500000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Andrea Cambiaso,out,Juventus FC,Bologna,22,Left-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Arkadiusz Milik,in,Marseille,Juventus FC,28,Centre-Forward,,900000.0,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Arthur Melo,out,Juventus FC,Liverpool,26,Central Midfield,,4500000.0,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Bremer,in,Torino,Juventus FC,25,Centre-Back,,41000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Denis Zakaria,out,Juventus FC,Chelsea,25,Defensive Midfield,,3000000.0,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Douglas Costa,out,Juventus FC,Los Angeles,31,Right Winger,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Fabio Miretti,in,Juve Next Gen,Juventus FC,18,Central Midfield,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Federico Bernardeschi,out,Juventus FC,Toronto,28,Right Winger,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Federico Chiesa,in,Fiorentina,Juventus FC,24,Right Winger,,40000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Federico Chiesa,out,Juventus FC,Fiorentina,24,Right Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Filip Kostic,in,E. Frankfurt,Juventus FC,29,Left Midfield,,12000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Filippo Ranocchia,out,Juventus FC,Monza,21,Central Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Giacomo Vrioni,out,Juventus FC,New England,23,Centre-Forward,,3450000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Gianluca Frabotta,out,Juventus FC,Lecce,23,Left-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Giorgio Chiellini,out,Juventus FC,LAFC,37,Centre-Back,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Leandro Paredes,in,Paris SG,Juventus FC,28,Defensive Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Luca Pellegrini,out,Juventus FC,E. Frankfurt,23,Left-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Marko Pjaca,out,Juventus FC,FC Empoli,27,Left Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Matthijs de Ligt,out,Juventus FC,Bayern Munich,22,Centre-Back,,67000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Matías Soulé,in,Juve Next Gen,Juventus FC,19,Right Winger,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Merih Demiral,out,Juventus FC,Atalanta BC,24,Centre-Back,,20000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Nicolò Rovella,out,Juventus FC,Monza,20,Defensive Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Paul Pogba,in,Man Utd,Juventus FC,29,Central Midfield,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Paulo Dybala,out,Juventus FC,AS Roma,28,Second Striker,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Radu Dragusin,out,Juventus FC,Genoa,20,Centre-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Rolando Mandragora,out,Juventus FC,Fiorentina,25,Defensive Midfield,,8199999.999999999,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Stefano Gori,out,Juventus FC,Perugia,26,Goalkeeper,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Álvaro Morata,out,Juventus FC,Atlético Madrid,29,Centre-Forward,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Juventus FC,Ángel Di María,in,Paris SG,Juventus FC,34,Right Winger,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,Manchester United,Alejandro Garnacho,in,Man Utd U21,Manchester United,18,Left Winger,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Alex Telles,out,Manchester United,Sevilla FC,29,Left-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Amad Diallo,in,Sunderland,Manchester United,20,Right Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Amad Diallo,out,Manchester United,Sunderland,20,Right Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Andreas Pereira,in,Flamengo,Manchester United,26,Attacking Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Andreas Pereira,out,Manchester United,Fulham,26,Attacking Midfield,,9500000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Anthony Martial,in,Sevilla FC,Manchester United,26,Centre-Forward,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Antony,in,Ajax,Manchester United,22,Right Winger,,95000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Axel Tuanzebe,in,SSC Napoli,Manchester United,24,Centre-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Casemiro,in,Real Madrid,Manchester United,30,Defensive Midfield,,70650000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Christian Eriksen,in,Brentford,Manchester United,30,Attacking Midfield,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Dean Henderson,in,Nottm Forest,Manchester United,26,Goalkeeper,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Dean Henderson,out,Manchester United,Nottm Forest,25,Goalkeeper,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Edinson Cavani,out,Manchester United,Valencia,35,Centre-Forward,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Eric Bailly,out,Manchester United,Marseille,28,Centre-Back,,2000000.0,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Facundo Pellistri,in,Alavés,Manchester United,20,Right Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Hannibal Mejbri,in,Man Utd U21,Manchester United,19,Attacking Midfield,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Hannibal Mejbri,in,Birmingham,Manchester United,20,Attacking Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Hannibal Mejbri,out,Manchester United,Birmingham,19,Attacking Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Jesse Lingard,out,Manchester United,Nottm Forest,29,Attacking Midfield,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Juan Mata,out,Manchester United,Galatasaray,34,Attacking Midfield,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Lee Grant,out,Manchester United,Retired,39,Goalkeeper,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Lisandro Martínez,in,Ajax,Manchester United,24,Centre-Back,,57370000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Martin Dúbravka,in,Newcastle,Manchester United,33,Goalkeeper,,2310000.0,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Nemanja Matić,out,Manchester United,AS Roma,33,Defensive Midfield,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Paul Pogba,out,Manchester United,Juventus,29,Central Midfield,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Tahith Chong,out,Manchester United,Birmingham,22,Right Winger,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Tyrell Malacia,in,Feyenoord,Manchester United,22,Left-Back,,15000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Álvaro Fernandez,in,Man Utd U21,Manchester United,19,Left-Back,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Álvaro Fernandez,in,Preston,Manchester United,20,Left-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,Manchester United,Álvaro Fernandez,out,Manchester United,Preston,19,Left-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2022-07-01,2022-23,SS Lazio,Alessandro Rossi,out,SS Lazio,Monterosi,25,Centre-Forward,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Alessio Romagnoli,in,AC Milan,SS Lazio,27,Centre-Back,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Angelo Ndrecka,out,SS Lazio,Pro Patria,20,Left-Back,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Biagio Morrone,out,SS Lazio,Recanatese,22,Defensive Midfield,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Bobby Adekanye,out,SS Lazio,Go Ahead Eagles,23,Right Winger,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Cristiano Lombardi,out,SS Lazio,Triestina,26,Right Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Denis Vavro,out,SS Lazio,FC Copenhagen,26,Centre-Back,,4500000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Djavan Anderson,out,SS Lazio,Oxford United,27,Right-Back,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Emanuele Cicerelli,out,SS Lazio,Reggina,27,Left Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Fabio Maistro,out,SS Lazio,SPAL,24,Central Midfield,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Francesco Acerbi,out,SS Lazio,Inter,34,Centre-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Gonzalo Escalante,out,SS Lazio,Cremonese,29,Central Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Ivan Provedel,in,Spezia Calcio,SS Lazio,28,Goalkeeper,,2000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Jean-Daniel Akpa Akpro,out,SS Lazio,FC Empoli,29,Central Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Joaquín Correa,out,SS Lazio,Inter,27,Second Striker,,23600000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Jony,out,SS Lazio,Sporting Gijón,31,Left Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Jordan Lukaku,out,SS Lazio,Ponferradina,28,Left-Back,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Jorge Silva,out,SS Lazio,Without Club,23,Centre-Back,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Jovane Cabral,out,SS Lazio,Sporting CP,24,Left Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Luca Falbo,out,SS Lazio,Monopoli,22,Left-Back,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Lucas Leiva,out,SS Lazio,Grêmio,35,Defensive Midfield,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Luiz Felipe,out,SS Lazio,Real Betis,25,Centre-Back,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Luís Maximiano,in,Granada CF,SS Lazio,23,Goalkeeper,,10100000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Marco Alia,out,SS Lazio,Monterosi,22,Goalkeeper,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Marco Bertini,in,Lazio U19,SS Lazio,19,Defensive Midfield,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Marcos Antônio,in,Shakhtar D.,SS Lazio,22,Central Midfield,,7500000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Mario Gila,in,RM Castilla,SS Lazio,21,Centre-Back,,6000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Matteo Cancellieri,in,Hellas Verona,SS Lazio,20,Right Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Mattia Novella,out,SS Lazio,Picerno,21,Right-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Mattia Zaccagni,in,Hellas Verona,SS Lazio,27,Attacking Midfield,,7100000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Mattia Zaccagni,out,SS Lazio,Hellas Verona,27,Attacking Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Matías Vecino,in,Inter,SS Lazio,30,Central Midfield,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Nicolò Armini,out,SS Lazio,Potenza,21,Centre-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Nicolò Casale,in,Hellas Verona,SS Lazio,24,Centre-Back,,7000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Patryk Dziczek,out,SS Lazio,Piast Gliwice,24,Defensive Midfield,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Pepe Reina,out,SS Lazio,Villarreal,39,Goalkeeper,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Raúl Moro,out,SS Lazio,Ternana,19,Left Winger,,330000.0,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Riza Durmisi,out,SS Lazio,CD Leganés,28,Left-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Sofian Kiyine,out,SS Lazio,OH Leuven,24,Central Midfield,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Thomas Strakosha,out,SS Lazio,Brentford,27,Goalkeeper,,0.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Tiago Casasola,out,SS Lazio,Perugia,26,Right-Back,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2022-07-01,2022-23,SS Lazio,Vedat Muriqi,out,SS Lazio,RCD Mallorca,28,Centre-Forward,,7700000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2023-01-01,2022-23,Borussia Dortmund,Julian Ryerson,in,Union Berlin,Borussia Dortmund,25,Right-Back,,5000000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2023-01-01,2022-23,Borussia Dortmund,Julien Duranville,in,RSC Anderlecht,Borussia Dortmund,16,Right Winger,,8500000.0,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2023-01-01,2022-23,Borussia Dortmund,Thorgan Hazard,out,Borussia Dortmund,PSV Eindhoven,29,Left Winger,,500000.0,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/1-bundesliga.csv
+2023-01-01,2022-23,Juventus FC,Luca Pellegrini,out,Juventus FC,Lazio,23,Left-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2023-01-01,2022-23,Juventus FC,Marley Aké,out,Juventus FC,Dijon,22,Left Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2023-01-01,2022-23,Juventus FC,Samuel Iling Junior,in,Juve Next Gen,Juventus FC,19,Left Winger,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2023-01-01,2022-23,Juventus FC,Weston McKennie,out,Juventus FC,Leeds,24,Central Midfield,,1250000.0,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2023-01-01,2022-23,Manchester United,Axel Tuanzebe,out,Manchester United,Stoke City,25,Centre-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2023-01-01,2022-23,Manchester United,Cristiano Ronaldo,out,Manchester United,Without Club,37,Centre-Forward,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2023-01-01,2022-23,Manchester United,Jack Butland,in,Crystal Palace,Manchester United,29,Goalkeeper,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2023-01-01,2022-23,Manchester United,Kobbie Mainoo,in,Man Utd U21,Manchester United,17,Central Midfield,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2023-01-01,2022-23,Manchester United,Marcel Sabitzer,in,Bayern Munich,Manchester United,28,Central Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2023-01-01,2022-23,Manchester United,Martin Dúbravka,out,Manchester United,Newcastle,33,Goalkeeper,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2023-01-01,2022-23,Manchester United,Shola Shoretire,out,Manchester United,Bolton,18,Right Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2023-01-01,2022-23,Manchester United,Wout Weghorst,in,Burnley,Manchester United,30,Centre-Forward,,2960000.0,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2023-01-01,2022-23,Manchester United,Zidane Iqbal,in,Man Utd U21,Manchester United,19,Central Midfield,,,,permanent,0,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/premier-league.csv
+2023-01-01,2022-23,SS Lazio,Diego González,in,Celaya,SS Lazio,20,Left Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2023-01-01,2022-23,SS Lazio,Dimitrije Kamenovic,out,SS Lazio,Sparta Prague,22,Left-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2023-01-01,2022-23,SS Lazio,Gonzalo Escalante,out,SS Lazio,Cádiz CF,29,Central Midfield,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2023-01-01,2022-23,SS Lazio,Luca Pellegrini,in,Juventus,SS Lazio,23,Left-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2023-01-01,2022-23,SS Lazio,Raúl Moro,out,SS Lazio,Real Oviedo,20,Left Winger,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv
+2023-01-01,2022-23,SS Lazio,Riza Durmisi,out,SS Lazio,CD Tenerife,29,Left-Back,,,,loan,1,ewenme/transfers,https://github.com/ewenme/transfers/blob/master/data/serie-a.csv

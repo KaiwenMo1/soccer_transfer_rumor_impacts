@@ -1,0 +1,829 @@
+{
+  "baseline_majority": {
+    "accuracy": 0.4865,
+    "brier_multiclass": 0.651724,
+    "calibration": [
+      {
+        "accuracy": 0.4865,
+        "avg_confidence": 0.3906,
+        "bin": 1,
+        "count": 74
+      }
+    ],
+    "class_balance": {
+      "negative": 34,
+      "neutral": 36,
+      "positive": 4
+    },
+    "confusion_matrix": {
+      "labels": [
+        "negative",
+        "neutral",
+        "positive"
+      ],
+      "matrix": [
+        [
+          0,
+          34,
+          0
+        ],
+        [
+          0,
+          36,
+          0
+        ],
+        [
+          0,
+          4,
+          0
+        ]
+      ]
+    },
+    "log_loss": 1.078162,
+    "macro_f1": 0.2182,
+    "n": 74,
+    "predicted_counts": {
+      "neutral": 74
+    }
+  },
+  "categorical_features": [
+    "club",
+    "direction",
+    "transfer_type",
+    "position",
+    "rumor_stage",
+    "article_type"
+  ],
+  "dataset_path": "data/processed/modeling/stage6_demo_claims_market.csv",
+  "leakage_excluded_fields": [
+    "abnormal_return_0_p1",
+    "abnormal_return_0_p10",
+    "abnormal_return_0_p3",
+    "abnormal_return_0_p5",
+    "event_close_zscore_20d",
+    "event_volume_zscore_20d",
+    "label",
+    "market_return_0_p1",
+    "market_return_0_p10",
+    "market_return_0_p3",
+    "market_return_0_p5",
+    "post_volatility_20d",
+    "raw_return_0_p1",
+    "raw_return_0_p10",
+    "raw_return_0_p3",
+    "raw_return_0_p5",
+    "target_abnormal_return_p3",
+    "target_label_p3",
+    "volatility_shift_20d"
+  ],
+  "legacy_repo_baselines": {
+    "legacy_knn_1": {
+      "accuracy": 0.3919,
+      "brier_multiclass": 1.216216,
+      "calibration": [
+        {
+          "accuracy": 0.3919,
+          "avg_confidence": 1.0,
+          "bin": 4,
+          "count": 74
+        }
+      ],
+      "class_balance": {
+        "negative": 34,
+        "neutral": 36,
+        "positive": 4
+      },
+      "confusion_matrix": {
+        "labels": [
+          "negative",
+          "neutral",
+          "positive"
+        ],
+        "matrix": [
+          [
+            7,
+            13,
+            14
+          ],
+          [
+            7,
+            21,
+            8
+          ],
+          [
+            0,
+            3,
+            1
+          ]
+        ]
+      },
+      "log_loss": 21.918438,
+      "macro_f1": 0.3137,
+      "n": 74,
+      "predicted_counts": {
+        "negative": 14,
+        "neutral": 37,
+        "positive": 23
+      }
+    },
+    "legacy_nb": {
+      "accuracy": 0.3514,
+      "brier_multiclass": 1.000473,
+      "calibration": [
+        {
+          "accuracy": 0.0,
+          "avg_confidence": 0.391,
+          "bin": 1,
+          "count": 1
+        },
+        {
+          "accuracy": 0.5385,
+          "avg_confidence": 0.5168,
+          "bin": 2,
+          "count": 26
+        },
+        {
+          "accuracy": 0.3043,
+          "avg_confidence": 0.6988,
+          "bin": 3,
+          "count": 23
+        },
+        {
+          "accuracy": 0.2083,
+          "avg_confidence": 0.9014,
+          "bin": 4,
+          "count": 24
+        }
+      ],
+      "class_balance": {
+        "negative": 34,
+        "neutral": 36,
+        "positive": 4
+      },
+      "confusion_matrix": {
+        "labels": [
+          "negative",
+          "neutral",
+          "positive"
+        ],
+        "matrix": [
+          [
+            4,
+            11,
+            19
+          ],
+          [
+            7,
+            20,
+            9
+          ],
+          [
+            2,
+            0,
+            2
+          ]
+        ]
+      },
+      "log_loss": 2.32167,
+      "macro_f1": 0.295,
+      "n": 74,
+      "predicted_counts": {
+        "negative": 13,
+        "neutral": 31,
+        "positive": 30
+      }
+    }
+  },
+  "models": {
+    "logistic": {
+      "feature_importance": [
+        {
+          "feature": "position=Centre-Back",
+          "importance": 0.511997
+        },
+        {
+          "feature": "rumor_stage=talks",
+          "importance": 0.498265
+        },
+        {
+          "feature": "relative_volume_20d",
+          "importance": 0.472306
+        },
+        {
+          "feature": "position=Right Winger",
+          "importance": 0.463565
+        },
+        {
+          "feature": "pre_raw_return_m30",
+          "importance": 0.437416
+        },
+        {
+          "feature": "club=Borussia Dortmund",
+          "importance": 0.40167
+        },
+        {
+          "feature": "pre_market_return_m20",
+          "importance": 0.348003
+        },
+        {
+          "feature": "pre_abnormal_return_m3",
+          "importance": 0.338911
+        },
+        {
+          "feature": "rumor_stage=linked",
+          "importance": 0.333549
+        },
+        {
+          "feature": "pre_market_return_m10",
+          "importance": 0.332665
+        },
+        {
+          "feature": "pre_abnormal_return_m1",
+          "importance": 0.318311
+        },
+        {
+          "feature": "position=Centre-Forward",
+          "importance": 0.301972
+        },
+        {
+          "feature": "pre_raw_return_m3",
+          "importance": 0.301631
+        },
+        {
+          "feature": "position=Central Midfield",
+          "importance": 0.297089
+        },
+        {
+          "feature": "position=Defensive Midfield",
+          "importance": 0.286857
+        },
+        {
+          "feature": "time_to_confirmation_score",
+          "importance": 0.284156
+        },
+        {
+          "feature": "position=Left Winger",
+          "importance": 0.266563
+        },
+        {
+          "feature": "position=Goalkeeper",
+          "importance": 0.265204
+        },
+        {
+          "feature": "club_specific_score",
+          "importance": 0.263528
+        },
+        {
+          "feature": "pre_market_return_m5",
+          "importance": 0.261436
+        },
+        {
+          "feature": "pre_raw_return_m5",
+          "importance": 0.253248
+        },
+        {
+          "feature": "position=Attacking Midfield",
+          "importance": 0.250126
+        },
+        {
+          "feature": "pre_market_return_m1",
+          "importance": 0.249565
+        },
+        {
+          "feature": "rumor_stage=unclear",
+          "importance": 0.241073
+        },
+        {
+          "feature": "transfer_indicator",
+          "importance": 0.240423
+        }
+      ],
+      "test": {
+        "accuracy": 0.2162,
+        "brier_multiclass": 1.308231,
+        "calibration": [
+          {
+            "accuracy": 0.2,
+            "avg_confidence": 0.499,
+            "bin": 2,
+            "count": 10
+          },
+          {
+            "accuracy": 0.1818,
+            "avg_confidence": 0.7126,
+            "bin": 3,
+            "count": 11
+          },
+          {
+            "accuracy": 0.2264,
+            "avg_confidence": 0.9438,
+            "bin": 4,
+            "count": 53
+          }
+        ],
+        "class_balance": {
+          "negative": 34,
+          "neutral": 36,
+          "positive": 4
+        },
+        "confusion_matrix": {
+          "labels": [
+            "negative",
+            "neutral",
+            "positive"
+          ],
+          "matrix": [
+            [
+              1,
+              12,
+              21
+            ],
+            [
+              9,
+              13,
+              14
+            ],
+            [
+              2,
+              0,
+              2
+            ]
+          ]
+        },
+        "log_loss": 6.377619,
+        "macro_f1": 0.1891,
+        "n": 74,
+        "predicted_counts": {
+          "negative": 12,
+          "neutral": 25,
+          "positive": 37
+        }
+      },
+      "train": {
+        "accuracy": 1.0,
+        "brier_multiclass": 0.026025,
+        "calibration": [
+          {
+            "accuracy": 1.0,
+            "avg_confidence": 0.7175,
+            "bin": 3,
+            "count": 6
+          },
+          {
+            "accuracy": 1.0,
+            "avg_confidence": 0.9275,
+            "bin": 4,
+            "count": 58
+          }
+        ],
+        "class_balance": {
+          "negative": 19,
+          "neutral": 25,
+          "positive": 20
+        },
+        "confusion_matrix": {
+          "labels": [
+            "negative",
+            "neutral",
+            "positive"
+          ],
+          "matrix": [
+            [
+              19,
+              0,
+              0
+            ],
+            [
+              0,
+              25,
+              0
+            ],
+            [
+              0,
+              0,
+              20
+            ]
+          ]
+        },
+        "log_loss": 0.101136,
+        "macro_f1": 1.0,
+        "n": 64,
+        "predicted_counts": {
+          "negative": 19,
+          "neutral": 25,
+          "positive": 20
+        }
+      }
+    },
+    "xgboost": {
+      "feature_importance": [
+        {
+          "feature": "source_reputation_score",
+          "importance": 0.059255
+        },
+        {
+          "feature": "transfer_quality",
+          "importance": 0.054757
+        },
+        {
+          "feature": "rumor_strength",
+          "importance": 0.053832
+        },
+        {
+          "feature": "transfer_indicator",
+          "importance": 0.053331
+        },
+        {
+          "feature": "pre_volatility_20d",
+          "importance": 0.041346
+        },
+        {
+          "feature": "pre_market_return_m3",
+          "importance": 0.037118
+        },
+        {
+          "feature": "pre_raw_return_m20",
+          "importance": 0.034567
+        },
+        {
+          "feature": "pre_market_return_m20",
+          "importance": 0.03415
+        },
+        {
+          "feature": "position=Centre-Back",
+          "importance": 0.033534
+        },
+        {
+          "feature": "pre_volume_zscore_20d",
+          "importance": 0.030375
+        },
+        {
+          "feature": "club=Borussia Dortmund",
+          "importance": 0.029379
+        },
+        {
+          "feature": "article_type=report",
+          "importance": 0.029133
+        },
+        {
+          "feature": "position=Right Winger",
+          "importance": 0.028063
+        },
+        {
+          "feature": "pre_market_return_m10",
+          "importance": 0.026739
+        },
+        {
+          "feature": "club_specific_score",
+          "importance": 0.026078
+        },
+        {
+          "feature": "relative_volume_20d",
+          "importance": 0.025375
+        },
+        {
+          "feature": "market_minus_fee_eur",
+          "importance": 0.025294
+        },
+        {
+          "feature": "credibility_score",
+          "importance": 0.023196
+        },
+        {
+          "feature": "fee_to_market",
+          "importance": 0.0228
+        },
+        {
+          "feature": "historical_conversion_score",
+          "importance": 0.02208
+        },
+        {
+          "feature": "pre_abnormal_return_m10",
+          "importance": 0.021739
+        },
+        {
+          "feature": "pre_raw_return_m3",
+          "importance": 0.021459
+        },
+        {
+          "feature": "market_value_eur",
+          "importance": 0.020771
+        },
+        {
+          "feature": "pre_abnormal_return_m3",
+          "importance": 0.020225
+        },
+        {
+          "feature": "pre_close_zscore_20d",
+          "importance": 0.019908
+        }
+      ],
+      "selected_categorical_features": [
+        "club",
+        "direction",
+        "transfer_type",
+        "position",
+        "rumor_stage",
+        "article_type"
+      ],
+      "selected_feature_preset": "core",
+      "selected_numeric_features": [
+        "credibility_score",
+        "source_reputation_score",
+        "journalist_reputation_score",
+        "historical_conversion_score",
+        "club_specific_score",
+        "rumor_stage_score",
+        "article_type_score",
+        "time_to_confirmation_score",
+        "historical_support_n",
+        "match_score",
+        "ambiguity_flag",
+        "entity_match_indicator",
+        "transfer_quality",
+        "transfer_indicator",
+        "fee_to_market",
+        "market_minus_fee_eur",
+        "market_value_eur",
+        "transfer_fee_eur",
+        "wage_eur_annual",
+        "age",
+        "is_loan",
+        "rumor_strength",
+        "rumor_indicator",
+        "event_trading_offset_days",
+        "estimation_points",
+        "pre_window_ok_30d",
+        "pre_raw_return_m3",
+        "pre_raw_return_m10",
+        "pre_raw_return_m20",
+        "pre_market_return_m3",
+        "pre_market_return_m10",
+        "pre_market_return_m20",
+        "pre_abnormal_return_m3",
+        "pre_abnormal_return_m10",
+        "pre_volatility_20d",
+        "pre_close_zscore_20d",
+        "pre_volume_zscore_20d",
+        "relative_volume_20d"
+      ],
+      "selected_params": {
+        "colsample_bytree": 0.9,
+        "learning_rate": 0.05,
+        "max_depth": 2,
+        "n_estimators": 120,
+        "reg_lambda": 1.0,
+        "subsample": 0.9
+      },
+      "test": {
+        "accuracy": 0.473,
+        "brier_multiclass": 0.750277,
+        "calibration": [
+          {
+            "accuracy": 0.6667,
+            "avg_confidence": 0.3799,
+            "bin": 1,
+            "count": 3
+          },
+          {
+            "accuracy": 0.5,
+            "avg_confidence": 0.4966,
+            "bin": 2,
+            "count": 34
+          },
+          {
+            "accuracy": 0.4286,
+            "avg_confidence": 0.7181,
+            "bin": 3,
+            "count": 28
+          },
+          {
+            "accuracy": 0.4444,
+            "avg_confidence": 0.845,
+            "bin": 4,
+            "count": 9
+          }
+        ],
+        "class_balance": {
+          "negative": 34,
+          "neutral": 36,
+          "positive": 4
+        },
+        "confusion_matrix": {
+          "labels": [
+            "negative",
+            "neutral",
+            "positive"
+          ],
+          "matrix": [
+            [
+              6,
+              20,
+              8
+            ],
+            [
+              3,
+              29,
+              4
+            ],
+            [
+              1,
+              3,
+              0
+            ]
+          ]
+        },
+        "log_loss": 1.28673,
+        "macro_f1": 0.3106,
+        "n": 74,
+        "predicted_counts": {
+          "negative": 10,
+          "neutral": 52,
+          "positive": 12
+        }
+      },
+      "train": {
+        "accuracy": 1.0,
+        "brier_multiclass": 0.078758,
+        "calibration": [
+          {
+            "accuracy": 1.0,
+            "avg_confidence": 0.5657,
+            "bin": 2,
+            "count": 3
+          },
+          {
+            "accuracy": 1.0,
+            "avg_confidence": 0.7256,
+            "bin": 3,
+            "count": 26
+          },
+          {
+            "accuracy": 1.0,
+            "avg_confidence": 0.8784,
+            "bin": 4,
+            "count": 35
+          }
+        ],
+        "class_balance": {
+          "negative": 19,
+          "neutral": 25,
+          "positive": 20
+        },
+        "confusion_matrix": {
+          "labels": [
+            "negative",
+            "neutral",
+            "positive"
+          ],
+          "matrix": [
+            [
+              19,
+              0,
+              0
+            ],
+            [
+              0,
+              25,
+              0
+            ],
+            [
+              0,
+              0,
+              20
+            ]
+          ]
+        },
+        "log_loss": 0.229621,
+        "macro_f1": 1.0,
+        "n": 64,
+        "predicted_counts": {
+          "negative": 19,
+          "neutral": 25,
+          "positive": 20
+        }
+      },
+      "validation": {
+        "accuracy": 0.5,
+        "brier_multiclass": 0.634028,
+        "calibration": [
+          {
+            "accuracy": 0.5,
+            "avg_confidence": 0.508,
+            "bin": 2,
+            "count": 10
+          },
+          {
+            "accuracy": 0.5,
+            "avg_confidence": 0.6576,
+            "bin": 3,
+            "count": 2
+          }
+        ],
+        "class_balance": {
+          "negative": 3,
+          "neutral": 6,
+          "positive": 3
+        },
+        "confusion_matrix": {
+          "labels": [
+            "negative",
+            "neutral",
+            "positive"
+          ],
+          "matrix": [
+            [
+              1,
+              1,
+              1
+            ],
+            [
+              0,
+              4,
+              2
+            ],
+            [
+              1,
+              1,
+              1
+            ]
+          ]
+        },
+        "log_loss": 1.073328,
+        "macro_f1": 0.4508,
+        "n": 12,
+        "predicted_counts": {
+          "negative": 2,
+          "neutral": 6,
+          "positive": 4
+        }
+      }
+    }
+  },
+  "n_all_rows": 138,
+  "n_labeled_rows": 138,
+  "n_test_rows": 74,
+  "n_train_rows": 64,
+  "n_validation_rows": 12,
+  "numeric_features": [
+    "credibility_score",
+    "source_reputation_score",
+    "journalist_reputation_score",
+    "historical_conversion_score",
+    "club_specific_score",
+    "rumor_stage_score",
+    "article_type_score",
+    "time_to_confirmation_score",
+    "historical_support_n",
+    "match_score",
+    "ambiguity_flag",
+    "entity_match_indicator",
+    "transfer_quality",
+    "transfer_indicator",
+    "fee_to_market",
+    "market_minus_fee_eur",
+    "market_value_eur",
+    "transfer_fee_eur",
+    "wage_eur_annual",
+    "age",
+    "is_loan",
+    "rumor_strength",
+    "rumor_indicator",
+    "rumor_count",
+    "source_diversity",
+    "max_credibility",
+    "avg_credibility",
+    "max_rumor_strength",
+    "avg_rumor_strength",
+    "event_trading_offset_days",
+    "estimation_points",
+    "pre_window_ok_30d",
+    "pre_raw_return_m1",
+    "pre_raw_return_m3",
+    "pre_raw_return_m5",
+    "pre_raw_return_m10",
+    "pre_raw_return_m20",
+    "pre_raw_return_m30",
+    "pre_market_return_m1",
+    "pre_market_return_m3",
+    "pre_market_return_m5",
+    "pre_market_return_m10",
+    "pre_market_return_m20",
+    "pre_market_return_m30",
+    "pre_abnormal_return_m1",
+    "pre_abnormal_return_m3",
+    "pre_abnormal_return_m5",
+    "pre_abnormal_return_m10",
+    "pre_volatility_20d",
+    "pre_close_zscore_20d",
+    "pre_volume_zscore_20d",
+    "relative_volume_20d"
+  ],
+  "prediction_files": {
+    "logistic": "data/models/stage6_demo/stage6_logistic_predictions.csv",
+    "xgboost": "data/models/stage6_demo/stage6_xgboost_predictions.csv"
+  },
+  "target_label_field": "target_label_p3",
+  "train_end_season": "2024-25",
+  "warning": "Targets use post-rumor abnormal return windows; do not feed post-event columns back into live prediction features."
+}

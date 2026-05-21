@@ -1,0 +1,28 @@
+match_id,claim_id,article_id,published_at,primary_player,primary_club,transfer_direction,rumor_stage,is_transfer_related,matched_transfer_id,match_score,match_reason,ambiguity_flag,candidate_count,matched_season,matched_club,matched_player,matched_direction,matched_transfer_type,matched_transfer_date
+667034e1315e8564,b82233fbda07c334,6c9b16c709557adb,"Tue, 19 May 2026 15:25:48 GMT",,Manchester United,unclear,unclear,0,,0.0,not_transfer_related,0,0,,,,,,
+4521cc14ee060b27,ebc6580c4a78758c,05751dff05789dee,"Wed, 20 May 2026 10:58:00 GMT",,Manchester United,unclear,unclear,0,,0.0,not_transfer_related,0,0,,,,,,
+905d8b164f6e9527,97b83a29660bc0ec,fb65920407d40a9a,"Wed, 20 May 2026 21:36:00 GMT",Casemiro,Manchester United,unclear,advanced,1,a80e091504353a51,0.7,exact_player|exact_club|type_match,0,166,2022-23,Manchester United,Casemiro,in,permanent,2022-08-22
+b443833c0633f5e8,a2817facfb5fa19f,f038618123779c30,"Tue, 19 May 2026 13:00:04 GMT",,Manchester United,unclear,unclear,0,,0.0,not_transfer_related,0,0,,,,,,
+0f7726bc5ddec6ac,6130a3c02a0b8f80,d1641394010f86e8,"Wed, 20 May 2026 11:10:00 GMT",Alejandro Martínez,Manchester United,unclear,unclear,1,9c30c46109ddee2c,0.5,surname_player|exact_club|type_match,0,166,2022-23,Manchester United,Lisandro Martínez,in,permanent,2022-07-27
+b4520a9f5073a93c,d095ac28d7b407e8,a69448249cdec71a,"Wed, 20 May 2026 19:59:46 GMT",,Manchester United,in,unclear,1,,0.0,missing_player_signal,0,166,,,,,,
+b95732bd36bc6b31,54a30dc6ade4fcc4,4f4b3faf4ee5437e,"Tue, 19 May 2026 07:35:13 GMT",,Manchester United,unclear,linked,1,,0.0,missing_player_signal,0,166,,,,,,
+cf45f4a599d3d5e9,e7debfc4d463a18d,abc1b5caf228a3dc,"Sun, 17 May 2026 19:40:31 GMT",,Manchester United,unclear,unclear,0,,0.0,not_transfer_related,0,0,,,,,,
+4af243dafa1960fb,a67c685707c98668,847a4051657d7620,"Tue, 19 May 2026 16:07:38 GMT",,Manchester United,unclear,unclear,0,,0.0,not_transfer_related,0,0,,,,,,
+416cbb4d8c0bc9e9,f65eaabcb643ce07,3c5350eb23058b5d,"Wed, 20 May 2026 20:16:00 GMT",Casemiro,Manchester United,in,advanced,1,a80e091504353a51,0.78,exact_player|exact_club|direction_match|type_match,0,166,2022-23,Manchester United,Casemiro,in,permanent,2022-08-22
+115ee863a9c05404,6b15a60d4785a8d3,b7cbe96ce749196e,"Fri, 15 May 2026 18:42:13 GMT",,Manchester United,unclear,unclear,0,,0.0,not_transfer_related,0,0,,,,,,
+5aeb0587c0e676b3,6f59ca4f976ab556,68db93b175137093,"Wed, 20 May 2026 19:13:50 GMT",,Juventus,unclear,unclear,1,,0.0,missing_player_signal,0,308,,,,,,
+b577fbc04d34a826,b9a599e876cfe51b,45d89ef01eb6c9ee,"Wed, 20 May 2026 11:24:19 GMT",,Juventus,unclear,unclear,1,,0.0,missing_player_signal,0,308,,,,,,
+dc66a4688beb8cc7,d2db76cc7468961b,72b2aff3cd60181c,"Wed, 20 May 2026 21:23:23 GMT",Alisson,Juventus,unclear,unclear,0,,0.0,not_transfer_related,0,0,,,,,,
+03ca96a00372701a,1cdf5cff9e6b4c20,75727f1ec0fb2920,"Wed, 20 May 2026 11:30:00 GMT",Teun Koopmeiners,Juventus,unclear,unclear,0,,0.0,not_transfer_related,0,0,,,,,,
+d58a751af38802b8,22748c946ce2c47f,33f4e5a0e2778020,"Sun, 17 May 2026 14:31:04 GMT",Jonathan Jesus,Juventus,out,unclear,1,4ffdf2f8a233c7eb,0.48,surname_player|exact_club|direction_match|type_conflict,0,308,2021-22,Juventus,Matheus Jesus,out,loan_return,2021-09-22
+db43d42e9223b13e,77e7b4b83c251be8,6ced5c46416ccc6c,"Wed, 20 May 2026 16:15:00 GMT",Dušan Vlahović,Juventus,unclear,unclear,1,82efebc29270acae,0.7,exact_player|exact_club|type_match,0,308,2021-22,Juventus,Dušan Vlahović,in,permanent,2022-01-28
+bd78ec1cc0b1aa79,0eb2ccb5d2654059,fda09bf28be9fa22,"Tue, 19 May 2026 21:05:55 GMT",,Juventus,unclear,unclear,1,,0.0,missing_player_signal,0,308,,,,,,
+35abdcc44a77ab20,6cd95a2ab162ac45,5be899580b283d1e,"Wed, 20 May 2026 12:09:45 GMT",Alisson,Juventus,unclear,unclear,1,,0.0,score_below_threshold,0,308,,,,,,
+a82feae7f0c1f42c,aac2696cdf0c7f34,b58bc50872060416,"Sat, 16 May 2026 12:34:50 GMT",Dušan Vlahović,Juventus,unclear,unclear,0,,0.0,not_transfer_related,0,0,,,,,,
+39cba50219299538,87554eb381d38486,ad233f45040b15ff,"Sun, 17 May 2026 18:41:45 GMT",Guilherme Luiz,Juventus,unclear,unclear,1,365c04fed737d2e7,0.5,surname_player|exact_club|type_match|ambiguous_close_second,1,308,2025-26,Juventus,Douglas Luiz,out,loan,2025-08-21
+1980f4a6748c3767,fb56beb7282caf5c,ea226c8732b34a02,"Mon, 18 May 2026 17:37:54 GMT",,Ajax NV,unclear,unclear,0,,0.0,not_transfer_related,0,0,,,,,,
+d30cc1b590ffdb8a,7466e187f1872b66,e8f2fbb7e1ed682c,"Mon, 18 May 2026 16:40:00 GMT",,Ajax NV,unclear,unclear,0,,0.0,not_transfer_related,0,0,,,,,,
+d512fb1e8d52420c,5268585d2820f916,f47699c2c215aa76,"Sun, 10 May 2026 17:43:56 GMT",Antony,Ajax NV,unclear,official,1,9eb3a1b8788a6046,0.7,exact_player|exact_club|type_match,0,178,2022-23,Ajax NV,Antony,out,permanent,2022-08-30
+ada6e37dbf401c06,fdfe78cc9adc63bf,87880aa9ed12ac3d,"Tue, 05 May 2026 07:00:00 GMT",,Ajax NV,unclear,unclear,0,,0.0,not_transfer_related,0,0,,,,,,
+2059ca9b222481ed,fe34d6ef963c3fa9,2108bafb150810fd,"Sun, 03 May 2026 07:00:00 GMT",,Ajax NV,unclear,unclear,0,,0.0,not_transfer_related,0,0,,,,,,
+acfeefdb93a15898,c14a2d3be8d690a2,f002f5905498a2ec,"Wed, 06 May 2026 07:00:00 GMT",,Ajax NV,unclear,unclear,0,,0.0,not_transfer_related,0,0,,,,,,

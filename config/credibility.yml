@@ -1,0 +1,22 @@
+sources:
+  Fabrizio Romano: 0.95
+  David Ornstein: 0.92
+  Gianluca Di Marzio: 0.88
+  The Athletic: 0.86
+  The Guardian: 0.84
+  Guardian sport: 0.84
+  BBC Sport: 0.84
+  Sky Sports: 0.78
+  ESPN: 0.72
+  Goal.com: 0.58
+  The Sun: 0.25
+default_source_score: 0.5
+
+keywords:
+  here we go: 0.12
+  agreement reached: 0.10
+  medical booked: 0.08
+  advanced talks: 0.06
+  interested in: 0.02
+  monitoring: 0.01
+  rumor: -0.02

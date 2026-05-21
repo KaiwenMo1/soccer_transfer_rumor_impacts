@@ -1,0 +1,81 @@
+name: Nightly Live Refresh
+
+on:
+  schedule:
+    - cron: "15 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: nightly-refresh
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    env:
+      GUARDIAN_API_KEY: ${{ secrets.GUARDIAN_API_KEY }}
+      GNEWS_API_KEY: ${{ secrets.GNEWS_API_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install project
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[scrape_v2,market_research,ml_pipeline,api_server]"
+
+      - name: Fetch live articles
+        run: |
+          PYTHONPATH=src python -m transfer_stock.cli refresh-live-fetch \
+            --start "$(python - <<'PY'
+from datetime import date, timedelta
+print((date.today() - timedelta(days=21)).isoformat())
+PY
+)" \
+            --end "$(python - <<'PY'
+from datetime import date
+print(date.today().isoformat())
+PY
+)" \
+            --source-preset balanced_no_api \
+            --max-records 12 \
+            --pause 0.1 \
+            --clubs manchester_united borussia_dortmund juventus lazio ajax sporting_cp fc_porto celtic benfica eagle_football_group \
+            --output data/raw/articles/current_live.jsonl
+
+      - name: Analyze live articles and rebuild dashboard
+        run: |
+          PYTHONPATH=src python -m transfer_stock.cli refresh-live-analyze \
+            --input data/raw/articles/current_live.jsonl \
+            --clubs manchester_united borussia_dortmund juventus lazio ajax sporting_cp fc_porto celtic benfica eagle_football_group \
+            --slug nightly_live \
+            --dashboard-output app/static/data/dashboard_data.json
+
+      - name: Upload live artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-refresh-artifacts
+          path: |
+            data/live
+            app/static/data/dashboard_data.json
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload static dashboard
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: app/static
+
+      - name: Deploy
+        uses: actions/deploy-pages@v4

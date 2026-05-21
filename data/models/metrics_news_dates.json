@@ -1,0 +1,209 @@
+{
+  "features": [
+    "transfer_quality",
+    "rumor_count",
+    "max_credibility",
+    "avg_credibility",
+    "max_rumor_strength",
+    "avg_rumor_strength",
+    "direction",
+    "transfer_type",
+    "is_loan",
+    "club"
+  ],
+  "live_unlabeled_count": 0,
+  "model": {
+    "categorical_counts": {
+      "negative": {
+        "club": {
+          "SS Lazio": 30
+        },
+        "direction": {
+          "in": 8,
+          "out": 22
+        },
+        "transfer_type": {
+          "loan": 13,
+          "permanent": 17
+        }
+      },
+      "neutral": {
+        "club": {
+          "Borussia Dortmund": 15,
+          "Juventus": 1,
+          "Juventus FC": 47,
+          "Lazio": 1,
+          "Manchester United": 66,
+          "SS Lazio": 61
+        },
+        "direction": {
+          "in": 75,
+          "out": 116
+        },
+        "transfer_type": {
+          "loan": 101,
+          "permanent": 90
+        }
+      },
+      "positive": {
+        "club": {
+          "Borussia Dortmund": 20,
+          "Juventus FC": 14,
+          "Manchester United": 6
+        },
+        "direction": {
+          "in": 15,
+          "out": 25
+        },
+        "transfer_type": {
+          "loan": 16,
+          "permanent": 24
+        }
+      }
+    },
+    "categorical_vocab": {
+      "club": [
+        "Borussia Dortmund",
+        "Juventus",
+        "Juventus FC",
+        "Lazio",
+        "Manchester United",
+        "SS Lazio"
+      ],
+      "direction": [
+        "in",
+        "out"
+      ],
+      "transfer_type": [
+        "loan",
+        "permanent"
+      ]
+    },
+    "class_counts": {
+      "negative": 30,
+      "neutral": 191,
+      "positive": 40
+    },
+    "labels": [
+      "negative",
+      "neutral",
+      "positive"
+    ],
+    "n_train": 261,
+    "numeric_stats": {
+      "negative": {
+        "avg_credibility": [
+          0.0,
+          0.0001
+        ],
+        "avg_rumor_strength": [
+          0.0,
+          0.0001
+        ],
+        "is_loan": [
+          0.43333333333333335,
+          0.49553562491061687
+        ],
+        "max_credibility": [
+          0.0,
+          0.0001
+        ],
+        "max_rumor_strength": [
+          0.0,
+          0.0001
+        ],
+        "rumor_count": [
+          0.0,
+          0.0001
+        ],
+        "transfer_quality": [
+          0.6801666666666667,
+          0.05249576702511885
+        ]
+      },
+      "neutral": {
+        "avg_credibility": [
+          0.013089005235602094,
+          0.0798322025234393
+        ],
+        "avg_rumor_strength": [
+          0.013272251308900524,
+          0.08137656772384026
+        ],
+        "is_loan": [
+          0.5287958115183246,
+          0.49917011252578125
+        ],
+        "max_credibility": [
+          0.013089005235602094,
+          0.0798322025234393
+        ],
+        "max_rumor_strength": [
+          0.0143717277486911,
+          0.08922219476327704
+        ],
+        "rumor_count": [
+          0.05235602094240838,
+          0.3193288100937572
+        ],
+        "transfer_quality": [
+          0.6855392670157068,
+          0.05163556728541691
+        ]
+      },
+      "positive": {
+        "avg_credibility": [
+          0.0,
+          0.0001
+        ],
+        "avg_rumor_strength": [
+          0.0,
+          0.0001
+        ],
+        "is_loan": [
+          0.4,
+          0.4898979485566356
+        ],
+        "max_credibility": [
+          0.0,
+          0.0001
+        ],
+        "max_rumor_strength": [
+          0.0,
+          0.0001
+        ],
+        "rumor_count": [
+          0.0,
+          0.0001
+        ],
+        "transfer_quality": [
+          0.6792375,
+          0.06958932995617935
+        ]
+      }
+    }
+  },
+  "test": {
+    "accuracy": null,
+    "label_counts": {},
+    "n": 0,
+    "predicted_counts": {}
+  },
+  "train": {
+    "accuracy": 0.2874,
+    "label_counts": {
+      "negative": 30,
+      "neutral": 191,
+      "positive": 40
+    },
+    "n": 261,
+    "predicted_counts": {
+      "negative": 91,
+      "neutral": 5,
+      "positive": 165
+    }
+  },
+  "train_end_season": "2024-25",
+  "unlabeled_count": 9,
+  "warning": "Small/noisy dataset; proxy dates and sparse rumor coverage can dominate results."
+}

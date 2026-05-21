@@ -1,0 +1,27 @@
+Metadata-Version: 2.4
+Name: transfer-stock-research
+Version: 0.1.0
+Summary: Football transfer news and publicly traded club stock impact research scaffold
+Requires-Python: >=3.10
+Requires-Dist: requests>=2.31
+Requires-Dist: PyYAML>=6.0
+Provides-Extra: scrape-v2
+Requires-Dist: fundus; extra == "scrape-v2"
+Requires-Dist: scrapy; extra == "scrape-v2"
+Requires-Dist: scrapy-playwright; extra == "scrape-v2"
+Requires-Dist: playwright; extra == "scrape-v2"
+Provides-Extra: ai-scrape
+Requires-Dist: crawl4ai; extra == "ai-scrape"
+Provides-Extra: claim-ai
+Requires-Dist: dspy>=3.0; extra == "claim-ai"
+Provides-Extra: market-research
+Requires-Dist: numpy>=1.24; extra == "market-research"
+Requires-Dist: pandas>=2.0; extra == "market-research"
+Requires-Dist: vectorbt>=0.27; extra == "market-research"
+Provides-Extra: ml-pipeline
+Requires-Dist: numpy>=1.24; extra == "ml-pipeline"
+Requires-Dist: scikit-learn>=1.4; extra == "ml-pipeline"
+Requires-Dist: xgboost>=2.0; extra == "ml-pipeline"
+Provides-Extra: api-server
+Requires-Dist: fastapi>=0.115; extra == "api-server"
+Requires-Dist: uvicorn>=0.30; extra == "api-server"
