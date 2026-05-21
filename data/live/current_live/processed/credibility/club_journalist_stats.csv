@@ -1,7 +1,7 @@
 club,journalist,n_claims,n_matched,match_rate,smoothed_rate,avg_match_score
-Borussia Dortmund,,19,2,0.1053,0.1875,0.0742
-Manchester United,,42,13,0.3095,0.3298,0.2743
-Juventus,,20,7,0.35,0.38,0.287
+Borussia Dortmund,,39,2,0.0513,0.1023,0.0362
+Manchester United,,42,12,0.2857,0.3085,0.2552
+Juventus,,20,6,0.3,0.34,0.256
 Borussia Dortmund,David Tindall,1,0,0.0,0.4167,0.0
 Borussia Dortmund,Fabrizio Romano,2,1,0.5,0.5,0.39
 Borussia Dortmund,Sid Lowe in Madrid,2,0,0.0,0.3571,0.0
@@ -119,4 +119,18 @@ Juventus,Tom Ambrose (now) and Taz Ali (earlier),1,0,0.0,0.4167,0.0
 Juventus,Martin Belam,1,0,0.0,0.4167,0.0
 Juventus,Kelly Burke Arts reporter,1,0,0.0,0.4167,0.0
 Juventus,"Coral Murphy Marcos, Chris Stein, Erum Salam and Tom Ambrose (earlier)",1,0,0.0,0.4167,0.0
+Manchester United,Alex Pattle,1,0,0.0,0.4167,0.0
+Manchester United,Arthur Ferridge,1,0,0.0,0.4167,0.0
+Manchester United,Amos Murphy,1,0,0.0,0.4167,0.0
+Manchester United,Ben Fleming,1,0,0.0,0.4167,0.0
+Lazio,"Kevin Sampson, David Usher, Chris Smith, Mark Stevenson, Kev Reilly, Abigail Rudkin, Dan Clubbe and Sachin Nakrani",1,0,0.0,0.4167,0.0
+Lazio,,5,0,0.0,0.25,0.0
+Lazio,Roberta Damiata,1,0,0.0,0.4167,0.0
 Ajax NV,,3,0,0.0,0.3125,0.0
+Sporting CP SAD,,19,0,0.0,0.1042,0.0
+FC Porto SAD,,18,3,0.1667,0.2391,0.1167
+Celtic plc,,14,1,0.0714,0.1842,0.0571
+Benfica SAD,Barry Glendenning,1,0,0.0,0.4167,0.0
+Benfica SAD,,20,1,0.05,0.14,0.031
+Eagle Football Group,Tom Garry,1,0,0.0,0.4167,0.0
+Eagle Football Group,,10,6,0.6,0.5667,0.49

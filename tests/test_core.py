@@ -17,7 +17,7 @@ from transfer_stock.ewenme import canonical_season, fee_cleaned_to_eur
 from transfer_stock.features import credibility_score, transfer_quality_score
 from transfer_stock.market_features import compute_market_features_for_event
 from transfer_stock.matching import single_match, transfer_id_for, TransferCandidate
-from transfer_stock.ml_v2 import LEAKY_FIELDS, parse_datetime_to_date, usable_rows as usable_rows_v2
+from transfer_stock.ml_v2 import LEAKY_FIELDS, parse_datetime_to_date, unmatched_claim_row, usable_rows as usable_rows_v2
 from transfer_stock.news_sources import NewsSource, render_source_url, source_supports_club
 from transfer_stock.stock import PriceBar
 from transfer_stock.targets import direct_target_rows
@@ -338,6 +338,24 @@ class CoreTests(unittest.TestCase):
         self.assertEqual(claim["rumor_stage"], "advanced")
         self.assertEqual(claim["is_transfer_related"], 1)
 
+    def test_claim_extraction_outgoing_replace_signal(self):
+        clubs = load_clubs()
+        row = {
+            "article_id": "a2b",
+            "published_at": "Wed, 20 May 2026 23:25:00 GMT",
+            "source": "Google News Global EN",
+            "title": "Man United transfer news: chance to sign affordable star to replace Casemiro",
+            "url": "https://example.com/casemiro-replace",
+            "snippet": "United may need a new midfielder if Casemiro leaves.",
+            "club_candidates": ["Manchester United"],
+            "player_candidates": ["Casemiro"],
+        }
+        claim = heuristic_extract_claim(row, clubs, ["Casemiro"])
+        self.assertEqual(claim["primary_player"], "Casemiro")
+        self.assertEqual(claim["primary_club"], "Manchester United")
+        self.assertEqual(claim["transfer_direction"], "out")
+        self.assertEqual(claim["is_transfer_related"], 1)
+
     def test_claim_extraction_rejects_live_blog_noise(self):
         clubs = load_clubs()
         row = {
@@ -489,6 +507,62 @@ class CoreTests(unittest.TestCase):
         result = single_match(claim, [TransferCandidate(transfer_id_for(transfer), transfer)], clubs)
         self.assertEqual(result.matched_transfer_id, "")
         self.assertEqual(result.match_reason, "not_transfer_related")
+
+    def test_match_claim_does_not_snap_to_old_season_transfer(self):
+        clubs = load_clubs()
+        old_transfer = Transfer(
+            date=date(2022, 8, 19),
+            club="Manchester United",
+            player="Casemiro",
+            direction="in",
+            from_club="Real Madrid",
+            to_club="Manchester United",
+            age=30,
+            position="Midfielder",
+            market_value_eur=60_000_000,
+            transfer_fee_eur=70_000_000,
+            wage_eur_annual=None,
+            source="test",
+            source_url="",
+            season="2022-23",
+            transfer_type="permanent",
+            is_loan=False,
+        )
+        claim = {
+            "claim_id": "c3b",
+            "article_id": "a3b",
+            "published_at": "Wed, 20 May 2026 20:16:00 GMT",
+            "primary_player": "Casemiro",
+            "primary_club": "Manchester United",
+            "transfer_direction": "out",
+            "transfer_type": "permanent",
+            "rumor_stage": "advanced",
+            "is_transfer_related": 1,
+            "club_candidates": ["Manchester United"],
+        }
+        result = single_match(claim, [TransferCandidate(transfer_id_for(old_transfer), old_transfer)], clubs)
+        self.assertEqual(result.matched_transfer_id, "")
+        self.assertEqual(result.match_reason, "no_candidates")
+
+    def test_unmatched_public_sell_claim_still_maps_to_direct_target(self):
+        clubs = load_clubs()
+        claim = {
+            "claim_id": "c3c",
+            "article_id": "a3c",
+            "published_at": "Wed, 20 May 2026 23:25:00 GMT",
+            "primary_player": "Casemiro",
+            "primary_club": "Manchester United",
+            "transfer_direction": "out",
+            "rumor_stage": "advanced",
+            "is_transfer_related": 1,
+            "source": "Google News Global EN",
+            "journalist": "",
+            "club_candidates": ["Manchester United"],
+        }
+        row = unmatched_claim_row(claim, date(2026, 5, 20), clubs)
+        self.assertEqual(row["prediction_scope"], "direct")
+        self.assertEqual(row["target_club"], "Manchester United")
+        self.assertEqual(row["target_role"], "seller")
 
     def test_credibility_row_rewards_supported_official_claim(self):
         config = {

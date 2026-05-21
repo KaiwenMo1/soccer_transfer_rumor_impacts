@@ -4,6 +4,7 @@ import csv
 import hashlib
 from dataclasses import dataclass
 from datetime import datetime
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -129,6 +130,10 @@ def parse_date(value: str) -> datetime | None:
     try:
         return datetime.fromisoformat(text.replace("Z", "+00:00"))
     except ValueError:
+        pass
+    try:
+        return parsedate_to_datetime(text)
+    except (TypeError, ValueError, IndexError):
         return None
 
 
@@ -200,6 +205,8 @@ def candidate_pool(
             candidates.append(candidate)
     if candidates:
         return candidates
+    if primary_club and season:
+        return []
     for candidate in transfers:
         transfer = candidate.transfer
         if primary_club and transfer.club != primary_club:

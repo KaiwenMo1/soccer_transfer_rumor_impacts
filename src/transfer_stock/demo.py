@@ -3,12 +3,13 @@ from __future__ import annotations
 import json
 from collections import Counter
 from datetime import UTC, datetime, timedelta
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import Any
 
 from .backtesting import blended_signal_confidence, blended_signal_label, blended_signal_score
 from .config import Club, DATA_DIR, load_clubs
-from .io import ensure_parent, read_csv
+from .io import ensure_parent, read_csv, read_jsonl
 from .market_features import compute_market_features_for_event, load_bars
 from .targets import direct_target_rows
 from .transfers import load_transfers
@@ -53,7 +54,18 @@ def parse_timestamp(value: str) -> datetime:
             return datetime.strptime(text, fmt).replace(tzinfo=UTC)
         except ValueError:
             continue
+    try:
+        return parsedate_to_datetime(text).astimezone(UTC)
+    except (TypeError, ValueError, IndexError):
+        pass
     return datetime(1970, 1, 1, tzinfo=UTC)
+
+
+def format_short_date(value: str) -> str:
+    dt = parse_timestamp(value)
+    if dt.year <= 1970:
+        return ""
+    return dt.date().isoformat()
 
 
 def probability_breakdown(row: dict[str, str]) -> dict[str, float]:
@@ -72,6 +84,7 @@ def summarize_group(rows: list[dict[str, str]]) -> dict[str, Any]:
     sources = sorted({row.get("source", "") for row in ordered if row.get("source")})
     journalists = sorted({row.get("journalist", "") for row in ordered if row.get("journalist")})
     actual_values = [row.get("actual_label", "") for row in ordered if row.get("actual_label")]
+    claim_ids = [row.get("claim_id", "") for row in ordered if row.get("claim_id")]
     return {
         "group_key": f"{latest.get('club', '')}::{latest.get('player', '')}",
         "club": latest.get("club", ""),
@@ -128,6 +141,7 @@ def summarize_group(rows: list[dict[str, str]]) -> dict[str, Any]:
         ),
         "match_score": round(parse_float(latest.get("match_score"), 0.0), 4),
         "entity_match_indicator": round(parse_float(latest.get("entity_match_indicator"), 0.0), 4),
+        "claim_ids": claim_ids,
     }
 
 
@@ -283,6 +297,218 @@ def transfer_history_summary(season: str, rows: list[dict[str, Any]]) -> dict[st
     }
 
 
+def market_sensitive_club(rows: list[dict[str, Any]], min_rows: int = 12) -> dict[str, Any]:
+    by_club: dict[str, list[float]] = {}
+    for row in rows:
+        club = str(row.get("club", "")).strip()
+        value = optional_float(row.get("actual_abnormal_return_p3"))
+        if not club or value == "":
+            continue
+        by_club.setdefault(club, []).append(abs(float(value)))
+    best: dict[str, Any] = {}
+    for club, values in by_club.items():
+        if len(values) < min_rows:
+            continue
+        avg_abs = sum(values) / len(values)
+        if not best or avg_abs > best["avg_abs_car_p3"]:
+            best = {
+                "club": club,
+                "avg_abs_car_p3": round(avg_abs, 4),
+                "n_rows": len(values),
+            }
+    return best
+
+
+def extreme_realized_examples(rows: list[dict[str, str]]) -> dict[str, dict[str, Any]]:
+    realized = []
+    for row in rows:
+        if row.get("prediction_scope") != "direct" or not row.get("actual_label"):
+            continue
+        value = optional_float(row.get("target_abnormal_return_p3"))
+        if value == "":
+            continue
+        realized.append((float(value), row))
+    if not realized:
+        return {}
+    positive_value, positive_row = max(realized, key=lambda item: item[0])
+    negative_value, negative_row = min(realized, key=lambda item: item[0])
+    return {
+        "positive": {
+            "club": positive_row.get("club", ""),
+            "player": positive_row.get("player", ""),
+            "season": positive_row.get("season", ""),
+            "actual_label": positive_row.get("actual_label", ""),
+            "target_abnormal_return_p3": round(positive_value, 4),
+        },
+        "negative": {
+            "club": negative_row.get("club", ""),
+            "player": negative_row.get("player", ""),
+            "season": negative_row.get("season", ""),
+            "actual_label": negative_row.get("actual_label", ""),
+            "target_abnormal_return_p3": round(negative_value, 4),
+        },
+    }
+
+
+def user_takeaways(
+    signal_rows: list[dict[str, Any]],
+    watchlist: list[dict[str, Any]],
+    watchlist_meta: dict[str, Any],
+    journalist_leaderboard: list[dict[str, Any]],
+    transfer_rows: list[dict[str, Any]],
+    historical_rows: list[dict[str, str]],
+) -> list[dict[str, Any]]:
+    cards: list[dict[str, Any]] = []
+    if watchlist_meta.get("is_stale"):
+        latest = format_short_date(str(watchlist_meta.get("latest_published_at", ""))) or "unknown"
+        cards.append(
+            {
+                "title": "Live Status",
+                "primary": "Needs refresh",
+                "secondary": f"Latest live article in the payload is from {latest}.",
+                "tone": "warning",
+            }
+        )
+    elif watchlist:
+        top_live = watchlist[0]
+        cards.append(
+            {
+                "title": "Live Watch",
+                "primary": f"{top_live.get('player', '')} -> {top_live.get('target_club', top_live.get('club', ''))}",
+                "secondary": f"{top_live.get('article_count', 1)} articles · {top_live.get('rumor_stage', 'unclear')} · {top_live.get('blended_label', '')}",
+                "tone": top_live.get("blended_label", "neutral"),
+            }
+        )
+
+    direct_signal_rows = [row for row in signal_rows if row.get("prediction_scope") == "direct"]
+    if direct_signal_rows:
+        top_signal = max(
+            direct_signal_rows,
+            key=lambda row: (abs(parse_float(row.get("blended_score"), 0.0)), parse_float(row.get("credibility_score"), 0.0)),
+        )
+        cards.append(
+            {
+                "title": "What To Check",
+                "primary": f"{top_signal.get('player', '')} / {top_signal.get('target_club', top_signal.get('club', ''))}",
+                "secondary": f"Blend {parse_float(top_signal.get('blended_score'), 0.0):.1f} · model {top_signal.get('predicted_label', '-')}",
+                "tone": top_signal.get("blended_label", "neutral"),
+            }
+        )
+
+    if journalist_leaderboard:
+        top_journalist = journalist_leaderboard[0]
+        cards.append(
+            {
+                "title": "Best Reporter",
+                "primary": str(top_journalist.get("journalist", "")),
+                "secondary": f"{top_journalist.get('n_claims', 0)} claims · smoothed {parse_float(top_journalist.get('smoothed_rate'), 0.0):.3f}",
+                "tone": "info",
+            }
+        )
+
+    sensitive = market_sensitive_club(transfer_rows)
+    if sensitive:
+        cards.append(
+            {
+                "title": "Most Reactive Club",
+                "primary": str(sensitive.get("club", "")),
+                "secondary": f"Avg abs CAR t+3 {parse_float(sensitive.get('avg_abs_car_p3'), 0.0):.4f} over {sensitive.get('n_rows', 0)} transfers",
+                "tone": "info",
+            }
+        )
+
+    extremes = extreme_realized_examples(historical_rows)
+    if extremes.get("positive"):
+        item = extremes["positive"]
+        cards.append(
+            {
+                "title": "Best Historical Hit",
+                "primary": f"{item.get('player', '')} / {item.get('club', '')}",
+                "secondary": f"{item.get('season', '')} · CAR t+3 {parse_float(item.get('target_abnormal_return_p3'), 0.0):.4f}",
+                "tone": "positive",
+            }
+        )
+    return cards[:4]
+
+
+def data_quality_summary(
+    watchlist_meta: dict[str, Any],
+    overview: dict[str, Any],
+    journalist_leaderboard: list[dict[str, Any]],
+) -> dict[str, Any]:
+    accuracy = parse_float(overview.get("xgboost_test_accuracy"), 0.0)
+    macro_f1 = parse_float(overview.get("xgboost_test_macro_f1"), 0.0)
+    if accuracy >= 0.55 and macro_f1 >= 0.35:
+        evidence = "moderate"
+    elif accuracy >= 0.45 and macro_f1 >= 0.25:
+        evidence = "early"
+    else:
+        evidence = "experimental"
+    return {
+        "live_status": "stale" if watchlist_meta.get("is_stale") else "fresh",
+        "latest_live_date": format_short_date(str(watchlist_meta.get("latest_published_at", ""))),
+        "recent_live_clusters": int(parse_float(watchlist_meta.get("recent_cluster_count"), 0.0)),
+        "model_evidence": evidence,
+        "xgboost_test_accuracy": round(accuracy, 4),
+        "xgboost_test_macro_f1": round(macro_f1, 4),
+        "journalist_rows": len(journalist_leaderboard),
+    }
+
+
+def infer_companion_claims_path(predictions_path: Path) -> Path | None:
+    try:
+        run_dir = predictions_path.parents[2]
+    except IndexError:
+        return None
+    candidate = run_dir / "processed" / "claims" / "claims.jsonl"
+    return candidate if candidate.exists() else None
+
+
+def load_claim_lookup(path: Path | None) -> dict[str, dict[str, Any]]:
+    if path is None or not path.exists():
+        return {}
+    lookup: dict[str, dict[str, Any]] = {}
+    for row in read_jsonl(path):
+        claim_id = str(row.get("claim_id", "")).strip()
+        if claim_id:
+            lookup[claim_id] = row
+    return lookup
+
+
+def evidence_articles(
+    claim_ids: list[str],
+    claim_lookup: dict[str, dict[str, Any]],
+    *,
+    limit: int = 5,
+) -> list[dict[str, Any]]:
+    seen: set[str] = set()
+    items: list[dict[str, Any]] = []
+    for claim_id in claim_ids:
+        row = claim_lookup.get(claim_id)
+        if not row:
+            continue
+        url = str(row.get("url", "")).strip()
+        dedupe_key = url or claim_id
+        if dedupe_key in seen:
+            continue
+        seen.add(dedupe_key)
+        items.append(
+            {
+                "title": str(row.get("title", "")).strip(),
+                "url": url,
+                "source": str(row.get("source", "")).strip(),
+                "journalist": str(row.get("journalist", "")).strip(),
+                "published_at": str(row.get("published_at", "")).strip(),
+                "rumor_stage": str(row.get("rumor_stage", "")).strip(),
+                "is_transfer_related": int(parse_float(row.get("is_transfer_related"), 0.0)),
+                "extraction_confidence": round(parse_float(row.get("extraction_confidence"), 0.0), 4),
+            }
+        )
+        if len(items) >= limit:
+            break
+    return items
+
+
 def leaderboard_rows(
     path: Path | None,
     *,
@@ -326,6 +552,60 @@ def leaderboard_rows(
     return output
 
 
+def live_source_coverage(rows: list[dict[str, str]], *, recent_days: int = 21, limit: int = 10) -> list[dict[str, Any]]:
+    now = datetime.now(tz=UTC)
+    threshold = now - timedelta(days=recent_days)
+    grouped: dict[str, dict[str, Any]] = {}
+    for row in rows:
+        if row.get("prediction_scope") != "direct":
+            continue
+        published_at = str(row.get("published_at", ""))
+        published_dt = parse_timestamp(published_at)
+        if published_dt < threshold:
+            continue
+        source = str(row.get("source", "")).strip() or "Unknown"
+        item = grouped.setdefault(
+            source,
+            {
+                "source": source,
+                "n_rows": 0,
+                "n_unique_players": 0,
+                "latest_published_at": "",
+                "avg_credibility": 0.0,
+                "players": set(),
+            },
+        )
+        item["n_rows"] += 1
+        player = str(row.get("player", "")).strip()
+        if player:
+            item["players"].add(player)
+        latest_existing = parse_timestamp(str(item.get("latest_published_at", "")))
+        if published_dt > latest_existing:
+            item["latest_published_at"] = published_at
+        item["avg_credibility"] += parse_float(row.get("credibility_score"), 0.0)
+    output: list[dict[str, Any]] = []
+    for item in grouped.values():
+        n_rows = int(item["n_rows"])
+        players = item.pop("players")
+        output.append(
+            {
+                "source": item["source"],
+                "n_rows": n_rows,
+                "n_unique_players": len(players),
+                "latest_published_at": item["latest_published_at"],
+                "avg_credibility": round((item["avg_credibility"] / n_rows) if n_rows else 0.0, 4),
+            }
+        )
+    output.sort(
+        key=lambda row: (
+            row.get("n_rows", 0),
+            parse_timestamp(str(row.get("latest_published_at", ""))),
+        ),
+        reverse=True,
+    )
+    return output[:limit]
+
+
 def article_cluster_key(row: dict[str, str]) -> tuple[str, str, str]:
     return (
         row.get("target_club") or row.get("club", ""),
@@ -339,7 +619,13 @@ def cluster_current_rows(
     *,
     gap_days: int = 5,
 ) -> list[list[dict[str, str]]]:
-    direct_rows = [row for row in rows if row.get("prediction_scope") == "direct" and row.get("published_at")]
+    direct_rows = [
+        row
+        for row in rows
+        if row.get("prediction_scope") == "direct"
+        and row.get("published_at")
+        and row.get("player")
+    ]
     buckets: dict[tuple[str, str, str], list[dict[str, str]]] = {}
     for row in direct_rows:
         buckets.setdefault(article_cluster_key(row), []).append(row)
@@ -380,6 +666,7 @@ def summarize_watchlist_cluster(rows: list[dict[str, str]]) -> dict[str, Any]:
         "player": latest.get("player", ""),
         "target_club": latest.get("target_club", ""),
         "target_role": latest.get("target_role", ""),
+        "prediction_scope": latest.get("prediction_scope", ""),
         "journalist": latest.get("journalist", ""),
         "source": latest.get("source", ""),
         "rumor_stage": latest.get("rumor_stage", ""),
@@ -433,6 +720,27 @@ def live_watchlist(
         "is_stale": days_stale > recent_days,
         "recent_cluster_count": len(recent_clusters),
     }
+
+
+def build_watchlist_details(
+    rows: list[dict[str, str]],
+    *,
+    now: datetime,
+    claim_lookup: dict[str, dict[str, Any]],
+    historical_rows: list[dict[str, str]],
+    recent_days: int = 21,
+) -> dict[str, dict[str, Any]]:
+    fresh_threshold = now - timedelta(days=recent_days)
+    details: dict[str, dict[str, Any]] = {}
+    for cluster in cluster_current_rows(rows):
+        latest_dt = parse_timestamp(str(cluster[0].get("published_at", "")))
+        if latest_dt < fresh_threshold:
+            continue
+        detail = summarize_group(cluster)
+        detail["evidence_articles"] = evidence_articles(detail.get("claim_ids", []), claim_lookup)
+        detail["similar_examples"] = similar_examples(detail, historical_rows, limit=3)
+        details[str(detail.get("group_key", ""))] = detail
+    return details
 
 
 def dedupe_historical_rows(rows: list[dict[str, str]]) -> list[dict[str, str]]:
@@ -516,6 +824,7 @@ def build_demo_payload(
     club_journalist_stats_path: Path | None = None,
 ) -> dict[str, Any]:
     rows = read_csv(predictions_path)
+    claim_lookup = load_claim_lookup(infer_companion_claims_path(predictions_path))
     metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
     backtests = read_csv(backtest_summary_path)
     backtest_trades = read_csv(backtest_trades_path)
@@ -547,6 +856,7 @@ def build_demo_payload(
         for row in signal_rows:
             if not row.get("target_club") and row.get("prediction_scope") != "none":
                 row.update(target_metadata(row.get("club", ""), row.get("direction", ""), clubs_by_name))
+            row["evidence_articles"] = evidence_articles(row.get("claim_ids", []), claim_lookup)
             row["similar_examples"] = similar_examples(row, comparison_pool, limit=3)
         signal_rows.sort(key=lambda row: (abs(row["blended_score"]), row["latest_published_at"]), reverse=True)
         signals_by_season[season] = signal_rows
@@ -569,6 +879,12 @@ def build_demo_payload(
     historical_rows = [row for row in all_historical_rows if row.get("season") != latest_season]
     generated_at = datetime.now(tz=UTC)
     watchlist, watchlist_meta = live_watchlist(rows, now=generated_at)
+    watchlist_details = build_watchlist_details(
+        rows,
+        now=generated_at,
+        claim_lookup=claim_lookup,
+        historical_rows=historical_rows,
+    )
     journalist_leaderboard = leaderboard_rows(journalist_stats_path, label_field="journalist")
     source_leaderboard = leaderboard_rows(source_stats_path, label_field="source")
     club_journalist_leaderboard = leaderboard_rows(
@@ -580,22 +896,44 @@ def build_demo_payload(
     backtests_sorted = sorted(backtests, key=lambda row: parse_float(row.get("portfolio_total_return"), -999.0), reverse=True)
     top_backtest = backtests_sorted[0] if backtests_sorted else {}
     model_metrics = metrics.get("models", {}).get("xgboost", {})
+    overview = {
+        "current_signal_count": len(signal_rows),
+        "current_transfer_count": len(transfers_by_season.get(latest_season, [])),
+        "historical_reference_count": len(historical_rows),
+        "season_count": len(available_seasons),
+        "test_rows": metrics.get("n_test_rows", 0),
+        "xgboost_test_accuracy": model_metrics.get("test", {}).get("accuracy", 0.0),
+        "xgboost_test_macro_f1": model_metrics.get("test", {}).get("macro_f1", 0.0),
+        "best_backtest_strategy": top_backtest.get("strategy", ""),
+        "best_backtest_total_return": parse_float(top_backtest.get("portfolio_total_return"), 0.0),
+        "best_backtest_sharpe": parse_float(top_backtest.get("sharpe_like"), 0.0),
+    }
+    takeaways = user_takeaways(
+        signal_rows,
+        watchlist,
+        watchlist_meta,
+        journalist_leaderboard,
+        transfer_rows,
+        historical_rows,
+    )
+    quality_summary = data_quality_summary(
+        watchlist_meta,
+        overview,
+        journalist_leaderboard,
+    )
+    source_coverage = live_source_coverage(rows)
 
     return {
         "generated_at": generated_at.isoformat(),
         "latest_season": latest_season,
         "available_seasons": available_seasons,
-        "overview": {
-            "current_signal_count": len(signal_rows),
-            "current_transfer_count": len(transfers_by_season.get(latest_season, [])),
-            "historical_reference_count": len(historical_rows),
-            "season_count": len(available_seasons),
-            "test_rows": metrics.get("n_test_rows", 0),
-            "xgboost_test_accuracy": model_metrics.get("test", {}).get("accuracy", 0.0),
-            "xgboost_test_macro_f1": model_metrics.get("test", {}).get("macro_f1", 0.0),
-            "best_backtest_strategy": top_backtest.get("strategy", ""),
-            "best_backtest_total_return": parse_float(top_backtest.get("portfolio_total_return"), 0.0),
-            "best_backtest_sharpe": parse_float(top_backtest.get("sharpe_like"), 0.0),
+        "overview": overview,
+        "takeaways": takeaways,
+        "quality_summary": quality_summary,
+        "automation": {
+            "auto_refresh_ready": True,
+            "recommended_cadence": "daily",
+            "generated_at": generated_at.isoformat(),
         },
         "season_summaries": season_summaries,
         "signals_by_season": signals_by_season,
@@ -603,7 +941,9 @@ def build_demo_payload(
         "transfers_by_season": transfers_by_season,
         "current_signals": signal_rows,
         "live_watchlist": watchlist,
+        "watchlist_details": watchlist_details,
         "live_watchlist_meta": watchlist_meta,
+        "live_source_coverage": source_coverage,
         "leaderboards": {
             "journalists": journalist_leaderboard,
             "sources": source_leaderboard,

@@ -22,6 +22,10 @@
             <span class="meta-label" id="countLabel">Signals</span>
             <strong id="signalCount">-</strong>
           </div>
+          <div class="meta-block">
+            <span class="meta-label">Last Refresh</span>
+            <strong id="refreshStamp">-</strong>
+          </div>
         </div>
       </header>
 
@@ -51,6 +55,14 @@
           <span class="metric-label">Historical References</span>
           <strong id="metricHistory">-</strong>
         </div>
+      </section>
+
+      <section class="insight-band">
+        <div class="section-head">
+          <h2>What You Can Get</h2>
+          <span class="section-meta" id="qualityMeta">What this dashboard is useful for, and how strong the evidence is right now.</span>
+        </div>
+        <div class="insight-grid" id="takeawayCards"></div>
       </section>
 
       <section class="controls-band">
@@ -126,6 +138,27 @@
               </tr>
             </thead>
             <tbody id="watchlistTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="report-band">
+        <div class="section-head">
+          <h2>Live Coverage</h2>
+          <span class="section-meta">Which sources are actually feeding the current watchlist window.</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Source</th>
+                <th>Rows</th>
+                <th>Players</th>
+                <th>Latest</th>
+                <th>Avg Credibility</th>
+              </tr>
+            </thead>
+            <tbody id="sourceCoverageTable"></tbody>
           </table>
         </div>
       </section>

@@ -35,6 +35,7 @@ body {
 
 .topbar,
 .overview-band,
+.insight-band,
 .controls-band,
 .workspace,
 .report-band {
@@ -44,6 +45,7 @@ body {
 
 .topbar,
 .controls-band,
+.insight-band,
 .report-band {
   border-bottom: 1px solid var(--border);
 }
@@ -115,6 +117,10 @@ label,
   grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 14px;
   background: linear-gradient(180deg, #fbf8f2 0%, #f3ece2 100%);
+}
+
+.insight-band {
+  background: var(--surface);
 }
 
 .metric-card strong,
@@ -292,7 +298,8 @@ tbody tr.is-selected {
 .detail-grid,
 .probability-grid,
 .flow-grid,
-.leaderboard-grid {
+.leaderboard-grid,
+.insight-grid {
   display: grid;
   gap: 14px;
 }
@@ -401,6 +408,30 @@ tbody tr.is-selected {
   font-size: 12px;
 }
 
+.evidence-list {
+  display: grid;
+  gap: 10px;
+}
+
+.evidence-item {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.evidence-item a {
+  color: var(--teal);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.evidence-item a:hover {
+  text-decoration: underline;
+}
+
 .flow-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -408,6 +439,10 @@ tbody tr.is-selected {
 .leaderboard-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: start;
+}
+
+.insight-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .leaderboard-pane {
@@ -420,6 +455,32 @@ tbody tr.is-selected {
   border: 1px solid var(--border);
   border-radius: 8px;
   background: #fff;
+}
+
+.insight-card {
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  display: grid;
+  gap: 6px;
+}
+
+.insight-card.warning {
+  background: #fff8e8;
+}
+
+.insight-card.positive {
+  background: #f2fcf5;
+}
+
+.insight-card.negative {
+  background: #fff4f2;
+}
+
+.insight-card strong {
+  font-size: 18px;
+  line-height: 1.2;
 }
 
 .collapsible-band summary {
@@ -469,6 +530,10 @@ tbody tr.is-selected {
   .leaderboard-grid {
     grid-template-columns: 1fr;
   }
+
+  .insight-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 760px) {
@@ -489,6 +554,10 @@ tbody tr.is-selected {
 
   .detail-grid,
   .probability-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .insight-grid {
     grid-template-columns: 1fr;
   }
 

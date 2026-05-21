@@ -5,7 +5,7 @@ transfers affect publicly traded football club stocks.
 
 Planned GitHub Pages URL after deployment:
 
-- `https://<your-github-username>.github.io/transfer_scrape/`
+- `https://kaiwenmo1.github.io/soccer_transfer_rumor_impacts/`
 
 ![Dashboard preview](docs/dashboard-preview.svg)
 
@@ -46,7 +46,23 @@ The site reads from:
 
 - `app/static/data/dashboard_data.json`
 
+If you enable the included GitHub Actions workflow, the Pages demo can refresh
+itself automatically once per day and redeploy the site with the newest payload.
+
 Everything else in this README is the fuller pipeline and publishing reference.
+
+## What Users Get
+
+This project is most useful as a transfer-intelligence and market-reaction tool:
+
+- **Triage live rumors:** which current rumors around listed clubs look worth checking first
+- **Compare reporter quality:** which journalists and sources have converted best in the historical set
+- **Inspect past transfers:** which types of confirmed moves historically lined up with positive or negative stock reactions
+- **Find similar cases:** for a current rumor, compare it with older player / club / direction setups
+- **Sanity-check freshness:** the dashboard now shows whether the live watchlist is actually fresh or stale
+
+The project is still research-grade, not trading-grade. The main value right now
+is ranking, filtering, and context, not a guaranteed buy/sell signal.
 
 ## What This Project Is
 
@@ -494,6 +510,29 @@ PYTHONPATH=src .venv/bin/python -m transfer_stock.cli refresh-live-dashboard \
   --clubs manchester_united borussia_dortmund juventus lazio ajax sporting_cp fc_porto benfica \
   --dashboard-output app/static/data/dashboard_data.json
 ```
+
+If you want the widest no-API discovery pass, use the region-expanded preset:
+
+```bash
+PYTHONPATH=src .venv/bin/python -m transfer_stock.cli refresh-live-dashboard \
+  --start 2026-05-01 \
+  --end 2026-05-20 \
+  --source-preset wide_no_api \
+  --max-records 10 \
+  --pause 0.1 \
+  --no-refresh-stocks \
+  --clubs manchester_united borussia_dortmund juventus lazio ajax sporting_cp fc_porto celtic benfica eagle_football_group \
+  --dashboard-output app/static/data/dashboard_data.json
+```
+
+`wide_no_api` expands the feed mix with localized Google News queries for:
+
+- Germany / Borussia Dortmund
+- Italy / Juventus and Lazio
+- France / Eagle Football Group
+- Scotland / Celtic
+- Portugal / Sporting, Porto, Benfica
+- Netherlands / Ajax
 
 If you already fetched into `current_fast.jsonl`, you do **not** need to fetch
 again. Just run:

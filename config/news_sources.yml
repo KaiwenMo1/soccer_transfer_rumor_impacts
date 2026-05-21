@@ -62,6 +62,59 @@ sources:
       - fc_porto
       - benfica
     enabled: true
+  google_news_germany_de:
+    name: Google News Germany DE
+    kind: rss
+    url: https://news.google.com/rss/search?q={query}&hl={hl}&gl={gl}&ceid={ceid}
+    query_template: ({club_terms}) (transfer OR transfers OR transfergerücht OR transfergerüchte OR angebot OR verhandlungen OR medizincheck OR leihe)
+    hl: de
+    gl: DE
+    ceid: DE:de
+    language: German
+    crawl_method: rss
+    club_keys:
+      - borussia_dortmund
+    enabled: true
+  google_news_italy_it:
+    name: Google News Italy IT
+    kind: rss
+    url: https://news.google.com/rss/search?q={query}&hl={hl}&gl={gl}&ceid={ceid}
+    query_template: ({club_terms}) (calciomercato OR trasferimento OR trasferimenti OR trattativa OR accordo OR visite mediche OR prestito)
+    hl: it
+    gl: IT
+    ceid: IT:it
+    language: Italian
+    crawl_method: rss
+    club_keys:
+      - juventus
+      - lazio
+    enabled: true
+  google_news_france_fr:
+    name: Google News France FR
+    kind: rss
+    url: https://news.google.com/rss/search?q={query}&hl={hl}&gl={gl}&ceid={ceid}
+    query_template: ({club_terms}) (transfert OR transferts OR rumeur OR rumeurs OR offre OR accord OR prêt OR visite médicale)
+    hl: fr
+    gl: FR
+    ceid: FR:fr
+    language: French
+    crawl_method: rss
+    club_keys:
+      - eagle_football_group
+    enabled: true
+  google_news_scotland_en:
+    name: Google News Scotland EN
+    kind: rss
+    url: https://news.google.com/rss/search?q={query}&hl={hl}&gl={gl}&ceid={ceid}
+    query_template: ({club_terms}) (transfer OR transfers OR rumor OR rumours OR bid OR deal OR talks OR medical OR loan)
+    hl: en-GB
+    gl: GB
+    ceid: GB:en
+    language: English
+    crawl_method: rss
+    club_keys:
+      - celtic
+    enabled: true
   fundus_uk:
     name: Fundus UK Publishers
     kind: fundus

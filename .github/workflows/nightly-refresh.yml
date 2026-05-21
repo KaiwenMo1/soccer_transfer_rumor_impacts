@@ -46,8 +46,8 @@ jobs:
           PYTHONPATH=src python -m transfer_stock.cli refresh-live-fetch \
             --start "$(python -c 'from datetime import date, timedelta; print((date.today() - timedelta(days=21)).isoformat())')" \
             --end "$(python -c 'from datetime import date; print(date.today().isoformat())')" \
-            --source-preset balanced_no_api \
-            --max-records 12 \
+            --source-preset wide_no_api \
+            --max-records 10 \
             --pause 0.1 \
             --clubs manchester_united borussia_dortmund juventus lazio ajax sporting_cp fc_porto celtic benfica eagle_football_group \
             --output data/raw/articles/current_live.jsonl

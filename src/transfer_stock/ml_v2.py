@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from collections import Counter
 from datetime import date, datetime
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 from statistics import mean
 from typing import Any
@@ -12,7 +13,7 @@ from .indicators import fee_to_market, market_minus_fee, transfer_indicator
 from .io import ensure_parent, read_csv, write_csv
 from .market_features import build_market_features
 from .matching import transfer_id_for
-from .targets import TARGET_FIELDS, direct_target_rows
+from .targets import TARGET_FIELDS, direct_target_rows, public_club, target_role_from_direction
 from .transfers import Transfer, load_transfers
 
 
@@ -283,6 +284,10 @@ def parse_datetime_to_date(value: str) -> date | None:
             return datetime.strptime(text, fmt).date()
         except ValueError:
             continue
+    try:
+        return parsedate_to_datetime(text).date()
+    except (TypeError, ValueError, IndexError):
+        pass
     if len(text) >= 10:
         try:
             return date.fromisoformat(text[:10])
@@ -380,7 +385,43 @@ def base_claim_features(claim: dict[str, str]) -> dict[str, object]:
     }
 
 
-def unmatched_claim_row(claim: dict[str, str], published_date: date) -> dict[str, object]:
+def unmatched_target_fields(base_row: dict[str, object], clubs: dict[str, Any]) -> dict[str, object]:
+    direction = str(base_row.get("direction", "") or "")
+    subject_club = str(base_row.get("club", "") or "")
+    club = public_club(subject_club, clubs)
+    role = target_role_from_direction(direction)
+    if club is None or not role:
+        return {
+            "buyer_club": "",
+            "seller_club": "",
+            "target_club": "",
+            "target_role": "",
+            "target_direction": "",
+            "target_entity_type": "",
+            "target_ticker": "",
+            "target_market_symbol": "",
+            "prediction_scope": "none",
+            "public_target_count": 0,
+            "has_public_buyer": 0,
+            "has_public_seller": 0,
+        }
+    return {
+        "buyer_club": club.name if role == "buyer" else "",
+        "seller_club": club.name if role == "seller" else "",
+        "target_club": club.name,
+        "target_role": role,
+        "target_direction": direction,
+        "target_entity_type": club.entity_type,
+        "target_ticker": club.yahoo_symbol or club.stooq_symbol,
+        "target_market_symbol": club.yahoo_market_symbol or club.market_index_symbol,
+        "prediction_scope": "direct",
+        "public_target_count": 1,
+        "has_public_buyer": 1 if role == "buyer" else 0,
+        "has_public_seller": 1 if role == "seller" else 0,
+    }
+
+
+def unmatched_claim_row(claim: dict[str, str], published_date: date, clubs: dict[str, Any]) -> dict[str, object]:
     base_row = {
         **base_claim_features(claim),
         "date": published_date.isoformat(),
@@ -402,20 +443,8 @@ def unmatched_claim_row(claim: dict[str, str], published_date: date) -> dict[str
         "market_minus_fee_eur": 0.0,
         "transfer_quality": 0.0,
         "transfer_indicator": 0.0,
-        "buyer_club": "",
-        "seller_club": "",
-        "target_club": "",
-        "target_role": "",
-        "target_direction": "",
-        "target_entity_type": "",
-        "target_ticker": "",
-        "target_market_symbol": "",
-        "prediction_scope": "none",
-        "public_target_count": 0,
-        "has_public_buyer": 0,
-        "has_public_seller": 0,
     }
-    return base_row
+    return {**base_row, **unmatched_target_fields(base_row, clubs)}
 
 
 def claim_dataset_rows(
@@ -434,11 +463,11 @@ def claim_dataset_rows(
                 continue
             matched_transfer_id = claim.get("matched_transfer_id", "")
             if not matched_transfer_id:
-                rows.append(unmatched_claim_row(claim, published_date))
+                rows.append(unmatched_claim_row(claim, published_date, clubs))
                 continue
             transfer = transfers_by_id.get(matched_transfer_id)
             if transfer is None:
-                rows.append(unmatched_claim_row(claim, published_date))
+                rows.append(unmatched_claim_row(claim, published_date, clubs))
                 continue
             transfer_fields = transfer_row(transfer)
             base_row = {

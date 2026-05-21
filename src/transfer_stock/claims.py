@@ -324,15 +324,73 @@ def infer_direction(text: str, primary_club: str, primary_player: str) -> str:
     club = normalize_text(primary_club)
     player = normalize_text(primary_player)
     surname = player.split()[-1] if player else ""
-    if club and any(phrase in lowered for phrase in ["agree deal for", "sign", "signing", "move for", "bid for", "to " + club, "join " + club]):
-        if "from " + club not in lowered:
+    if club:
+        out_signals = [
+            "sale",
+            "sell",
+            "selling",
+            "leaving",
+            "leave",
+            "exit",
+            "departure",
+            "depart",
+            "from " + club,
+        ]
+        if surname:
+            out_signals.extend(
+                [
+                    f"{club} s {surname}",
+                    f"replace {surname}",
+                    f"replacement for {surname}",
+                    f"{surname} replacement",
+                    f"{surname} exit",
+                    f"{surname} departure",
+                    f"{surname} final game",
+                ]
+            )
+        if any(phrase in lowered for phrase in out_signals):
+            return "out"
+        if surname and f" s {surname}" in lowered and any(
+            phrase in lowered for phrase in ["signing", "deal for", "bid for", "move for", "close in on", "transfer"]
+        ):
+            return "out"
+    if club and any(phrase in lowered for phrase in ["close in on deal for"]):
+        return "out"
+    if club:
+        in_signals = [
+            club + " confirm agreement to sign",
+            club + " confirm signing",
+            club + " confirmed agreement to sign",
+            club + " confirmed signing",
+            "agree deal for " + club,
+            "to " + club,
+            "join " + club,
+            "joins " + club,
+            "sign for " + club,
+            "signs for " + club,
+            "signed for " + club,
+            club + " sign",
+            club + " signs",
+            club + " signing",
+            club + " move for",
+            club + " bid for",
+            club + " close on",
+            club + " close in on",
+        ]
+        if any(phrase in lowered for phrase in in_signals):
             return "in"
-    if club and any(phrase in lowered for phrase in ["sale", "sell", "leaving", "leave", "exit", "close in on deal for"]):
-        return "out"
-    if club and surname and f"{club} s {surname}" in lowered:
-        return "out"
-    if club and f"from {club}" in lowered:
-        return "out"
+        if surname:
+            player_in_signals = [
+                f"agreement to sign {surname}",
+                f"deal to sign {surname}",
+                f"sign {surname}",
+                f"signing {surname}",
+                f"deal for {surname}",
+                f"bid for {surname}",
+                f"move for {surname}",
+            ]
+            if any(phrase in lowered for phrase in player_in_signals) and f"{club} s {surname}" not in lowered:
+                return "in"
     return "unclear"
 
 

@@ -35,6 +35,15 @@ function fmtDate(value) {
   return date.toISOString().slice(0, 10);
 }
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll("\"", "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
 function displayModelLabel(row) {
   if (row.predicted_label) return row.predicted_label;
   if (row.prediction_scope === "none") return "n/a";
@@ -121,8 +130,25 @@ function realizedMixText(realizedMix) {
   return entries.map(([label, count]) => `${label}: ${count}`).join(" · ");
 }
 
+function signalActionText(row) {
+  if (row.prediction_scope === "none") {
+    return "Use this as rumor intelligence only. There is no direct public-club equity target mapped yet.";
+  }
+  const credibility = Number(row.credibility_score || 0);
+  const blended = Number(row.blended_score || 0);
+  const stage = String(row.latest_rumor_stage || "").toLowerCase();
+  if (credibility >= 0.6 && blended >= 35 && ["agreed", "advanced", "medical", "official"].includes(stage)) {
+    return "This is one of the stronger direct-target signals in the current set. It is worth tracking around the next trading session and comparing with similar past cases.";
+  }
+  if (credibility >= 0.45 && blended >= 20) {
+    return "This looks monitor-worthy, but not strong enough to trust by itself. Treat it as a ranked lead, then read the supporting articles and compare the reporter history.";
+  }
+  return "This is weaker evidence right now. The useful move is to monitor for a better source mix, a clearer rumor stage, or more article confirmation.";
+}
+
 function renderOverview() {
   const overview = state.payload.overview;
+  const quality = state.payload.quality_summary || {};
   const season = currentSeasonSummary();
   document.getElementById("seasonLabel").textContent = state.selectedSeason;
   document.getElementById("countLabel").textContent = state.selectedView === "transfers" ? "Transfers" : "Signals";
@@ -145,6 +171,10 @@ function renderOverview() {
   document.getElementById("metricBestStrategy").textContent = overview.best_backtest_strategy || "-";
   document.getElementById("metricBestReturn").textContent = `${fmtPct(overview.best_backtest_total_return)} total return`;
   document.getElementById("metricHistory").textContent = String(overview.historical_reference_count);
+  document.getElementById("refreshStamp").textContent = fmtDate(state.payload.generated_at);
+  document.getElementById("qualityMeta").textContent = quality.live_status === "stale"
+    ? `Live status: stale. Latest stored live article: ${quality.latest_live_date || "-"}. Model evidence: ${quality.model_evidence || "experimental"}.`
+    : `Live status: fresh. Recent live clusters: ${quality.recent_live_clusters || 0}. Model evidence: ${quality.model_evidence || "experimental"}.`;
 }
 
 function renderViewTabs() {
@@ -238,7 +268,8 @@ function renderWorkspaceTable() {
     return;
   }
 
-  if (!state.selectedKey || !rows.some((row) => currentKey(row) === state.selectedKey)) {
+  const hasWatchlistDetail = Boolean((state.payload.watchlist_details || {})[state.selectedKey]);
+  if (!state.selectedKey || (!rows.some((row) => currentKey(row) === state.selectedKey) && !hasWatchlistDetail)) {
     state.selectedKey = currentKey(rows[0]);
   }
 
@@ -360,6 +391,15 @@ function renderRumorDetail(row) {
   const scopePill = row.prediction_scope === "direct"
     ? `<span class="pill pill-positive">Direct target</span>`
     : `<span class="pill pill-neutral">No public target</span>`;
+  const evidenceRows = row.evidence_articles || [];
+  const evidenceMarkup = evidenceRows.length
+    ? evidenceRows.map((item) => `
+        <div class="evidence-item">
+          <a href="${escapeHtml(item.url || "#")}" target="_blank" rel="noreferrer">${escapeHtml(item.title || "Untitled article")}</a>
+          <span class="detail-meta">${fmtDate(item.published_at)} · ${escapeHtml(item.source || "-")} · ${escapeHtml(item.journalist || "-")} · ${escapeHtml(item.rumor_stage || "unclear")}</span>
+        </div>
+      `).join("")
+    : `<p class="detail-note">No article-level evidence was attached to this signal payload yet. Re-run the live analyze step after a fresh fetch to enrich the dossier.</p>`;
 
   pane.innerHTML = `
     <div class="detail-stack">
@@ -414,6 +454,11 @@ function renderRumorDetail(row) {
       </div>
 
       <div class="detail-card">
+        <span class="list-label">How To Use This</span>
+        <p class="detail-note">${signalActionText(row)}</p>
+      </div>
+
+      <div class="detail-card">
         <span class="list-label">Indicators</span>
         <div class="detail-grid">
           <div class="kv"><span class="list-label">Credibility</span><strong>${fmtNumber(row.credibility_score, 3)}</strong></div>
@@ -440,6 +485,11 @@ function renderRumorDetail(row) {
           <div class="kv"><span class="list-label">Realized CAR t+3</span><strong>${fmtNumber(row.target_abnormal_return_p3, 4)}</strong></div>
         </div>
         <div class="list-inline">${row.sources.map((source) => `<span>${source}</span>`).join("")}</div>
+      </div>
+
+      <div class="detail-card">
+        <div class="section-head"><h3>Supporting Articles</h3></div>
+        <div class="evidence-list">${evidenceMarkup}</div>
       </div>
 
       <div class="detail-card">
@@ -476,7 +526,10 @@ function renderRumorDetail(row) {
 }
 
 function renderDetail() {
-  const row = currentRows().find((item) => currentKey(item) === state.selectedKey);
+  let row = currentRows().find((item) => currentKey(item) === state.selectedKey);
+  if (!row && state.selectedView === "rumors") {
+    row = (state.payload.watchlist_details || {})[state.selectedKey];
+  }
   if (!row) {
     const label = state.selectedView === "transfers" ? "Transfer Detail" : "Signal Detail";
     document.getElementById("detailPane").innerHTML = `<div class="empty-detail"><h2>${label}</h2><p>No row selected.</p></div>`;
@@ -567,8 +620,8 @@ function renderWatchlist() {
   document.getElementById("watchlistMeta").textContent = meta.is_stale
     ? `Latest article: ${latest} · stale by ${daysStale} days. Run the live refresh command for a fresher watchlist.`
     : `Latest article: ${latest} · ${meta.recent_cluster_count || rows.length} recent clusters in the last ${meta.window_days || 21} days.`;
-  if (!rows.length) {
-    body.innerHTML = `<tr><td colspan="8">No current direct-target rumors in the watchlist yet.</td></tr>`;
+  if (!rows.length || (meta.is_stale && !(meta.recent_cluster_count > 0))) {
+    body.innerHTML = `<tr><td colspan="8">No fresh live direct-target rumors in the payload yet. Run the fetch step, then the analyze step.</td></tr>`;
     return;
   }
   body.innerHTML = rows
@@ -594,6 +647,22 @@ function renderWatchlist() {
       renderAll();
     });
   });
+}
+
+function renderTakeaways() {
+  const container = document.getElementById("takeawayCards");
+  const rows = state.payload.takeaways || [];
+  if (!rows.length) {
+    container.innerHTML = `<div class="insight-card"><span class="metric-label">No summary yet</span><strong>Run a fresh analyze step</strong><span class="detail-meta">The dashboard can build takeaways once the live and historical files are in sync.</span></div>`;
+    return;
+  }
+  container.innerHTML = rows.map((row) => `
+    <div class="insight-card ${row.tone || ""}">
+      <span class="metric-label">${row.title || ""}</span>
+      <strong>${row.primary || "-"}</strong>
+      <span class="detail-meta">${row.secondary || ""}</span>
+    </div>
+  `).join("");
 }
 
 function leaderboardMarkup(rows, fields) {
@@ -633,6 +702,26 @@ function renderLeaderboards() {
   );
 }
 
+function renderSourceCoverage() {
+  const body = document.getElementById("sourceCoverageTable");
+  const rows = state.payload.live_source_coverage || [];
+  if (!rows.length) {
+    body.innerHTML = `<tr><td colspan="5">No recent direct-target live coverage rows yet.</td></tr>`;
+    return;
+  }
+  body.innerHTML = rows
+    .map((row) => `
+      <tr>
+        <td><strong>${row.source}</strong></td>
+        <td>${row.n_rows}</td>
+        <td>${row.n_unique_players}</td>
+        <td>${fmtDate(row.latest_published_at)}</td>
+        <td>${fmtNumber(row.avg_credibility, 3)}</td>
+      </tr>
+    `)
+    .join("");
+}
+
 function renderBacktests() {
   const body = document.getElementById("backtestTable");
   body.innerHTML = state.payload.backtests
@@ -667,10 +756,12 @@ function renderAll() {
   renderSeasonFilters();
   renderClubFilters();
   renderOverview();
+  renderTakeaways();
   renderWorkspaceShell();
   renderWorkspaceTable();
   renderDetail();
   renderWatchlist();
+  renderSourceCoverage();
   renderLeaderboards();
   renderSeasonHistory();
   renderBacktests();
