@@ -6,29 +6,52 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  PAGES_PAT: ${{ secrets.PAGES_PAT }}
+
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+
+      - name: Setup Pages (auto-enable if PAT is present)
+        if: ${{ env.PAGES_PAT != '' }}
+        uses: actions/configure-pages@v6
+        with:
+          token: ${{ env.PAGES_PAT }}
+          enablement: true
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        if: ${{ env.PAGES_PAT == '' }}
+        uses: actions/configure-pages@v6
 
       - name: Upload static dashboard
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: app/static
 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy
+        id: deployment
         uses: actions/deploy-pages@v4

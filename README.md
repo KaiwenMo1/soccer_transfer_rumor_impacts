@@ -24,6 +24,30 @@ The configured public universe now includes:
 - Benfica SAD
 - Eagle Football Group
 
+## Start Here
+
+If you just want to see the project working:
+
+```bash
+source .venv/bin/activate
+
+PYTHONPATH=src .venv/bin/python -m transfer_stock.cli refresh-live-analyze \
+  --input data/raw/articles/current_fast.jsonl \
+  --clubs manchester_united juventus ajax \
+  --slug current_fast \
+  --dashboard-output app/static/data/dashboard_data.json
+
+python3 -m http.server 8000 --directory app/static
+```
+
+Open `http://127.0.0.1:8000`.
+
+The site reads from:
+
+- `app/static/data/dashboard_data.json`
+
+Everything else in this README is the fuller pipeline and publishing reference.
+
 ## What This Project Is
 
 The core idea is solid, but it needs to be framed carefully:
@@ -548,10 +572,25 @@ Yes, it is worth publishing a click-through demo page. This repo now includes:
 - `.github/workflows/nightly-refresh.yml` to refresh the live dashboard data on
   a nightly schedule and redeploy the Pages site
 
+If your first deploy fails with a `Get Pages site failed` or `Not Found` error,
+the usual fix is:
+
+1. Open the repository on GitHub.
+2. Go to `Settings -> Pages`.
+3. Under `Build and deployment`, set `Source` to `GitHub Actions`.
+4. Re-run the `Deploy Demo Page` workflow.
+
 Before enabling the nightly refresh workflow, add these repository secrets:
 
 - `GUARDIAN_API_KEY`
 - `GNEWS_API_KEY`
+
+Optional:
+
+- `PAGES_PAT`
+
+If you add `PAGES_PAT`, the workflow can try to auto-enable Pages for the repo.
+Without it, manual enablement in the GitHub Pages settings is the simplest path.
 
 Then enable GitHub Pages in the repository settings and point it at the
 GitHub Actions deployment.

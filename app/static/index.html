@@ -10,8 +10,8 @@
     <div class="shell">
       <header class="topbar">
         <div>
-          <p class="eyebrow">Transfer + Club Stock Research</p>
-          <h1>Transfer Impact Dashboard</h1>
+          <p class="eyebrow">Transfer + Stock Signals</p>
+          <h1>Transfer Stock Dashboard</h1>
         </div>
         <div class="topbar-meta">
           <div class="meta-block">
@@ -101,7 +101,7 @@
         <aside class="detail-pane" id="detailPane">
           <div class="empty-detail">
             <h2>Signal Detail</h2>
-            <p>Select a rumor row to inspect the extracted fields, credibility, indicators, and similar historical examples.</p>
+            <p>Pick a row to inspect the signal, indicators, and closest comps.</p>
           </div>
         </aside>
       </section>
@@ -109,7 +109,7 @@
       <section class="report-band">
         <div class="section-head">
           <h2>Live Watchlist</h2>
-          <span class="section-meta" id="watchlistMeta">Current direct-target rumors ranked by recency and blended signal strength.</span>
+          <span class="section-meta" id="watchlistMeta">Fresh direct-target rumors.</span>
         </div>
         <div class="table-wrap">
           <table>
@@ -133,7 +133,7 @@
       <section class="report-band">
         <div class="section-head">
           <h2>Credibility Leaderboards</h2>
-          <span class="section-meta">Historical journalist and source conversion quality from the credibility engine.</span>
+          <span class="section-meta">Historical hit rates by journalist and source.</span>
         </div>
         <div class="leaderboard-grid">
           <div class="leaderboard-pane">
@@ -190,7 +190,7 @@
       <section class="report-band">
         <div class="section-head">
           <h2 id="seasonHistoryTitle">Season History</h2>
-          <span class="section-meta" id="seasonHistoryMeta">Switch years above, or use this table to compare them side by side.</span>
+          <span class="section-meta" id="seasonHistoryMeta">Compare seasons side by side.</span>
         </div>
         <div class="table-wrap">
           <table>
@@ -205,7 +205,7 @@
       <section class="report-band">
         <div class="section-head">
           <h2>Backtest Summary</h2>
-          <span class="section-meta">Backtests are still the 2025-26 holdout view; older seasons below are for historical inspection.</span>
+          <span class="section-meta">Holdout strategy snapshot.</span>
         </div>
         <div class="table-wrap">
           <table>
@@ -225,12 +225,13 @@
         </div>
       </section>
 
-      <section class="report-band">
-        <div class="section-head">
-          <h2>Data Flow</h2>
-        </div>
+      <details class="report-band collapsible-band">
+        <summary class="section-head">
+          <h2>Pipeline Files</h2>
+          <span class="section-meta">Where the dashboard reads from.</span>
+        </summary>
         <div class="flow-grid" id="dataFlow"></div>
-      </section>
+      </details>
     </div>
 
     <script src="./dashboard.js" defer></script>

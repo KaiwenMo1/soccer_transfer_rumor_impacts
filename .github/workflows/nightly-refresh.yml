@@ -5,6 +5,9 @@ on:
     - cron: "15 6 * * *"
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 permissions:
   contents: read
   pages: write
@@ -17,12 +20,16 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     env:
       GUARDIAN_API_KEY: ${{ secrets.GUARDIAN_API_KEY }}
       GNEWS_API_KEY: ${{ secrets.GNEWS_API_KEY }}
+      PAGES_PAT: ${{ secrets.PAGES_PAT }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -37,16 +44,8 @@ jobs:
       - name: Fetch live articles
         run: |
           PYTHONPATH=src python -m transfer_stock.cli refresh-live-fetch \
-            --start "$(python - <<'PY'
-from datetime import date, timedelta
-print((date.today() - timedelta(days=21)).isoformat())
-PY
-)" \
-            --end "$(python - <<'PY'
-from datetime import date
-print(date.today().isoformat())
-PY
-)" \
+            --start "$(python -c 'from datetime import date, timedelta; print((date.today() - timedelta(days=21)).isoformat())')" \
+            --end "$(python -c 'from datetime import date; print(date.today().isoformat())')" \
             --source-preset balanced_no_api \
             --max-records 12 \
             --pause 0.1 \
@@ -69,13 +68,22 @@ PY
             data/live
             app/static/data/dashboard_data.json
 
+      - name: Setup Pages (auto-enable if PAT is present)
+        if: ${{ env.PAGES_PAT != '' }}
+        uses: actions/configure-pages@v6
+        with:
+          token: ${{ env.PAGES_PAT }}
+          enablement: true
+
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        if: ${{ env.PAGES_PAT == '' }}
+        uses: actions/configure-pages@v6
 
       - name: Upload static dashboard
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: app/static
 
       - name: Deploy
+        id: deployment
         uses: actions/deploy-pages@v4
