@@ -11,7 +11,16 @@ from transfer_stock.claims import heuristic_extract_claim
 from transfer_stock.config import load_clubs
 from transfer_stock.credibility_engine import AggregateStat, credibility_outputs, credibility_row
 from transfer_stock.dcaribou import transfer_kind_tags
-from transfer_stock.demo import build_demo_payload, transfer_history_rows
+from transfer_stock.demo import (
+    build_demo_payload,
+    build_signal_stock_chart,
+    cluster_current_rows,
+    headline_fingerprint,
+    publisher_label,
+    similar_examples,
+    summarize_watchlist_cluster,
+    transfer_history_rows,
+)
 from transfer_stock.event_study import cumulative_abnormal_return
 from transfer_stock.ewenme import canonical_season, fee_cleaned_to_eur
 from transfer_stock.features import credibility_score, transfer_quality_score
@@ -288,6 +297,205 @@ class CoreTests(unittest.TestCase):
         self.assertIn("news.google.com/rss/search", rendered)
         self.assertIn("hl=nl", rendered)
         self.assertIn("ceid=NL:nl", rendered)
+
+    def test_headline_fingerprint_strips_source_suffix(self):
+        left = "Sources: Miami closing in on signing Man United's Casemiro - ESPN"
+        right = "Sources: Miami closing in on signing Man United's Casemiro - Sky Sports"
+        self.assertEqual(headline_fingerprint(left), headline_fingerprint(right))
+
+    def test_publisher_label_uses_underlying_outlet_for_google_news(self):
+        row = {
+            "source": "Google News Global EN",
+            "title": "Sources: Miami closing in on signing Man United's Casemiro - ESPN",
+        }
+        self.assertEqual(publisher_label(row), "ESPN")
+
+    def test_watchlist_cluster_summarizes_duplicate_headlines(self):
+        rows = [
+            {
+                "published_at": "Wed, 20 May 2026 20:16:00 GMT",
+                "source": "Google News Global EN",
+                "title": "Sources: Miami closing in on signing Man United's Casemiro - ESPN",
+                "club": "Manchester United",
+                "player": "Casemiro",
+                "target_club": "Manchester United",
+                "target_role": "seller",
+                "prediction_scope": "direct",
+                "direction": "out",
+                "rumor_stage": "advanced",
+                "rumor_stage_score": "0.72",
+                "credibility_score": "0.44",
+                "predicted_label": "negative",
+                "prediction_confidence": "0.63",
+                "transfer_indicator": "0.0",
+                "stock_context_indicator": "0.0",
+                "target_ticker": "MANU",
+                "claim_id": "c1",
+            },
+            {
+                "published_at": "Wed, 20 May 2026 21:16:00 GMT",
+                "source": "Google News Global EN",
+                "title": "Sources: Miami closing in on signing Man United's Casemiro - Sky Sports",
+                "club": "Manchester United",
+                "player": "Casemiro",
+                "target_club": "Manchester United",
+                "target_role": "seller",
+                "prediction_scope": "direct",
+                "direction": "out",
+                "rumor_stage": "advanced",
+                "rumor_stage_score": "0.72",
+                "credibility_score": "0.46",
+                "predicted_label": "negative",
+                "prediction_confidence": "0.64",
+                "transfer_indicator": "0.0",
+                "stock_context_indicator": "0.0",
+                "target_ticker": "MANU",
+                "claim_id": "c2",
+            },
+        ]
+        summary = summarize_watchlist_cluster(rows)
+        self.assertEqual(summary["article_count"], 2)
+        self.assertEqual(summary["unique_headline_count"], 1)
+        self.assertEqual(summary["duplicate_article_count"], 1)
+        self.assertEqual(summary["source_count"], 2)
+        self.assertEqual(summary["direction"], "out")
+        self.assertEqual(summary["confidence_tier"], "developing")
+        self.assertGreater(summary["consensus_score"], 0.5)
+        self.assertEqual(summary["consensus_label"], "Broad alignment")
+        self.assertTrue(any(item["stage"] == "advanced" and item["active"] for item in summary["timeline"]))
+
+    def test_cluster_current_rows_keeps_unclear_supporting_articles_near_direct_signal(self):
+        rows = [
+            {
+                "published_at": "Wed, 20 May 2026 20:16:00 GMT",
+                "source": "Google News Global EN",
+                "title": "Sources: Miami closing in on signing Man United's Casemiro - ESPN",
+                "club": "Manchester United",
+                "player": "Casemiro",
+                "target_club": "Manchester United",
+                "target_role": "seller",
+                "prediction_scope": "direct",
+                "direction": "out",
+                "claim_id": "c1",
+            },
+            {
+                "published_at": "Wed, 20 May 2026 21:16:00 GMT",
+                "source": "Google News Global EN",
+                "title": "Casemiro closing in on transfer as Man United star prepares for final game - Manchester Evening News",
+                "club": "Manchester United",
+                "player": "Casemiro",
+                "target_club": "",
+                "target_role": "",
+                "prediction_scope": "none",
+                "direction": "unclear",
+                "claim_id": "c2",
+            },
+            {
+                "published_at": "Wed, 20 May 2026 21:16:00 GMT",
+                "source": "Google News Global EN",
+                "title": "Unrelated club note - ESPN",
+                "club": "Juventus",
+                "player": "Someone Else",
+                "target_club": "",
+                "target_role": "",
+                "prediction_scope": "none",
+                "direction": "unclear",
+                "claim_id": "c3",
+            },
+        ]
+        clusters = cluster_current_rows(rows)
+        self.assertEqual(len(clusters), 1)
+        self.assertEqual(len(clusters[0]), 2)
+
+    def test_similar_examples_prefers_same_target_role_and_direction(self):
+        current = {
+            "club": "Manchester United",
+            "direction": "out",
+            "target_role": "seller",
+            "position": "Midfielder",
+            "credibility_score": 0.5,
+            "transfer_indicator": 0.2,
+            "rumor_stage_score": 0.6,
+            "stock_context_indicator": 0.1,
+            "age": 31,
+            "market_value_eur": 15_000_000,
+        }
+        historical_rows = [
+            {
+                "club": "Manchester United",
+                "player": "Incoming Example",
+                "direction": "in",
+                "target_role": "buyer",
+                "position": "Midfielder",
+                "credibility_score": "0.5",
+                "transfer_indicator": "0.2",
+                "rumor_stage_score": "0.6",
+                "stock_context_indicator": "0.1",
+                "age": "31",
+                "market_value_eur": "15000000",
+                "published_date": "2025-06-01",
+            },
+            {
+                "club": "Manchester United",
+                "player": "Outgoing Example",
+                "direction": "out",
+                "target_role": "seller",
+                "position": "Midfielder",
+                "credibility_score": "0.5",
+                "transfer_indicator": "0.2",
+                "rumor_stage_score": "0.6",
+                "stock_context_indicator": "0.1",
+                "age": "31",
+                "market_value_eur": "15000000",
+                "published_date": "2024-06-01",
+            },
+            {
+                "club": "Manchester United",
+                "player": "Outgoing Example Two",
+                "direction": "out",
+                "target_role": "seller",
+                "position": "Forward",
+                "credibility_score": "0.4",
+                "transfer_indicator": "0.1",
+                "rumor_stage_score": "0.5",
+                "stock_context_indicator": "0.1",
+                "age": "27",
+                "market_value_eur": "18000000",
+                "published_date": "2023-06-01",
+            },
+        ]
+        examples = similar_examples(current, historical_rows, limit=2)
+        self.assertEqual(examples[0]["player"], "Outgoing Example")
+
+    def test_build_signal_stock_chart_normalizes_around_event(self):
+        clubs = load_clubs()
+        club = clubs["manchester_united"]
+        row = {
+            "prediction_scope": "direct",
+            "target_club": "Manchester United",
+            "club": "Manchester United",
+            "latest_published_at": "2026-05-20T12:00:00Z",
+        }
+        bars = [
+            PriceBar(date(2026, 5, 18), 98, 98, 98, 98, 1000),
+            PriceBar(date(2026, 5, 19), 99, 99, 99, 99, 1100),
+            PriceBar(date(2026, 5, 20), 100, 100, 100, 100, 1200),
+            PriceBar(date(2026, 5, 21), 103, 103, 103, 103, 1300),
+        ]
+        chart = build_signal_stock_chart(
+            row,
+            clubs_by_name={
+                club.name.lower(): club,
+                club.key.lower(): club,
+            },
+            stock_cache={club.key: bars},
+            lookback=2,
+            lookahead=2,
+        )
+        self.assertEqual(chart["event_index"], 2)
+        self.assertEqual(chart["event_date"], "2026-05-20")
+        self.assertEqual(chart["points"][2], 100.0)
+        self.assertAlmostEqual(chart["latest_change"], 0.03, places=4)
 
     def test_dedupe_articles_keeps_first_copy(self):
         rows = [
@@ -1255,6 +1463,8 @@ class CoreTests(unittest.TestCase):
             self.assertEqual(payload["leaderboards"]["journalists"][0]["journalist"], "Reporter One")
             self.assertEqual(payload["leaderboards"]["sources"][0]["source"], "example.com")
             self.assertEqual(payload["leaderboards"]["club_journalists"][0]["club"], "Manchester United")
+            self.assertIn("Juventus", payload["club_dossiers"])
+            self.assertEqual(payload["club_dossiers"]["Juventus"]["club"], "Juventus")
 
 
 if __name__ == "__main__":

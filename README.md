@@ -56,6 +56,9 @@ Everything else in this README is the fuller pipeline and publishing reference.
 This project is most useful as a transfer-intelligence and market-reaction tool:
 
 - **Triage live rumors:** which current rumors around listed clubs look worth checking first
+- **Read merged rumor dossiers:** repeated coverage now collapses into one event with outlet breadth, duplicate-headline counts, and a confidence tier
+- **See event progression at a glance:** live signal cards now include a rumor-stage timeline, a consensus score, and a small target-stock snapshot around the rumor date
+- **Open club dossiers:** each listed club now gets a single page-like view with live events, trusted reporters, recent transfers, and historical peaks
 - **Compare reporter quality:** which journalists and sources have converted best in the historical set
 - **Inspect past transfers:** which types of confirmed moves historically lined up with positive or negative stock reactions
 - **Find similar cases:** for a current rumor, compare it with older player / club / direction setups

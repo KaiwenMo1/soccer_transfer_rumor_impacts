@@ -32,9 +32,14 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
+
+      - name: Backup current dashboard payload
+        run: |
+          mkdir -p /tmp/dashboard-backup
+          cp app/static/data/dashboard_data.json /tmp/dashboard-backup/dashboard_data.json
 
       - name: Install project
         run: |
@@ -42,6 +47,8 @@ jobs:
           pip install -e ".[scrape_v2,market_research,ml_pipeline,api_server]"
 
       - name: Fetch live articles
+        id: fetch
+        continue-on-error: true
         run: |
           PYTHONPATH=src python -m transfer_stock.cli refresh-live-fetch \
             --start "$(python -c 'from datetime import date, timedelta; print((date.today() - timedelta(days=21)).isoformat())')" \
@@ -53,6 +60,9 @@ jobs:
             --output data/raw/articles/current_live.jsonl
 
       - name: Analyze live articles and rebuild dashboard
+        id: analyze
+        if: ${{ steps.fetch.outcome == 'success' }}
+        continue-on-error: true
         run: |
           PYTHONPATH=src python -m transfer_stock.cli refresh-live-analyze \
             --input data/raw/articles/current_live.jsonl \
@@ -60,7 +70,30 @@ jobs:
             --slug nightly_live \
             --dashboard-output app/static/data/dashboard_data.json
 
+      - name: Restore previous dashboard if refresh failed
+        if: ${{ steps.fetch.outcome != 'success' || steps.analyze.outcome == 'failure' }}
+        run: |
+          cp /tmp/dashboard-backup/dashboard_data.json app/static/data/dashboard_data.json
+
+      - name: Write refresh status
+        if: ${{ always() }}
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          payload_path = Path("app/static/data/dashboard_data.json")
+          payload = json.loads(payload_path.read_text(encoding="utf-8"))
+          payload["automation"] = {
+              **payload.get("automation", {}),
+              "workflow_refresh_attempted": True,
+              "workflow_fetch_status": "${{ steps.fetch.outcome }}",
+              "workflow_analyze_status": "${{ steps.analyze.outcome || 'skipped' }}",
+          }
+          payload_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+          PY
+
       - name: Upload live artifacts
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: live-refresh-artifacts
@@ -80,10 +113,12 @@ jobs:
         uses: actions/configure-pages@v6
 
       - name: Upload static dashboard
+        if: ${{ always() }}
         uses: actions/upload-pages-artifact@v5
         with:
           path: app/static
 
       - name: Deploy
+        if: ${{ always() }}
         id: deployment
         uses: actions/deploy-pages@v4

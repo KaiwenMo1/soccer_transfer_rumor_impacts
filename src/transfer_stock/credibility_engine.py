@@ -18,6 +18,9 @@ from .transfers import load_transfers
 SCORED_CLAIM_FIELDS = [
     "claim_id",
     "article_id",
+    "title",
+    "url",
+    "snippet",
     "published_at",
     "source",
     "journalist",
@@ -338,6 +341,9 @@ def credibility_row(
     return {
         "claim_id": claim.get("claim_id", ""),
         "article_id": claim.get("article_id", ""),
+        "title": claim.get("title", ""),
+        "url": claim.get("url", ""),
+        "snippet": claim.get("snippet", ""),
         "published_at": claim.get("published_at", ""),
         "source": source,
         "journalist": journalist,

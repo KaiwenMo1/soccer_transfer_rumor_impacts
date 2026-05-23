@@ -25,6 +25,8 @@ class Club:
     entity_type: str = "club"
     country: str = ""
     exchange: str = ""
+    logo_url: str = ""
+    accent_color: str = ""
 
 
 def load_yaml(path: Path) -> dict[str, Any]:
@@ -51,6 +53,8 @@ def load_clubs(path: Path = CONFIG_DIR / "clubs.yml") -> dict[str, Club]:
             entity_type=item.get("entity_type", "club"),
             country=item.get("country", ""),
             exchange=item.get("exchange", ""),
+            logo_url=item.get("logo_url", ""),
+            accent_color=item.get("accent_color", ""),
         )
     return clubs
 

@@ -29,7 +29,18 @@
         </div>
       </header>
 
-      <section class="overview-band">
+      <section class="route-band" id="routeBand" hidden>
+        <div class="route-band-inner">
+          <button id="backToBoard" class="route-back">Back to Board</button>
+          <div class="route-copy">
+            <p class="eyebrow">Club View</p>
+            <h2 id="routeClubTitle">Club</h2>
+            <p class="section-meta" id="routeClubMeta">Focused dossier for one public target.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="overview-band" id="overviewSection">
         <div class="metric-card">
           <span class="metric-label">Avg Realized CAR t+3</span>
           <strong id="metricSeasonReturn">-</strong>
@@ -57,7 +68,7 @@
         </div>
       </section>
 
-      <section class="insight-band">
+      <section class="insight-band" id="insightSection">
         <div class="section-head">
           <h2>What You Can Get</h2>
           <span class="section-meta" id="qualityMeta">What this dashboard is useful for, and how strong the evidence is right now.</span>
@@ -65,7 +76,7 @@
         <div class="insight-grid" id="takeawayCards"></div>
       </section>
 
-      <section class="controls-band">
+      <section class="controls-band" id="controlsSection">
         <div class="control">
           <span class="control-label">View</span>
           <div class="segmented" id="viewTabs">
@@ -94,7 +105,15 @@
         </div>
       </section>
 
-      <section class="workspace">
+      <section class="report-band" id="clubDossierSection">
+        <div class="section-head">
+          <h2>Club Dossier</h2>
+          <span class="section-meta" id="clubDossierMeta">Pick a club filter, or let the dashboard choose the most relevant club automatically.</span>
+        </div>
+        <div id="clubDossier"></div>
+      </section>
+
+      <section class="workspace" id="workspaceSection">
         <div class="table-pane">
           <div class="section-head">
             <h2 id="workspaceTitle">Season Signals</h2>
@@ -118,7 +137,7 @@
         </aside>
       </section>
 
-      <section class="report-band">
+      <section class="report-band" id="watchlistSection">
         <div class="section-head">
           <h2>Live Watchlist</h2>
           <span class="section-meta" id="watchlistMeta">Fresh direct-target rumors.</span>
@@ -130,7 +149,7 @@
                 <th>Published</th>
                 <th>Target Club</th>
                 <th>Player</th>
-                <th>Journalist</th>
+                <th>Tier</th>
                 <th>Stage</th>
                 <th>Credibility</th>
                 <th>Model</th>
@@ -142,7 +161,15 @@
         </div>
       </section>
 
-      <section class="report-band">
+      <section class="report-band visual-band" id="signalCardsSection">
+        <div class="section-head">
+          <h2>Live Signal Cards</h2>
+          <span class="section-meta">A cleaner front door for the current rumor board.</span>
+        </div>
+        <div class="signal-card-grid" id="liveSignalCards"></div>
+      </section>
+
+      <section class="report-band" id="coverageSection">
         <div class="section-head">
           <h2>Live Coverage</h2>
           <span class="section-meta">Which sources are actually feeding the current watchlist window.</span>
@@ -163,7 +190,7 @@
         </div>
       </section>
 
-      <section class="report-band">
+      <section class="report-band" id="leaderboardsSection">
         <div class="section-head">
           <h2>Credibility Leaderboards</h2>
           <span class="section-meta">Historical hit rates by journalist and source.</span>
@@ -220,7 +247,7 @@
         </div>
       </section>
 
-      <section class="report-band">
+      <section class="report-band" id="seasonHistorySection">
         <div class="section-head">
           <h2 id="seasonHistoryTitle">Season History</h2>
           <span class="section-meta" id="seasonHistoryMeta">Compare seasons side by side.</span>
@@ -235,7 +262,7 @@
         </div>
       </section>
 
-      <section class="report-band">
+      <section class="report-band" id="backtestsSection">
         <div class="section-head">
           <h2>Backtest Summary</h2>
           <span class="section-meta">Holdout strategy snapshot.</span>
@@ -258,7 +285,7 @@
         </div>
       </section>
 
-      <details class="report-band collapsible-band">
+      <details class="report-band collapsible-band" id="dataFlowSection">
         <summary class="section-head">
           <h2>Pipeline Files</h2>
           <span class="section-meta">Where the dashboard reads from.</span>

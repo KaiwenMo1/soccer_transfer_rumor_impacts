@@ -14,6 +14,8 @@ clubs:
     market_index_symbol: spy.us
     yahoo_market_symbol: ^GSPC
     exchange_timezone: America/New_York
+    logo_url: https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg
+    accent_color: "#DA291C"
   borussia_dortmund:
     name: Borussia Dortmund
     entity_type: club
@@ -28,6 +30,8 @@ clubs:
     market_index_symbol: dax.de
     yahoo_market_symbol: ^GDAXI
     exchange_timezone: Europe/Berlin
+    logo_url: https://upload.wikimedia.org/wikipedia/commons/6/67/Borussia_Dortmund_logo.svg
+    accent_color: "#FDE100"
   juventus:
     name: Juventus
     entity_type: club
@@ -42,6 +46,8 @@ clubs:
     market_index_symbol: ftmib.it
     yahoo_market_symbol: FTSEMIB.MI
     exchange_timezone: Europe/Rome
+    logo_url: https://upload.wikimedia.org/wikipedia/commons/4/4e/Juventus_FC_-_logo_black_%28Italy%2C_2017%29.svg
+    accent_color: "#111111"
   lazio:
     name: Lazio
     entity_type: club
@@ -56,6 +62,8 @@ clubs:
     market_index_symbol: ftmib.it
     yahoo_market_symbol: FTSEMIB.MI
     exchange_timezone: Europe/Rome
+    logo_url: https://upload.wikimedia.org/wikipedia/en/c/ce/S.S._Lazio_badge.svg
+    accent_color: "#8CB4E2"
   ajax:
     name: Ajax NV
     entity_type: club
@@ -71,6 +79,8 @@ clubs:
     market_index_symbol: ""
     yahoo_market_symbol: ^AEX
     exchange_timezone: Europe/Amsterdam
+    logo_url: https://upload.wikimedia.org/wikipedia/en/7/79/Ajax_Amsterdam.svg
+    accent_color: "#D71920"
   sporting_cp:
     name: Sporting CP SAD
     entity_type: club
@@ -87,6 +97,8 @@ clubs:
     market_index_symbol: ""
     yahoo_market_symbol: PSI20.LS
     exchange_timezone: Europe/Lisbon
+    logo_url: https://upload.wikimedia.org/wikipedia/en/e/e4/Sporting_Clube_de_Portugal_%28Logo%29.svg
+    accent_color: "#008A3D"
   fc_porto:
     name: FC Porto SAD
     entity_type: club
@@ -101,6 +113,8 @@ clubs:
     market_index_symbol: ""
     yahoo_market_symbol: PSI20.LS
     exchange_timezone: Europe/Lisbon
+    logo_url: https://upload.wikimedia.org/wikipedia/en/f/f1/FC_Porto.svg
+    accent_color: "#00428C"
   celtic:
     name: Celtic plc
     entity_type: club
@@ -115,6 +129,8 @@ clubs:
     market_index_symbol: ""
     yahoo_market_symbol: ^FTSE
     exchange_timezone: Europe/London
+    logo_url: https://upload.wikimedia.org/wikipedia/en/3/35/Celtic_FC.svg
+    accent_color: "#018749"
   benfica:
     name: Benfica SAD
     entity_type: club
@@ -131,6 +147,8 @@ clubs:
     market_index_symbol: ""
     yahoo_market_symbol: PSI20.LS
     exchange_timezone: Europe/Lisbon
+    logo_url: https://upload.wikimedia.org/wikipedia/en/a/a2/SL_Benfica_logo.svg
+    accent_color: "#E41E26"
   eagle_football_group:
     name: Eagle Football Group
     entity_type: holding_company
@@ -146,3 +164,5 @@ clubs:
     market_index_symbol: ""
     yahoo_market_symbol: ^FCHI
     exchange_timezone: Europe/Paris
+    logo_url: https://upload.wikimedia.org/wikipedia/en/c/c6/Olympique_Lyonnais.svg
+    accent_color: "#004B9B"

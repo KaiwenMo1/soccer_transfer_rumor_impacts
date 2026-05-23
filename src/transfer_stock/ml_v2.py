@@ -20,6 +20,9 @@ from .transfers import Transfer, load_transfers
 BASE_DATASET_FIELDS = [
     "claim_id",
     "article_id",
+    "title",
+    "url",
+    "snippet",
     "published_at",
     "date",
     "published_date",
@@ -356,6 +359,9 @@ def base_claim_features(claim: dict[str, str]) -> dict[str, object]:
     return {
         "claim_id": claim.get("claim_id", ""),
         "article_id": claim.get("article_id", ""),
+        "title": claim.get("title", ""),
+        "url": claim.get("url", ""),
+        "snippet": claim.get("snippet", ""),
         "published_at": claim.get("published_at", ""),
         "source": claim.get("source", ""),
         "journalist": claim.get("journalist", ""),
