@@ -1,9 +1,13 @@
-# Transfer Scrape
+# Transfer Stock Analyst
 
-Research scaffold for studying how football transfer news and confirmed player
-transfers affect publicly traded football club stocks.
+An open-source AI analyst for football transfer rumors, reporter credibility,
+and listed-club stock reactions.
 
-Planned GitHub Pages URL after deployment:
+It collects transfer news, turns articles into structured claims, scores
+journalist/source credibility, links rumors to public football-club tickers, and
+shows the evidence in a static dashboard plus local agent tools.
+
+Demo page after GitHub Pages is enabled:
 
 - `https://kaiwenmo1.github.io/soccer_transfer_rumor_impacts/`
 
@@ -11,22 +15,124 @@ Planned GitHub Pages URL after deployment:
 
 ![Pipeline overview](docs/pipeline-overview.svg)
 
-The configured public universe now includes:
+![Demo walkthrough storyboard](docs/demo-walkthrough.svg)
 
-- Manchester United
-- Borussia Dortmund
-- Juventus
-- Lazio
-- Ajax NV
-- Sporting CP SAD
-- FC Porto SAD
-- Celtic plc
-- Benfica SAD
-- Eagle Football Group
+> Launch polish TODO: record `docs/demo-walkthrough.gif` from this storyboard
+> before the first public push.
+
+## Quick Demo
+
+- **Live dashboard:** open the static market-intelligence view.
+- **Ask The Analyst:** query the local payload in plain English.
+- **Evidence RAG:** attach cited local evidence to answers.
+- **Agent Run:** give the system a research goal and get plan, trace, evidence, and report files.
+- **Scenario Swarm:** run role-based agents over one rumor.
+- **Club comparison:** compare public clubs side by side.
+- **Reporter profiles:** inspect journalist/source credibility.
+- **Daily briefing:** generate a Markdown research brief from the latest data.
+
+```bash
+python3 -m http.server 8000 --directory app/static
+```
+
+Open `http://127.0.0.1:8000`.
+
+Ask the local analyst:
+
+```bash
+PYTHONPATH=src python3 -m transfer_stock.cli ask \
+  --question "Compare Manchester United and Juventus"
+
+PYTHONPATH=src python3 -m transfer_stock.cli ask \
+  --question "What is the current signal for Casemiro?"
+```
+
+Build a local evidence index and ask with citations:
+
+```bash
+PYTHONPATH=src python3 -m transfer_stock.cli build-evidence-index
+
+PYTHONPATH=src python3 -m transfer_stock.cli ask-rag \
+  --question "Why is the Casemiro signal negative?"
+```
+
+Run the local agent loop:
+
+```bash
+PYTHONPATH=src python3 -m transfer_stock.cli agent-run \
+  --goal "Find today's strongest Manchester United transfer-stock watch item"
+```
+
+Run a scenario simulation:
+
+```bash
+PYTHONPATH=src python3 -m transfer_stock.cli simulate-scenario \
+  --player Casemiro \
+  --club "Manchester United" \
+  --rounds 2
+```
+
+Generate a daily briefing:
+
+```bash
+PYTHONPATH=src python3 -m transfer_stock.cli generate-briefing
+```
+
+## Why This Exists
+
+Confirmed transfers are usually late. The more interesting signal is often the
+rumor path before confirmation: who reported it, how credible the source is, how
+big the transfer is for the buying/selling club, and whether similar past events
+lined up with stock movement.
+
+The hard part is that football club stocks are noisy. Match results, European
+qualification, ownership news, earnings, liquidity, legal issues, sponsorships,
+and broader markets can all move the same ticker. This project makes that
+messiness visible instead of pretending one article explains one price move.
+
+Use it for research, triage, and evidence. It is not a trading advisor and does
+not produce guaranteed buy/sell signals.
+
+## What You Can Do
+
+- Track live transfer rumors around listed clubs.
+- Collapse duplicate articles into stronger rumor clusters.
+- Score reporter/source credibility from historical claim outcomes.
+- Ask RAG-backed analyst questions with cited local evidence.
+- Run an agentic research loop that writes a plan, trace, answer, evidence, and report.
+- Inspect target-aware predictions for buyer and seller sides.
+- Open club dossiers with stock paths, match markers, transfers, and reporters.
+- Compare clubs on live rumor volume, transfer quality, and realized returns.
+- View reporter profiles and a reporter -> source -> club trust graph.
+- Link rumored deals to closest confirmed historical transfers.
+- Test hypothetical deals in the Scenario Simulator.
+- Generate deterministic daily briefings for the current payload.
+
+## Public Club Universe
+
+The starter config tracks these listed clubs:
+
+| Club | Default stock symbol | Notes |
+| --- | --- | --- |
+| Manchester United | `MANU` | NYSE ticker |
+| Borussia Dortmund | `BVB.DE` | German listing |
+| Juventus | `JUVE.MI` | Italian listing |
+| Lazio | `SSL.MI` | Italian listing |
+| Ajax NV | `AJAX.AS` | Dutch listing |
+| Sporting CP SAD | `SCP.LS` | Portuguese listing |
+| FC Porto SAD | `FCP.LS` | Portuguese listing |
+| Celtic plc | `CCP.L` | London listing |
+| Benfica SAD | `SLBEN.LS` | Portuguese listing |
+| Eagle Football Group | `EFG.PA` | Lyon-linked French listing |
+
+If a rumor does not target a public club ticker, the system can still report
+credibility and transfer intelligence. It should not invent a stock-impact
+prediction where no listed target exists.
 
 ## Start Here
 
-If you just want to see the project working:
+If you already have `data/raw/articles/current_fast.jsonl`, rebuild the demo
+payload and serve the dashboard:
 
 ```bash
 source .venv/bin/activate
@@ -40,54 +146,133 @@ PYTHONPATH=src .venv/bin/python -m transfer_stock.cli refresh-live-analyze \
 python3 -m http.server 8000 --directory app/static
 ```
 
-Open `http://127.0.0.1:8000`.
-
-The site reads from:
+The website reads:
 
 - `app/static/data/dashboard_data.json`
+
+Scenario runs write `scenario.json`, `agents.json`, `trace.jsonl`, and
+`report.md` under `data/simulations/<simulation_id>/`, then publish the latest
+snapshot to:
+
+- `app/static/data/scenario_latest.json`
+- `app/static/data/scenario_latest_report.md`
+
+Briefings write:
+
+- `data/reports/daily_briefing.md`
+- `data/reports/daily_briefing.json`
+
+Evidence RAG writes:
+
+- `data/processed/evidence/evidence_index.json`
+
+Agent runs write:
+
+- `data/agents/<run_id>/goal.json`
+- `data/agents/<run_id>/plan.json`
+- `data/agents/<run_id>/trace.jsonl`
+- `data/agents/<run_id>/answer.json`
+- `data/agents/<run_id>/evidence.json`
+- `data/agents/<run_id>/agent_report.md`
+
+The latest run is also published for the static dashboard:
+
+- `app/static/data/agent_latest.json`
+- `app/static/data/agent_latest_report.md`
 
 If you enable the included GitHub Actions workflow, the Pages demo can refresh
 itself automatically once per day and redeploy the site with the newest payload.
 
-Everything else in this README is the fuller pipeline and publishing reference.
+## Local Agent Run
 
-## What Users Get
+`agent-run` is the deterministic agent loop that ties the project together. It
+does not need an LLM key. Given a goal, it:
 
-This project is most useful as a transfer-intelligence and market-reaction tool:
+1. chooses a grounded analyst question
+2. checks dashboard freshness
+3. rebuilds the local Evidence RAG index
+4. asks the analyst with citations
+5. retrieves top supporting evidence
+6. optionally runs Scenario Swarm when a concrete rumor is found
+7. compares against the previous agent run
+8. writes a traceable research report
+9. publishes the latest run to the dashboard
 
-- **Triage live rumors:** which current rumors around listed clubs look worth checking first
-- **Read merged rumor dossiers:** repeated coverage now collapses into one event with outlet breadth, duplicate-headline counts, and a confidence tier
-- **See event progression at a glance:** live signal cards now include a rumor-stage timeline, a consensus score, and a small target-stock snapshot around the rumor date
-- **Open club dossiers:** each listed club now gets a single page-like view with live events, trusted reporters, recent transfers, and historical peaks
-- **Compare reporter quality:** which journalists and sources have converted best in the historical set
-- **Inspect past transfers:** which types of confirmed moves historically lined up with positive or negative stock reactions
-- **Find similar cases:** for a current rumor, compare it with older player / club / direction setups
-- **Sanity-check freshness:** the dashboard now shows whether the live watchlist is actually fresh or stale
+```bash
+PYTHONPATH=src python3 -m transfer_stock.cli agent-run \
+  --goal "Explain the strongest current Juventus rumor and whether the stock signal is credible"
+```
 
-The project is still research-grade, not trading-grade. The main value right now
-is ranking, filtering, and context, not a guaranteed buy/sell signal.
+Useful options:
 
-## What This Project Is
+```bash
+--scenario auto     # default: run Scenario Swarm when a concrete player signal is found
+--scenario never    # skip simulation and only produce RAG-backed analyst output
+--top-k 8           # retrieve more evidence citations
+--no-rebuild-index  # reuse data/processed/evidence/evidence_index.json
+```
 
-The core idea is solid, but it needs to be framed carefully:
+The dashboard reads `app/static/data/agent_latest.json` and shows the latest
+agent goal, plan summary, citations, Scenario Swarm status, and "what changed
+since last run" notes.
 
-- Confirmed transfers are usually late information. Stock prices may react
-  earlier, when credible rumors appear.
-- Football club stocks are thinly traded and affected by match results,
-  earnings, European qualification, ownership news, and broader markets.
-- The most defensible financial target is not raw price movement. Use abnormal
-  returns around an event window, then train on those event-study outputs.
-- Wage data is often estimated. Keep source fields and confidence scores so the
-  model can learn uncertainty instead of treating every number as truth.
+## Demo Recording Checklist
 
-This repo starts with a practical MVP:
+Before publishing, record a short GIF and save it as
+`docs/demo-walkthrough.gif`:
 
-1. Ingest historical transfers from CSV exports or public datasets.
-2. Download stock price history for listed clubs.
-3. Collect transfer-rumor/news articles with GDELT.
-4. Build quality and credibility features.
-5. Compute event-study abnormal returns.
-6. Score current rumors for likely market impact.
+1. Start the dashboard with `python3 -m http.server 8000 --directory app/static`.
+2. Show the overview, Ask The Analyst, and Latest Agent Run panels.
+3. Run `agent-run --goal "Explain Casemiro"` in the terminal.
+4. Refresh the dashboard and show the new agent memory/citation panel.
+5. Open the generated `agent_report.md`.
+
+## Evidence RAG
+
+The Evidence RAG layer builds a local index over the dashboard payload, current
+article stores, scenario reports, daily briefings, club dossiers, reporter
+profiles, transfer rows, stock paths, and match markers. It is intentionally
+local and deterministic: no API key, vector database, or hosted model is needed.
+
+```bash
+PYTHONPATH=src python3 -m transfer_stock.cli build-evidence-index \
+  --payload app/static/data/dashboard_data.json \
+  --output data/processed/evidence/evidence_index.json
+
+PYTHONPATH=src python3 -m transfer_stock.cli query-evidence \
+  --question "Casemiro Manchester United credibility"
+
+PYTHONPATH=src python3 -m transfer_stock.cli ask \
+  --question "Explain Casemiro" \
+  --with-evidence
+```
+
+Use `ask-rag --rebuild-index` when you want one command to rebuild the index and
+answer the question:
+
+```bash
+PYTHONPATH=src python3 -m transfer_stock.cli ask-rag \
+  --question "Compare Manchester United and Juventus" \
+  --rebuild-index
+```
+
+RAG citations are evidence context, not proof of causality. They show which
+local rows, articles, reports, and market context support the answer.
+
+## Agent-Ready Interfaces
+
+This repo includes practical local agent instructions at:
+
+- `skills/transfer-impact-analyst/SKILL.md`
+- `AGENTS.md`
+- [`docs/mcp_tools.md`](docs/mcp_tools.md)
+
+These files teach Codex/Claude/Cursor-style tools how to refresh live news,
+fetch match results, rebuild the dashboard, query the analyst CLI, run Scenario
+Swarm simulations, generate the daily briefing, and avoid leakage or
+overclaiming. They are local operating docs, not marketplace claims.
+
+Everything below is the fuller pipeline and publishing reference.
 
 ## Recommended Data Sources
 
@@ -102,19 +287,15 @@ Use these in this order:
   Treat wages as estimates.
 - Stock prices: Yahoo chart endpoint by default, with Stooq CSV support when
   you provide an API key.
-- News and rumors: GDELT DOC API for broad article discovery. Later, add curated
-  RSS feeds and journalist/source credibility overrides.
+- News and rumors: Guardian/GNews provider APIs, no-key RSS presets, GDELT for
+  broad discovery, and optional Fundus/Crawl4AI enrichment for deeper article
+  extraction.
 
-## Listed Clubs In The Starter Config
+## Club Config
 
-| Club | Default stock symbol | Notes |
-| --- | --- | --- |
-| Manchester United | `MANU` | NYSE ticker |
-| Borussia Dortmund | `BVB.DE` | German listing |
-| Juventus | `JUVE.MI` | Italian listing |
-| Lazio | `SSL.MI` | Italian listing |
-
-If a symbol does not return data, edit `config/clubs.yml`.
+The public-club universe is listed near the top of this README. If a symbol
+does not return data, or you want to add another listed club, edit
+`config/clubs.yml`.
 
 ## Install
 
@@ -205,6 +386,25 @@ Stooq currently asks for an API key on direct CSV downloads. To use it, set:
 ```bash
 export STOOQ_API_KEY=your_key_here
 python3 -m transfer_stock.cli fetch-stocks --source stooq
+```
+
+Fetch match results for each public club and mark them on club stock paths:
+
+```bash
+PYTHONPATH=src python3 -m transfer_stock.cli fetch-match-results \
+  --seasons 2025-26 \
+  --resume
+```
+
+This writes one CSV per club under `data/raw/matches/`. Rebuild the dashboard
+afterward so the markers appear:
+
+```bash
+PYTHONPATH=src .venv/bin/python -m transfer_stock.cli refresh-live-analyze \
+  --input data/raw/articles/current_fast.jsonl \
+  --clubs manchester_united juventus ajax \
+  --slug current_fast \
+  --dashboard-output app/static/data/dashboard_data.json
 ```
 
 Fetch current transfer news:
@@ -426,6 +626,16 @@ The current dashboard also includes:
 - a `Past Transfers` view for confirmed transfer quality and realized impact
 - a `Live Watchlist` panel for the latest direct-target rumors
 - journalist, source, and club-journalist credibility leaderboards
+- club stock paths with optional match result markers from `data/raw/matches/<club_key>.csv`
+
+Match-result overlay CSVs use this shape:
+
+```csv
+date,opponent,competition,venue,result,goals_for,goals_against,score,source_url
+2026-05-17,Chelsea,Premier League,A,W,2,1,2-1,https://example.com/match-report
+```
+
+Weekend match dates are mapped to the next available stock trading date.
 
 Serve the dashboard locally from the repo root:
 
@@ -603,8 +813,23 @@ Useful endpoints:
 - `GET /meta`
 - `GET /signals/current?season=2025-26&club=Manchester%20United`
 - `GET /signals/watchlist`
+- `GET /clubs/Manchester%20United/dossier`
+- `GET /reporters/Fabrizio%20Romano`
+- `GET /compare?club_a=Manchester%20United&club_b=Juventus`
+- `POST /ask` with JSON body `{"question":"Compare Manchester United and Juventus"}`
 - `GET /transfers/history?season=2025-26`
 - `GET /leaderboards/journalists`
+
+The agent-oriented command and schema contract is documented in
+[`docs/mcp_tools.md`](docs/mcp_tools.md).
+
+Example analyst API call:
+
+```bash
+curl -X POST http://127.0.0.1:8010/ask \
+  -H "Content-Type: application/json" \
+  -d '{"question":"What is the current signal for Casemiro?"}'
+```
 
 ## GitHub Demo
 

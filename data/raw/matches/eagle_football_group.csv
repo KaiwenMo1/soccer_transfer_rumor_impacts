@@ -1,0 +1,35 @@
+date,club,opponent,competition,venue,result,goals_for,goals_against,score,source,source_url
+2025-08-16,Eagle Football Group,Lens,F1,A,W,1,0,1-0,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2025-08-23,Eagle Football Group,Metz,F1,H,W,3,0,3-0,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2025-08-31,Eagle Football Group,Marseille,F1,H,W,1,0,1-0,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2025-09-14,Eagle Football Group,Rennes,F1,A,L,1,3,1-3,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2025-09-19,Eagle Football Group,Angers,F1,H,W,1,0,1-0,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2025-09-28,Eagle Football Group,Lille,F1,A,W,1,0,1-0,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2025-10-05,Eagle Football Group,Toulouse,F1,H,L,1,2,1-2,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2025-10-18,Eagle Football Group,Nice,F1,A,L,2,3,2-3,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2025-10-26,Eagle Football Group,Strasbourg,F1,H,W,2,1,2-1,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2025-10-29,Eagle Football Group,Paris FC,F1,A,D,3,3,3-3,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2025-11-02,Eagle Football Group,Brest,F1,A,D,0,0,0-0,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2025-11-09,Eagle Football Group,Paris SG,F1,H,L,2,3,2-3,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2025-11-23,Eagle Football Group,Auxerre,F1,A,D,0,0,0-0,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2025-11-30,Eagle Football Group,Nantes,F1,H,W,3,0,3-0,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2025-12-07,Eagle Football Group,Lorient,F1,A,L,0,1,0-1,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2025-12-14,Eagle Football Group,Le Havre,F1,H,W,1,0,1-0,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2026-01-03,Eagle Football Group,Monaco,F1,A,W,3,1,3-1,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2026-01-18,Eagle Football Group,Brest,F1,H,W,2,1,2-1,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2026-01-25,Eagle Football Group,Metz,F1,A,W,5,2,5-2,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2026-02-01,Eagle Football Group,Lille,F1,H,W,1,0,1-0,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2026-02-07,Eagle Football Group,Nantes,F1,A,W,1,0,1-0,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2026-02-15,Eagle Football Group,Nice,F1,H,W,2,0,2-0,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2026-02-22,Eagle Football Group,Strasbourg,F1,A,L,1,3,1-3,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2026-03-01,Eagle Football Group,Marseille,F1,A,L,2,3,2-3,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2026-03-08,Eagle Football Group,Paris FC,F1,H,D,1,1,1-1,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2026-03-15,Eagle Football Group,Le Havre,F1,A,D,0,0,0-0,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2026-03-22,Eagle Football Group,Monaco,F1,H,L,1,2,1-2,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2026-04-05,Eagle Football Group,Angers,F1,A,D,0,0,0-0,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2026-04-12,Eagle Football Group,Lorient,F1,H,W,2,0,2-0,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2026-04-19,Eagle Football Group,Paris SG,F1,A,W,2,1,2-1,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2026-04-25,Eagle Football Group,Auxerre,F1,H,W,3,2,3-2,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2026-05-03,Eagle Football Group,Rennes,F1,H,W,4,2,4-2,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2026-05-10,Eagle Football Group,Toulouse,F1,A,L,1,2,1-2,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv
+2026-05-17,Eagle Football Group,Lens,F1,H,L,0,4,0-4,football-data.co.uk,https://www.football-data.co.uk/mmz4281/2526/f1.csv

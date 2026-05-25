@@ -1,0 +1,233 @@
+{
+  "question": "What are Manchester United current signals?",
+  "intent": "current_signals_for_club",
+  "short_answer": "Manchester United has 2 visible signal(s). The top row is Casemiro at stage advanced with credibility 0.461 and blend negative.",
+  "evidence_cards": [
+    {
+      "title": "Live events",
+      "value": 2,
+      "detail": "Current watchlist events for this club."
+    },
+    {
+      "title": "Avg live credibility",
+      "value": "0.436",
+      "detail": "Mean credibility score in live events."
+    },
+    {
+      "title": "Avg transfer index",
+      "value": "0.453",
+      "detail": "Recent confirmed transfer quality index."
+    },
+    {
+      "title": "Avg realized CAR t+3",
+      "value": "-0.0111",
+      "detail": "Historical transfer-window abnormal return average."
+    }
+  ],
+  "tables": [
+    {
+      "title": "Signals",
+      "columns": [
+        "date",
+        "club",
+        "player",
+        "stage",
+        "credibility",
+        "model",
+        "blend"
+      ],
+      "rows": [
+        {
+          "date": "2026-05-20",
+          "club": "Manchester United",
+          "player": "Casemiro",
+          "stage": "advanced",
+          "credibility": "0.461",
+          "model": "negative",
+          "blend": "negative"
+        },
+        {
+          "date": "2026-05-19",
+          "club": "Manchester United",
+          "player": "Marcus Rashford",
+          "stage": "unclear",
+          "credibility": "0.412",
+          "model": "negative",
+          "blend": "negative"
+        }
+      ]
+    }
+  ],
+  "warnings": [
+    "This ranks signals for research triage, not as trading advice.",
+    "Evidence citations use local lexical retrieval; read them as grounded context, not proof of causality."
+  ],
+  "confidence": 0.86,
+  "source_paths": {
+    "dashboard_payload": "app/static/data/dashboard_data.json",
+    "evidence_index": "data/processed/evidence/evidence_index.json"
+  },
+  "evidence_citations": [
+    {
+      "doc_id": "342303e562d6acdc",
+      "doc_type": "signal",
+      "title": "Man United transfer news: Spygate scandal could give Michael Carrick chance to sign 'affordable' star to replace Casemiro",
+      "score": 98.6571,
+      "normalized_score": 1.0,
+      "matched_terms": [
+        "advanced",
+        "casemiro",
+        "credibility",
+        "manchester",
+        "negative",
+        "signal",
+        "stage",
+        "united"
+      ],
+      "snippet": "Rumor signal for Casemiro. Target club Manchester United. Target role seller. Counterparty . Buyer . Seller . Stage advanced. Source count 3. Sources . Journalists . Credibility score 0.4605. Transfer indicator 0.0. Rumor indicator . Prediction scope direct. P...",
+      "source_path": "app/static/data/dashboard_data.json",
+      "url": "",
+      "date": "2026-05-20",
+      "club": "Manchester United",
+      "player": "Casemiro",
+      "reporter": "",
+      "source": "Sports Mole",
+      "metadata": {
+        "group_key": "Manchester United::Casemiro",
+        "stage": "advanced",
+        "target_role": "seller",
+        "prediction_scope": "direct",
+        "credibility_score": 0.4605,
+        "prediction_confidence": 0.638,
+        "blended_label": "negative"
+      }
+    },
+    {
+      "doc_id": "db7abba04bb23d43",
+      "doc_type": "scenario",
+      "title": "Scenario Swarm: What are Manchester United current signals?",
+      "score": 88.0936,
+      "normalized_score": 0.8929,
+      "matched_terms": [
+        "casemiro",
+        "current",
+        "manchester",
+        "signal",
+        "signals",
+        "united"
+      ],
+      "snippet": "Scenario Swarm report for What are Manchester United current signals?. Consensus . Confidence . Disagreement . Player Casemiro. Club Manchester United. Risk notes Wage data is often incomplete, so fee/value logic may miss salary pressure. Football club stocks...",
+      "source_path": "app/static/data/scenario_latest.json",
+      "url": "",
+      "date": "2026-05-25",
+      "club": "Manchester United",
+      "player": "Casemiro",
+      "reporter": "",
+      "source": "",
+      "metadata": {
+        "simulation_id": "latest-dashboard",
+        "consensus": ""
+      }
+    },
+    {
+      "doc_id": "a52b68d5fbef1acd",
+      "doc_type": "signal",
+      "title": "Manuel Ugarte / Manchester United rumor signal",
+      "score": 83.9464,
+      "normalized_score": 0.8509,
+      "matched_terms": [
+        "casemiro",
+        "credibility",
+        "manchester",
+        "signal",
+        "stage",
+        "united"
+      ],
+      "snippet": "Rumor signal for Manuel Ugarte. Target club Manchester United. Target role buyer. Counterparty PSG. Buyer Manchester United. Seller PSG. Stage agreed. Source count 1. Sources The Guardian. Journalists Jamie Jackson. Credibility score 0.7313. Transfer indicator...",
+      "source_path": "app/static/data/dashboard_data.json",
+      "url": "",
+      "date": "2024-08-25",
+      "club": "Manchester United",
+      "player": "Manuel Ugarte",
+      "reporter": "Jamie Jackson",
+      "source": "The Guardian",
+      "metadata": {
+        "group_key": "Manchester United::Manuel Ugarte",
+        "stage": "agreed",
+        "target_role": "buyer",
+        "prediction_scope": "direct",
+        "credibility_score": 0.7313,
+        "prediction_confidence": 0.7919,
+        "blended_label": "positive"
+      }
+    },
+    {
+      "doc_id": "7b9ac99cb9a0c695",
+      "doc_type": "signal",
+      "title": "Mason Mount / Manchester United rumor signal",
+      "score": 80.1965,
+      "normalized_score": 0.8129,
+      "matched_terms": [
+        "credibility",
+        "manchester",
+        "negative",
+        "signal",
+        "stage",
+        "united"
+      ],
+      "snippet": "Rumor signal for Mason Mount. Target club Manchester United. Target role buyer. Counterparty Chelsea. Buyer Manchester United. Seller Chelsea. Stage unclear. Source count 1. Sources The Guardian. Journalists Jamie Jackson and Fabrizio Romano. Credibility score...",
+      "source_path": "app/static/data/dashboard_data.json",
+      "url": "",
+      "date": "2023-07-05",
+      "club": "Manchester United",
+      "player": "Mason Mount",
+      "reporter": "Jamie Jackson and Fabrizio Romano",
+      "source": "The Guardian",
+      "metadata": {
+        "group_key": "Manchester United::Mason Mount",
+        "stage": "unclear",
+        "target_role": "buyer",
+        "prediction_scope": "direct",
+        "credibility_score": 0.8603,
+        "prediction_confidence": 0.7977,
+        "blended_label": "negative"
+      }
+    },
+    {
+      "doc_id": "ffa0f04179004d57",
+      "doc_type": "article",
+      "title": "Casemiro closing in on transfer as Man United star prepares for final game - Manchester Evening News",
+      "score": 78.2912,
+      "normalized_score": 0.7936,
+      "matched_terms": [
+        "casemiro",
+        "manchester",
+        "united"
+      ],
+      "snippet": "Casemiro closing in on transfer as Man United star prepares for final game - Manchester Evening News Casemiro closing in on transfer as Man United star prepares for final game Manchester Evening News Source Google News Global EN. Journalist . Club candidates M...",
+      "source_path": "data/raw/articles/current_fast.jsonl",
+      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOV1dyOENGSGZZVEVNZDRtdmxyM1pnQWhtazVvTzFoUjRLLUNWUEh0VWZOQk9EMDYxRFAzV3N6S3ZGSTEwanVzalVEclhmb2RIenpDZGNnX0ZiUnNGbGhBNWpQa1NLRXlnNzV1SGR0U0FGaGhNRld2OE8zQVFiRHV6VXg2X2xtMkZYTk1xdzFqR1RjS1FSai1EbWhUNFBHU0lCSWY0U3F4R3dzX1JCSmI2NEVHR1rSAboBQVVfeXFMTW5SVEs3MnZFWVp4eHVianB4TDE4TW51SWxRZFRQeHlCWWV5S0hqM3dGVWhHOGsyWk9XMDRIM19OeUhLeks1U19vaXNWRnQyLWUxTmpNd2lyMENJQkFTUWpNOXcwTmlReG53R2FIdVFTRERqSlJLMVZ1R0JJUGVrVDVQSGstbUJWY25qd0Iwb0dLSnFhU2ZGc3JkUGt2QXlyQ0J1Tm5yQ2taSVJkWXlvSEZ0cHpVTmhVZ2NR?oc=5",
+      "date": "2026-05-20",
+      "club": "Manchester United",
+      "player": "",
+      "reporter": "",
+      "source": "Google News Global EN",
+      "metadata": {
+        "crawl_method": "rss",
+        "language": "English",
+        "extraction_confidence": 0.5
+      }
+    }
+  ],
+  "what_would_change_mind": [
+    "A confirmed-transfer match would strengthen historical comparison.",
+    "Fresh stock and match-result context would reduce market-context uncertainty.",
+    "Newer high-credibility reports or official club disclosures can overturn the current read."
+  ],
+  "rag": {
+    "retriever": "local_lexical",
+    "index": "data/processed/evidence/evidence_index.json",
+    "top_k": 5,
+    "citation_count": 5
+  }
+}

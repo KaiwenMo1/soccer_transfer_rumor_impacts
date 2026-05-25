@@ -1,0 +1,48 @@
+{
+  "goal": "Explain Casemiro",
+  "primary_question": "Explain Casemiro",
+  "scenario_policy": "auto",
+  "steps": [
+    {
+      "id": "inspect_goal",
+      "tool": "agent_planner",
+      "reason": "Classify the user goal and choose a grounded analyst question."
+    },
+    {
+      "id": "check_freshness",
+      "tool": "dashboard_payload",
+      "reason": "Read local freshness/data-quality status before answering."
+    },
+    {
+      "id": "build_evidence_index",
+      "tool": "build_evidence_index",
+      "reason": "Create a local cited evidence layer over dashboard/articles/reports."
+    },
+    {
+      "id": "ask_with_evidence",
+      "tool": "ask_analyst + Evidence RAG",
+      "reason": "Answer the selected question with evidence citations and uncertainty."
+    },
+    {
+      "id": "retrieve_evidence",
+      "tool": "query_evidence",
+      "reason": "Capture top supporting evidence as a standalone artifact."
+    },
+    {
+      "id": "compare_previous_run",
+      "tool": "agent_memory",
+      "reason": "Compare this result with the previous agent run when one exists."
+    },
+    {
+      "id": "scenario_swarm",
+      "tool": "simulate_scenario",
+      "reason": "Run bounded role agents when a concrete rumor signal can be identified.",
+      "policy": "auto"
+    },
+    {
+      "id": "write_report",
+      "tool": "agent_report",
+      "reason": "Write a traceable Markdown report and machine-readable JSON outputs."
+    }
+  ]
+}

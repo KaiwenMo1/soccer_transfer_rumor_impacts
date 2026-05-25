@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import re
 from collections import Counter
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import Any
@@ -279,6 +279,74 @@ def top_similar_summary(example: dict[str, Any] | None) -> str:
     return f"{player} / {club} · {actual_label} · CAR {float(car):.4f}"
 
 
+def same_player(left: Any, right: Any) -> bool:
+    return str(left or "").strip().lower() == str(right or "").strip().lower()
+
+
+def row_date(value: Any) -> date | None:
+    dt = parse_timestamp(str(value or ""))
+    if dt.year <= 1970:
+        return None
+    return dt.date()
+
+
+def confirmed_transfer_links(
+    row: dict[str, Any],
+    transfer_rows: list[dict[str, Any]],
+    *,
+    limit: int = 3,
+) -> list[dict[str, Any]]:
+    player = str(row.get("player", "")).strip()
+    target_club = str(row.get("target_club") or row.get("club") or "").strip()
+    role = str(row.get("target_role", "")).strip()
+    event_date = row_date(row.get("latest_published_at") or row.get("published_at") or row.get("date"))
+    if not player or not target_club:
+        return []
+    scored: list[tuple[float, dict[str, Any]]] = []
+    for transfer in transfer_rows:
+        if not same_player(player, transfer.get("player")):
+            continue
+        score = 0.0
+        if str(transfer.get("club", "")).strip() == target_club:
+            score += 0.55
+        if role and str(transfer.get("target_role", "")).strip() == role:
+            score += 0.20
+        if str(transfer.get("buyer_club", "")).strip() == str(row.get("buyer_club", "")).strip() and row.get("buyer_club"):
+            score += 0.08
+        if str(transfer.get("seller_club", "")).strip() == str(row.get("seller_club", "")).strip() and row.get("seller_club"):
+            score += 0.08
+        transfer_date = row_date(transfer.get("date"))
+        if event_date and transfer_date:
+            days = abs((transfer_date - event_date).days)
+            score += max(0.0, 0.17 - min(days, 365) / 365.0 * 0.17)
+        if score <= 0.0:
+            continue
+        scored.append((score, transfer))
+    scored.sort(key=lambda item: (item[0], str(item[1].get("date", ""))), reverse=True)
+    output: list[dict[str, Any]] = []
+    for score, transfer in scored[:limit]:
+        output.append(
+            {
+                "match_score": round(score, 4),
+                "date": transfer.get("date", ""),
+                "season": transfer.get("season", ""),
+                "player": transfer.get("player", ""),
+                "club": transfer.get("club", ""),
+                "buyer_club": transfer.get("buyer_club", ""),
+                "seller_club": transfer.get("seller_club", ""),
+                "target_role": transfer.get("target_role", ""),
+                "transfer_type": transfer.get("transfer_type", ""),
+                "transfer_fee_eur": transfer.get("transfer_fee_eur", ""),
+                "market_value_eur": transfer.get("market_value_eur", ""),
+                "transfer_indicator": transfer.get("transfer_indicator", ""),
+                "actual_label": transfer.get("actual_label", ""),
+                "actual_abnormal_return_p3": transfer.get("actual_abnormal_return_p3", ""),
+                "transfer_key": transfer.get("transfer_key", ""),
+            }
+        )
+    return output
+
+
 def signal_summary(row: dict[str, Any], top_example: dict[str, Any] | None = None) -> str:
     tier = str(row.get("confidence_tier", "thin")).replace("_", " ")
     role = str(row.get("target_role", "")).strip() or "target"
@@ -293,6 +361,72 @@ def signal_summary(row: dict[str, Any], top_example: dict[str, Any] | None = Non
     if similar:
         base += f" Closest historical comp: {similar}."
     return base
+
+
+def reporter_profiles(
+    rows: list[dict[str, str]],
+    journalist_leaderboard: list[dict[str, Any]],
+    *,
+    limit: int = 12,
+) -> dict[str, dict[str, Any]]:
+    by_reporter: dict[str, list[dict[str, str]]] = {}
+    for row in rows:
+        journalist = str(row.get("journalist", "")).strip()
+        if not journalist:
+            continue
+        by_reporter.setdefault(journalist, []).append(row)
+
+    leaderboard_lookup = {
+        str(row.get("journalist", "")).strip(): row
+        for row in journalist_leaderboard
+        if str(row.get("journalist", "")).strip()
+    }
+    ranked_names = [row["journalist"] for row in journalist_leaderboard if row.get("journalist")]
+    for journalist in by_reporter:
+        if journalist not in ranked_names:
+            ranked_names.append(journalist)
+
+    profiles: dict[str, dict[str, Any]] = {}
+    for journalist in ranked_names[:limit]:
+        reporter_rows = by_reporter.get(journalist, [])
+        ordered = sorted(reporter_rows, key=lambda row: parse_timestamp(str(row.get("published_at", ""))), reverse=True)
+        clubs = Counter(row.get("target_club") or row.get("club", "") for row in reporter_rows)
+        sources = Counter(publisher_label(row) for row in reporter_rows)
+        realized = [
+            row for row in reporter_rows
+            if row.get("actual_label") and row.get("target_abnormal_return_p3") not in {"", None}
+        ]
+        avg_car = (
+            round(sum(parse_float(row.get("target_abnormal_return_p3"), 0.0) for row in realized) / len(realized), 6)
+            if realized
+            else 0.0
+        )
+        leaderboard_row = leaderboard_lookup.get(journalist, {})
+        profiles[journalist] = {
+            "journalist": journalist,
+            "n_claims": int(parse_float(leaderboard_row.get("n_claims"), len(reporter_rows))),
+            "smoothed_rate": round(parse_float(leaderboard_row.get("smoothed_rate"), 0.0), 4),
+            "avg_match_score": round(parse_float(leaderboard_row.get("avg_match_score"), 0.0), 4),
+            "clubs": [{"club": club, "count": count} for club, count in clubs.most_common(6) if club],
+            "sources": [{"source": source, "count": count} for source, count in sources.most_common(6) if source],
+            "avg_realized_car_p3": avg_car,
+            "realized_count": len(realized),
+            "latest_claims": [
+                {
+                    "published_at": row.get("published_at", ""),
+                    "club": row.get("target_club") or row.get("club", ""),
+                    "player": row.get("player", ""),
+                    "source": publisher_label(row),
+                    "rumor_stage": row.get("rumor_stage", ""),
+                    "predicted_label": row.get("predicted_label", ""),
+                    "actual_label": row.get("actual_label", ""),
+                    "title": title_base(str(row.get("title", ""))),
+                    "url": row.get("url", ""),
+                }
+                for row in ordered[:8]
+            ],
+        }
+    return profiles
 
 
 def target_role(direction: str) -> str:
@@ -1136,6 +1270,133 @@ def build_signal_stock_chart(
     }
 
 
+def match_result_sentiment(result: str, goals_for: Any = "", goals_against: Any = "") -> str:
+    normalized = str(result or "").strip().lower()
+    if normalized in {"w", "win", "won"}:
+        return "positive"
+    if normalized in {"l", "loss", "lost"}:
+        return "negative"
+    if normalized in {"d", "draw"}:
+        return "neutral"
+    try:
+        gf = int(float(goals_for))
+        ga = int(float(goals_against))
+    except (TypeError, ValueError):
+        return "neutral"
+    if gf > ga:
+        return "positive"
+    if gf < ga:
+        return "negative"
+    return "neutral"
+
+
+def load_match_results(club_key: str, match_results_dir: Path | None = None) -> list[dict[str, Any]]:
+    directory = match_results_dir or (DATA_DIR / "raw" / "matches")
+    path = directory / f"{club_key}.csv"
+    if not path.exists():
+        return []
+    results: list[dict[str, Any]] = []
+    for row in read_csv(path):
+        match_date = str(row.get("date", "")).strip()
+        if not match_date:
+            continue
+        parsed = parse_timestamp(match_date).date()
+        if parsed.year <= 1970:
+            continue
+        goals_for = row.get("goals_for", row.get("gf", ""))
+        goals_against = row.get("goals_against", row.get("ga", ""))
+        score = str(row.get("score", "")).strip()
+        if not score and goals_for not in {"", None} and goals_against not in {"", None}:
+            score = f"{goals_for}-{goals_against}"
+        result = str(row.get("result", "")).strip()
+        results.append(
+            {
+                "date": parsed,
+                "date_raw": match_date,
+                "opponent": str(row.get("opponent", "")).strip(),
+                "competition": str(row.get("competition", "")).strip(),
+                "venue": str(row.get("venue", "")).strip(),
+                "result": result.upper()[:1] if result else "",
+                "score": score,
+                "goals_for": goals_for,
+                "goals_against": goals_against,
+                "source_url": str(row.get("source_url", "")).strip(),
+                "sentiment": match_result_sentiment(result, goals_for, goals_against),
+            }
+        )
+    results.sort(key=lambda row: row["date"])
+    return results
+
+
+def next_bar_index_on_or_after(bars: list[Any], event_date: date) -> int | None:
+    for index, bar in enumerate(bars):
+        if bar.date >= event_date:
+            return index
+    return None
+
+
+def build_club_stock_path(
+    club: Club,
+    *,
+    match_results_dir: Path | None = None,
+    lookback_bars: int = 160,
+) -> dict[str, Any]:
+    bars = load_bars(DATA_DIR / "raw" / "stocks" / f"{club.key}.csv")
+    if not bars:
+        return {
+            "club": club.name,
+            "ticker": club.yahoo_symbol or club.stooq_symbol,
+            "dates": [],
+            "points": [],
+            "markers": [],
+            "status": "missing_stock_bars",
+        }
+    segment = bars[-lookback_bars:] if len(bars) > lookback_bars else bars
+    start_close = segment[0].close or 1.0
+    dates = [bar.date.isoformat() for bar in segment]
+    points = [round((bar.close / start_close) * 100.0, 3) for bar in segment]
+    match_results = load_match_results(club.key, match_results_dir=match_results_dir)
+    markers: list[dict[str, Any]] = []
+    for result in match_results:
+        marker_idx = next_bar_index_on_or_after(segment, result["date"])
+        if marker_idx is None:
+            continue
+        markers.append(
+            {
+                "kind": "match",
+                "index": marker_idx,
+                "match_date": result["date"].isoformat(),
+                "trading_date": segment[marker_idx].date.isoformat(),
+                "opponent": result["opponent"],
+                "competition": result["competition"],
+                "venue": result["venue"],
+                "result": result["result"],
+                "score": result["score"],
+                "sentiment": result["sentiment"],
+                "source_url": result["source_url"],
+            }
+        )
+    return {
+        "club": club.name,
+        "ticker": club.yahoo_symbol or club.stooq_symbol,
+        "dates": dates,
+        "points": points,
+        "markers": markers,
+        "latest_date": dates[-1],
+        "latest_change": round((segment[-1].close / start_close) - 1.0, 4) if start_close else 0.0,
+        "match_marker_count": len(markers),
+        "status": "ok",
+        "match_results_path": str((match_results_dir or (DATA_DIR / "raw" / "matches")) / f"{club.key}.csv"),
+    }
+
+
+def build_club_stock_paths(clubs: dict[str, Club]) -> dict[str, dict[str, Any]]:
+    return {
+        club.name: build_club_stock_path(club)
+        for club in clubs.values()
+    }
+
+
 def event_confidence_tier(
     *,
     event_strength_value: float,
@@ -1311,6 +1572,7 @@ def build_watchlist_details(
     claim_lookup: dict[str, dict[str, Any]],
     historical_rows: list[dict[str, str]],
     clubs_by_name: dict[str, Club],
+    transfer_rows: list[dict[str, Any]],
     recent_days: int = 21,
 ) -> dict[str, dict[str, Any]]:
     fresh_threshold = now - timedelta(days=recent_days)
@@ -1330,6 +1592,7 @@ def build_watchlist_details(
         detail["deal_path"] = deal_path_label(detail)
         detail["top_similar_example"] = detail["similar_examples"][0] if detail["similar_examples"] else {}
         detail["signal_summary"] = signal_summary(detail, detail["top_similar_example"])
+        detail["confirmed_transfer_links"] = confirmed_transfer_links(detail, transfer_rows)
         detail["stock_chart"] = build_signal_stock_chart(
             detail,
             clubs_by_name=clubs_by_name,
@@ -1458,6 +1721,7 @@ def build_demo_payload(
     latest_season = max((row.get("season", "") for row in rows), key=season_start, default="")
     all_seasons = sorted({row.get("season", "") for row in rows if row.get("season")}, key=season_start, reverse=True)
     all_historical_rows = dedupe_historical_rows(rows)
+    transfer_rows = transfer_history_rows(clubs, transfers_path or (DATA_DIR / "processed" / "transfers_exact_dates.csv"))
 
     signals_by_season: dict[str, list[dict[str, Any]]] = {}
     season_summaries: dict[str, dict[str, Any]] = {}
@@ -1478,11 +1742,11 @@ def build_demo_payload(
             row["deal_path"] = deal_path_label(row)
             row["top_similar_example"] = row["similar_examples"][0] if row["similar_examples"] else {}
             row["signal_summary"] = signal_summary(row, row["top_similar_example"])
+            row["confirmed_transfer_links"] = confirmed_transfer_links(row, transfer_rows)
         signal_rows.sort(key=lambda row: (abs(row["blended_score"]), row["latest_published_at"]), reverse=True)
         signals_by_season[season] = signal_rows
         season_summaries[season] = season_summary(season, signal_rows)
 
-    transfer_rows = transfer_history_rows(clubs, transfers_path or (DATA_DIR / "processed" / "transfers_exact_dates.csv"))
     transfers_by_season: dict[str, list[dict[str, Any]]] = {}
     transfer_season_summaries: dict[str, dict[str, Any]] = {}
     for row in transfer_rows:
@@ -1505,6 +1769,7 @@ def build_demo_payload(
         claim_lookup=claim_lookup,
         historical_rows=historical_rows,
         clubs_by_name=clubs_by_name,
+        transfer_rows=transfer_rows,
     )
     for row in watchlist:
         detail = watchlist_details.get(str(row.get("group_key", "")), {})
@@ -1513,6 +1778,7 @@ def build_demo_payload(
         row["top_similar_example"] = detail.get("top_similar_example", {})
         row["signal_summary"] = detail.get("signal_summary", signal_summary(row, row.get("top_similar_example", {})))
         row["stock_chart"] = detail.get("stock_chart", {})
+        row["confirmed_transfer_links"] = detail.get("confirmed_transfer_links", [])
     journalist_leaderboard = leaderboard_rows(journalist_stats_path, label_field="journalist")
     source_leaderboard = leaderboard_rows(source_stats_path, label_field="source")
     club_journalist_leaderboard = leaderboard_rows(
@@ -1558,6 +1824,8 @@ def build_demo_payload(
         watchlist=watchlist,
         club_journalist_leaderboard=club_journalist_leaderboard,
     )
+    club_stock_paths = build_club_stock_paths(clubs)
+    reporter_profile_map = reporter_profiles(rows, journalist_leaderboard)
 
     return {
         "generated_at": generated_at.isoformat(),
@@ -1590,6 +1858,8 @@ def build_demo_payload(
         "live_watchlist_meta": watchlist_meta,
         "live_source_coverage": source_coverage,
         "club_dossiers": club_dossiers,
+        "club_stock_paths": club_stock_paths,
+        "reporter_profiles": reporter_profile_map,
         "leaderboards": {
             "journalists": journalist_leaderboard,
             "sources": source_leaderboard,

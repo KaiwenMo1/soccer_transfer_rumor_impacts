@@ -6,7 +6,11 @@ from datetime import date, timedelta
 import unittest
 
 from transfer_stock.article_store import dedupe_articles, normalize_article_row, normalize_url
+from transfer_stock.agent import compare_previous_run, plan_agent_run, run_agent
+from transfer_stock.analyst import ask_analyst
+from transfer_stock.api import ask_response, club_dossier_response, compare_response, reporter_profile_response
 from transfer_stock.backtesting import blended_signal_label, blended_signal_score, candidate_for_strategy, dedupe_candidates
+from transfer_stock.briefing import build_briefing_sections, briefing_markdown, generate_daily_briefing
 from transfer_stock.claims import heuristic_extract_claim
 from transfer_stock.config import load_clubs
 from transfer_stock.credibility_engine import AggregateStat, credibility_outputs, credibility_row
@@ -15,25 +19,519 @@ from transfer_stock.demo import (
     build_demo_payload,
     build_signal_stock_chart,
     cluster_current_rows,
+    confirmed_transfer_links,
     headline_fingerprint,
+    load_match_results,
+    match_result_sentiment,
+    next_bar_index_on_or_after,
     publisher_label,
     similar_examples,
     summarize_watchlist_cluster,
     transfer_history_rows,
 )
 from transfer_stock.event_study import cumulative_abnormal_return
+from transfer_stock.evidence_rag import (
+    attach_evidence_to_answer,
+    build_evidence_index_from_payload,
+    retrieve_evidence,
+)
 from transfer_stock.ewenme import canonical_season, fee_cleaned_to_eur
 from transfer_stock.features import credibility_score, transfer_quality_score
 from transfer_stock.market_features import compute_market_features_for_event
+from transfer_stock.match_results import football_data_season_code, normalize_football_data_rows, parse_football_data_date
 from transfer_stock.matching import single_match, transfer_id_for, TransferCandidate
 from transfer_stock.ml_v2 import LEAKY_FIELDS, parse_datetime_to_date, unmatched_claim_row, usable_rows as usable_rows_v2
 from transfer_stock.news_sources import NewsSource, render_source_url, source_supports_club
+from transfer_stock.scenario_swarm import (
+    build_dashboard_scenario_payload,
+    collect_evidence,
+    run_agents,
+    run_scenario_swarm,
+    summarize_trace,
+)
+from transfer_stock.simulator import credibility_from_payload, simulate_hypothetical_transfer
 from transfer_stock.stock import PriceBar
 from transfer_stock.targets import direct_target_rows
 from transfer_stock.transfers import Transfer, filter_loans, infer_season
 
 
 class CoreTests(unittest.TestCase):
+    def sample_analyst_payload(self):
+        return {
+            "latest_season": "2025-26",
+            "club_dossiers": {
+                "Manchester United": {
+                    "club": "Manchester United",
+                    "live_signal_count": 1,
+                    "avg_live_credibility": 0.61,
+                    "avg_transfer_index": 0.42,
+                    "avg_realized_car_p3": -0.011,
+                    "realized_positive_share": 0.4,
+                    "recent_transfer_count": 5,
+                    "top_confidence_tier": "strong",
+                    "reporters": [
+                        {
+                            "journalist": "Reporter One",
+                            "n_claims": 4,
+                            "smoothed_rate": 0.73,
+                            "avg_match_score": 0.84,
+                        }
+                    ],
+                },
+                "Juventus": {
+                    "club": "Juventus",
+                    "live_signal_count": 0,
+                    "avg_live_credibility": 0.0,
+                    "avg_transfer_index": 0.58,
+                    "avg_realized_car_p3": 0.012,
+                    "realized_positive_share": 0.55,
+                    "recent_transfer_count": 7,
+                    "top_confidence_tier": "thin",
+                    "reporters": [],
+                },
+            },
+            "club_media": {"Manchester United": {}, "Juventus": {}},
+            "club_stock_paths": {
+                "Manchester United": {
+                    "ticker": "MANU",
+                    "latest_change": 0.023,
+                    "dates": ["2026-05-01", "2026-05-20"],
+                    "latest_date": "2026-05-20",
+                    "markers": [
+                        {
+                            "match_date": "2026-05-17",
+                            "trading_date": "2026-05-18",
+                            "opponent": "Chelsea",
+                            "result": "W",
+                            "score": "2-1",
+                        }
+                    ],
+                },
+                "Juventus": {"ticker": "JUVE.MI", "markers": []},
+            },
+            "live_watchlist": [
+                {
+                    "group_key": "mu-casemiro",
+                    "published_at": "2026-05-20T12:00:00Z",
+                    "club": "Manchester United",
+                    "target_club": "Manchester United",
+                    "player": "Casemiro",
+                    "rumor_stage": "advanced",
+                    "target_role": "seller",
+                    "prediction_scope": "direct",
+                    "credibility_score": 0.61,
+                    "transfer_indicator": 0.42,
+                    "predicted_label": "negative",
+                    "prediction_confidence": 0.66,
+                    "blended_label": "negative",
+                    "latest_source": "Example Source",
+                    "confirmed_transfer_links": [
+                        {
+                            "date": "2026-06-01",
+                            "player": "Casemiro",
+                            "club": "Manchester United",
+                            "target_role": "seller",
+                            "actual_label": "negative",
+                            "actual_abnormal_return_p3": -0.012,
+                        }
+                    ],
+                    "similar_examples": [
+                        {
+                            "similarity": 0.81,
+                            "date": "2024-07-01",
+                            "club": "Manchester United",
+                            "player": "Outgoing Midfielder",
+                            "actual_label": "negative",
+                            "target_abnormal_return_p3": -0.02,
+                        }
+                    ],
+                }
+            ],
+            "signals_by_season": {"2025-26": []},
+            "transfers_by_season": {
+                "2025-26": [
+                    {
+                        "date": "2026-06-01",
+                        "club": "Manchester United",
+                        "subject_club": "Manchester United",
+                        "player": "Casemiro",
+                        "target_role": "seller",
+                        "seller_club": "Manchester United",
+                        "buyer_club": "Inter Miami",
+                        "transfer_indicator": 0.42,
+                        "actual_label": "negative",
+                    }
+                ]
+            },
+            "reporter_profiles": {
+                "Reporter One": {
+                    "journalist": "Reporter One",
+                    "n_claims": 8,
+                    "smoothed_rate": 0.71,
+                    "avg_match_score": 0.86,
+                    "avg_realized_car_p3": 0.006,
+                    "clubs": [{"club": "Manchester United", "count": 4}],
+                    "sources": [{"source": "Example Source", "count": 4}],
+                    "latest_claims": [
+                        {
+                            "published_at": "2026-05-20T12:00:00Z",
+                            "club": "Manchester United",
+                            "player": "Casemiro",
+                            "rumor_stage": "advanced",
+                            "predicted_label": "negative",
+                        }
+                    ],
+                }
+            },
+            "leaderboards": {
+                "journalists": [
+                    {
+                        "journalist": "Reporter One",
+                        "n_claims": 8,
+                        "smoothed_rate": 0.71,
+                        "avg_match_score": 0.86,
+                    }
+                ],
+                "club_journalists": [
+                    {
+                        "club": "Manchester United",
+                        "journalist": "Reporter One",
+                        "n_claims": 4,
+                        "smoothed_rate": 0.73,
+                        "avg_match_score": 0.84,
+                    }
+                ],
+            },
+        }
+
+    def test_analyst_answers_club_query(self):
+        result = ask_analyst("What are Manchester United current signals?", payload=self.sample_analyst_payload())
+        self.assertEqual(result["intent"], "current_signals_for_club")
+        self.assertIn("Casemiro", json.dumps(result))
+        self.assertTrue(result["tables"])
+
+    def test_analyst_answers_compare_query(self):
+        result = ask_analyst("Compare Manchester United and Juventus", payload=self.sample_analyst_payload())
+        self.assertEqual(result["intent"], "compare_clubs")
+        self.assertEqual(result["tables"][0]["columns"], ["metric", "Manchester United", "Juventus"])
+
+    def test_analyst_answers_reporter_query(self):
+        result = ask_analyst("Show Reporter One profile", payload=self.sample_analyst_payload())
+        self.assertEqual(result["intent"], "reporter_profile")
+        self.assertIn("smoothed", result["short_answer"])
+
+    def test_analyst_unknown_query_has_warning(self):
+        result = ask_analyst("What is the weather in Tokyo?", payload=self.sample_analyst_payload())
+        self.assertEqual(result["intent"], "unknown")
+        self.assertLess(result["confidence"], 0.5)
+        self.assertTrue(result["warnings"])
+
+    def test_evidence_rag_builds_and_retrieves_local_citations(self):
+        payload = self.sample_analyst_payload()
+        index = build_evidence_index_from_payload(
+            payload,
+            payload_path="app/static/data/dashboard_data.json",
+            article_paths=[],
+            scenario_path="missing_scenario.json",
+            briefing_path="missing_briefing.md",
+        )
+        self.assertGreaterEqual(index["stats"]["documents"], 5)
+        self.assertIn("signal", index["stats"]["types"])
+        hits = retrieve_evidence(index, "Casemiro Manchester United credibility", top_k=3)
+        self.assertTrue(hits)
+        self.assertEqual(hits[0]["player"], "Casemiro")
+        self.assertIn(hits[0]["doc_type"], {"signal", "transfer"})
+
+    def test_analyst_can_attach_evidence_citations(self):
+        payload = self.sample_analyst_payload()
+        result = ask_analyst(
+            "Explain Casemiro",
+            payload=payload,
+            include_evidence=True,
+            evidence_top_k=3,
+        )
+        self.assertEqual(result["intent"], "explain_rumor")
+        self.assertTrue(result["evidence_citations"])
+        self.assertIn("rag", result)
+        self.assertTrue(result["what_would_change_mind"])
+
+    def test_attach_evidence_preserves_base_answer_contract(self):
+        payload = self.sample_analyst_payload()
+        base = ask_analyst("Compare Manchester United and Juventus", payload=payload)
+        enriched = attach_evidence_to_answer(
+            base,
+            "Compare Manchester United and Juventus",
+            payload=payload,
+            top_k=2,
+        )
+        self.assertEqual(enriched["intent"], base["intent"])
+        self.assertEqual(enriched["question"], base["question"])
+        self.assertLessEqual(len(enriched["evidence_citations"]), 2)
+        self.assertIn("evidence_index", enriched["source_paths"])
+
+    def test_agent_plans_strongest_club_goal(self):
+        payload = self.sample_analyst_payload()
+        plan = plan_agent_run("Find today's strongest Manchester United watch item", payload)
+        self.assertEqual(plan["primary_question"], "What are Manchester United current signals?")
+        self.assertTrue(any(step["id"] == "ask_with_evidence" for step in plan["steps"]))
+
+    def test_agent_run_writes_traceable_outputs(self):
+        payload = self.sample_analyst_payload()
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            payload_path = root / "dashboard_data.json"
+            payload_path.write_text(json.dumps(payload), encoding="utf-8")
+            result = run_agent(
+                goal="Explain Casemiro",
+                payload_path=payload_path,
+                output_dir=root / "agents",
+                evidence_index=root / "evidence_index.json",
+                run_id="test_run",
+                scenario_policy="never",
+                top_k=2,
+                dashboard_output=None,
+            )
+            self.assertEqual(result["status"], "completed")
+            self.assertEqual(result["answer"]["intent"], "explain_rumor")
+            self.assertGreaterEqual(result["answer"]["citation_count"], 1)
+            self.assertIn("memory", result)
+            for key in ["goal", "plan", "trace", "answer", "evidence", "report"]:
+                self.assertTrue((root / result["outputs"][key]).exists(), key)
+            report = (root / result["outputs"]["report"]).read_text(encoding="utf-8")
+            self.assertIn("Agent Run Report", report)
+            self.assertIn("Evidence Citations", report)
+            self.assertIn("What Changed Since Last Run", report)
+
+    def test_agent_memory_compares_previous_run(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            previous = root / "agents" / "previous_run"
+            previous.mkdir(parents=True)
+            (previous / "goal.json").write_text(json.dumps({"goal": "Old", "created_at": "2026-05-20T00:00:00+00:00"}), encoding="utf-8")
+            (previous / "answer.json").write_text(
+                json.dumps({"short_answer": "Old answer", "confidence": 0.5, "evidence_citations": [{"doc_id": "old", "title": "Old evidence", "doc_type": "signal"}]}),
+                encoding="utf-8",
+            )
+            memory = compare_previous_run(
+                output_dir=root / "agents",
+                current_run_id="current_run",
+                answer={"short_answer": "New answer", "confidence": 0.7, "evidence_citations": [{"doc_id": "new", "title": "New evidence", "doc_type": "article"}]},
+                evidence={"hits": []},
+                freshness={"latest_live_date": "2026-05-25"},
+            )
+            self.assertTrue(memory["available"])
+            self.assertEqual(memory["previous_run_id"], "previous_run")
+            self.assertTrue(memory["new_evidence"])
+            self.assertTrue(any("confidence" in item for item in memory["changes"]))
+
+    def test_api_response_helpers_expose_analyst_contracts(self):
+        payload = self.sample_analyst_payload()
+        club = club_dossier_response(payload, "Manchester United")
+        self.assertEqual(club["club"], "Manchester United")
+        self.assertIn("stock_path", club)
+
+        reporter = reporter_profile_response(payload, "Reporter One")
+        self.assertEqual(reporter["profile"]["journalist"], "Reporter One")
+
+        comparison = compare_response(payload, "Manchester United", "Juventus")
+        self.assertEqual(comparison["intent"], "compare_clubs")
+
+        asked = ask_response(payload, "Explain Casemiro")
+        self.assertEqual(asked["intent"], "explain_rumor")
+
+        with self.assertRaises(ValueError):
+            ask_response(payload, "   ")
+        with self.assertRaises(KeyError):
+            club_dossier_response(payload, "Unknown FC")
+
+    def test_scenario_swarm_collects_evidence_bundle(self):
+        evidence = collect_evidence(
+            self.sample_analyst_payload(),
+            player="Casemiro",
+            club="Manchester United",
+        )
+        self.assertEqual(evidence["signal"]["player"], "Casemiro")
+        self.assertEqual(evidence["stock_path"]["ticker"], "MANU")
+        self.assertTrue(evidence["confirmed_transfer_links"])
+        self.assertEqual(evidence["stock_path"]["recent_match_markers"][0]["opponent"], "Chelsea")
+        club_question = collect_evidence(self.sample_analyst_payload(), question="What are Manchester United current signals?")
+        self.assertEqual(club_question["signal"]["player"], "Casemiro")
+
+    def test_scenario_swarm_agents_and_summary(self):
+        evidence = collect_evidence(
+            self.sample_analyst_payload(),
+            question="What is the current signal for Casemiro?",
+        )
+        trace = run_agents(evidence, rounds=2)
+        self.assertEqual(len(trace), 10)
+        self.assertEqual({row["round"] for row in trace}, {1, 2})
+        self.assertTrue(all(row.get("stance") for row in trace))
+        summary = summarize_trace(trace)
+        self.assertIn(summary["consensus_stance"], {"bullish", "bearish", "neutral", "watch"})
+        self.assertIn("stance_counts", summary)
+
+    def test_scenario_swarm_writes_outputs(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            payload_path = Path(tmpdir) / "payload.json"
+            payload_path.write_text(json.dumps(self.sample_analyst_payload()), encoding="utf-8")
+            result = run_scenario_swarm(
+                player="Casemiro",
+                club="Manchester United",
+                payload_path=payload_path,
+                output_dir=Path(tmpdir) / "simulations",
+                rounds=2,
+                simulation_id="test-scenario",
+                dashboard_output=Path(tmpdir) / "scenario_latest.json",
+                dashboard_report_output=Path(tmpdir) / "scenario_latest_report.md",
+            )
+            for key in ("scenario", "agents", "trace", "report", "dashboard_scenario", "dashboard_report"):
+                self.assertTrue(Path(result[key]).exists())
+            report = Path(result["report"]).read_text(encoding="utf-8")
+            self.assertIn("Scenario Swarm Report", report)
+            self.assertIn("Consensus stance", report)
+            dashboard_payload = json.loads(Path(result["dashboard_scenario"]).read_text(encoding="utf-8"))
+            self.assertTrue(dashboard_payload["available"])
+            self.assertEqual(dashboard_payload["signal"]["player"], "Casemiro")
+            self.assertEqual(len(dashboard_payload["agents"]), 5)
+
+    def test_scenario_dashboard_payload_is_static_friendly(self):
+        evidence = collect_evidence(self.sample_analyst_payload(), player="Casemiro")
+        trace = run_agents(evidence, rounds=1)
+        summary = summarize_trace(trace)
+        scenario = {
+            "simulation_id": "unit",
+            "question": "Question?",
+            "created_at": "2026-05-20T12:00:00+00:00",
+            "rounds": 1,
+            "evidence": evidence,
+            "summary": summary,
+        }
+        payload = build_dashboard_scenario_payload(
+            scenario,
+            [],
+            trace,
+            "# Report",
+            output_paths={"report": "data/simulations/unit/report.md"},
+            dashboard_report_path=Path("app") / "static" / "data" / "scenario_latest_report.md",
+        )
+        self.assertEqual(payload["report_href"], "data/scenario_latest_report.md")
+        self.assertEqual(payload["summary"]["consensus_stance"], summary["consensus_stance"])
+        self.assertTrue(payload["risk_notes"])
+
+    def test_daily_briefing_sections_and_markdown(self):
+        payload = self.sample_analyst_payload()
+        scenario = {
+            "available": True,
+            "question": "What is Casemiro scenario?",
+            "signal": {"player": "Casemiro", "target_club": "Manchester United"},
+            "summary": {"consensus_stance": "watch", "consensus_confidence": 0.68, "stance_counts": {"watch": 4}},
+            "report_href": "data/scenario_latest_report.md",
+        }
+        sections = build_briefing_sections(payload, scenario)
+        self.assertEqual(sections["freshness"]["latest_season"], "2025-26")
+        self.assertTrue(sections["top_direct_rumors"])
+        markdown = briefing_markdown(sections)
+        self.assertIn("Top Current Direct-Target Rumors", markdown)
+        self.assertIn("Latest Scenario Swarm", markdown)
+        self.assertIn("Casemiro", markdown)
+
+    def test_daily_briefing_empty_data_behavior(self):
+        payload = {
+            "generated_at": "2026-05-20T00:00:00+00:00",
+            "latest_season": "2025-26",
+            "overview": {"xgboost_test_accuracy": 0.0},
+            "quality_summary": {"live_status": "stale", "latest_live_date": ""},
+            "leaderboards": {},
+            "club_dossiers": {},
+            "club_stock_paths": {},
+            "live_watchlist": [],
+        }
+        sections = build_briefing_sections(payload, {})
+        markdown = briefing_markdown(sections)
+        self.assertIn("No live watchlist rows", " ".join(sections["warnings"]))
+        self.assertIn("| - | - |", markdown)
+
+    def test_generate_daily_briefing_writes_files(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            payload_path = Path(tmpdir) / "payload.json"
+            scenario_path = Path(tmpdir) / "scenario.json"
+            output_md = Path(tmpdir) / "briefing.md"
+            output_json = Path(tmpdir) / "briefing.json"
+            payload_path.write_text(json.dumps(self.sample_analyst_payload()), encoding="utf-8")
+            scenario_path.write_text(json.dumps({"available": True, "question": "Scenario?", "summary": {}}), encoding="utf-8")
+            result = generate_daily_briefing(
+                payload_path=payload_path,
+                scenario_path=scenario_path,
+                output_markdown=output_md,
+                output_json=output_json,
+            )
+            self.assertTrue(Path(result["markdown"]).exists())
+            self.assertTrue(Path(result["json"]).exists())
+            self.assertIn("Daily Transfer-Stock Briefing", output_md.read_text(encoding="utf-8"))
+
+    def test_scenario_simulator_scores_hypothetical(self):
+        payload = self.sample_analyst_payload()
+        payload["club_media"]["Manchester United"] = {"ticker": "MANU"}
+        payload["signals_by_season"]["2024-25"] = [
+            {
+                "published_date": "2024-07-01",
+                "club": "Manchester United",
+                "player": "Historical Forward",
+                "direction": "in",
+                "target_role": "buyer",
+                "position": "Forward",
+                "age": "24",
+                "market_value_eur": "50000000",
+                "credibility_score": "0.65",
+                "transfer_indicator": "0.72",
+                "rumor_stage_score": "0.72",
+                "stock_context_indicator": "0.0",
+                "actual_label": "positive",
+                "target_abnormal_return_p3": "0.021",
+            }
+        ]
+        result = simulate_hypothetical_transfer(
+            payload,
+            {
+                "target_club": "Manchester United",
+                "target_role": "buyer",
+                "age": 24,
+                "position": "Forward",
+                "market_value_eur": 50_000_000,
+                "transfer_fee_eur": 40_000_000,
+                "wage_eur_annual": 8_000_000,
+                "rumor_stage": "advanced",
+                "source": "Example Source",
+                "journalist": "Reporter One",
+                "transfer_type": "permanent",
+            },
+        )
+        self.assertGreater(result["transfer_indicator"], 0.5)
+        self.assertGreater(result["credibility_indicator"], 0.5)
+        self.assertIn(result["estimated_impact"]["label"], {"positive", "negative", "watch"})
+        self.assertEqual(result["nearest_historical_examples"][0]["player"], "Historical Forward")
+        self.assertEqual(result["scenario_swarm_seed"]["signal"]["target_club"], "Manchester United")
+
+    def test_scenario_simulator_defaults_unknown_source(self):
+        score, warnings = credibility_from_payload(self.sample_analyst_payload(), "Unknown Source", "No One")
+        self.assertEqual(score, 0.5)
+        self.assertTrue(warnings)
+        result = simulate_hypothetical_transfer(
+            self.sample_analyst_payload(),
+            {
+                "target_club": "Private FC",
+                "target_role": "seller",
+                "age": 31,
+                "position": "Midfielder",
+                "market_value_eur": 10_000_000,
+                "transfer_fee_eur": 8_000_000,
+                "rumor_stage": "linked",
+                "transfer_type": "loan",
+            },
+        )
+        self.assertTrue(any("no configured public ticker" in warning for warning in result["warnings"]))
+        self.assertTrue(any("Loan scenarios" in warning for warning in result["warnings"]))
+
     def test_transfer_quality_score_bounds(self):
         transfer = Transfer(
             date=date(2024, 7, 1),
@@ -496,6 +994,112 @@ class CoreTests(unittest.TestCase):
         self.assertEqual(chart["event_date"], "2026-05-20")
         self.assertEqual(chart["points"][2], 100.0)
         self.assertAlmostEqual(chart["latest_change"], 0.03, places=4)
+
+    def test_match_results_loader_and_next_trading_date(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            match_dir = Path(tmp)
+            path = match_dir / "manchester_united.csv"
+            with path.open("w", encoding="utf-8", newline="") as handle:
+                writer = csv.DictWriter(
+                    handle,
+                    fieldnames=[
+                        "date",
+                        "opponent",
+                        "competition",
+                        "venue",
+                        "result",
+                        "goals_for",
+                        "goals_against",
+                        "score",
+                        "source_url",
+                    ],
+                )
+                writer.writeheader()
+                writer.writerow(
+                    {
+                        "date": "2026-05-17",
+                        "opponent": "Chelsea",
+                        "competition": "Premier League",
+                        "venue": "A",
+                        "result": "",
+                        "goals_for": "2",
+                        "goals_against": "1",
+                        "score": "",
+                        "source_url": "https://example.com/report",
+                    }
+                )
+            rows = load_match_results("manchester_united", match_results_dir=match_dir)
+            self.assertEqual(rows[0]["sentiment"], "positive")
+            self.assertEqual(rows[0]["score"], "2-1")
+            bars = [
+                PriceBar(date(2026, 5, 18), 100, 100, 100, 100, 1000),
+                PriceBar(date(2026, 5, 19), 101, 101, 101, 101, 1000),
+            ]
+            self.assertEqual(next_bar_index_on_or_after(bars, date(2026, 5, 17)), 0)
+            self.assertEqual(match_result_sentiment("L", "", ""), "negative")
+
+    def test_football_data_rows_normalize_for_public_club(self):
+        clubs = load_clubs()
+        rows = normalize_football_data_rows(
+            clubs["manchester_united"],
+            [
+                {
+                    "Date": "17/05/2026",
+                    "HomeTeam": "Chelsea",
+                    "AwayTeam": "Man United",
+                    "FTHG": "1",
+                    "FTAG": "2",
+                    "FTR": "A",
+                }
+            ],
+            season="2025-26",
+            league_code="E0",
+        )
+        self.assertEqual(football_data_season_code("2025-26"), "2526")
+        self.assertEqual(parse_football_data_date("17/05/2026"), date(2026, 5, 17))
+        self.assertEqual(rows[0]["club"], "Manchester United")
+        self.assertEqual(rows[0]["opponent"], "Chelsea")
+        self.assertEqual(rows[0]["venue"], "A")
+        self.assertEqual(rows[0]["result"], "W")
+        self.assertEqual(rows[0]["score"], "2-1")
+
+    def test_confirmed_transfer_links_match_same_player_and_club(self):
+        rumor = {
+            "player": "Casemiro",
+            "target_club": "Manchester United",
+            "target_role": "seller",
+            "buyer_club": "Inter Miami",
+            "seller_club": "Manchester United",
+            "latest_published_at": "2026-05-20T12:00:00Z",
+        }
+        transfers = [
+            {
+                "date": "2026-06-01",
+                "season": "2025-26",
+                "player": "Casemiro",
+                "club": "Manchester United",
+                "buyer_club": "Inter Miami",
+                "seller_club": "Manchester United",
+                "target_role": "seller",
+                "transfer_indicator": "0.42",
+                "actual_label": "negative",
+                "actual_abnormal_return_p3": "-0.012",
+                "transfer_key": "t1",
+            },
+            {
+                "date": "2022-08-19",
+                "season": "2022-23",
+                "player": "Casemiro",
+                "club": "Manchester United",
+                "buyer_club": "Manchester United",
+                "seller_club": "Real Madrid",
+                "target_role": "buyer",
+                "transfer_key": "old",
+            },
+        ]
+        links = confirmed_transfer_links(rumor, transfers)
+        self.assertEqual(links[0]["transfer_key"], "t1")
+        self.assertGreater(links[0]["match_score"], 0.8)
 
     def test_dedupe_articles_keeps_first_copy(self):
         rows = [
@@ -1465,6 +2069,11 @@ class CoreTests(unittest.TestCase):
             self.assertEqual(payload["leaderboards"]["club_journalists"][0]["club"], "Manchester United")
             self.assertIn("Juventus", payload["club_dossiers"])
             self.assertEqual(payload["club_dossiers"]["Juventus"]["club"], "Juventus")
+            self.assertIn("Juventus", payload["club_stock_paths"])
+            self.assertIn("Reporter One", payload["reporter_profiles"])
+            self.assertEqual(payload["reporter_profiles"]["Reporter One"]["n_claims"], 8)
+            self.assertTrue(latest_signal["confirmed_transfer_links"])
+            self.assertEqual(latest_signal["confirmed_transfer_links"][0]["player"], "Example Out")
 
 
 if __name__ == "__main__":

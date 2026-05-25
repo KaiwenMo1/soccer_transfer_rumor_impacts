@@ -1,0 +1,322 @@
+{
+  "available": true,
+  "simulation_id": "latest-dashboard",
+  "generated_at": "2026-05-25T01:28:05.543848+00:00",
+  "question": "What are Manchester United current signals?",
+  "rounds": 2,
+  "summary": {
+    "consensus_stance": "watch",
+    "consensus_score": -0.2195,
+    "consensus_confidence": 0.6889,
+    "stance_counts": {
+      "watch": 4,
+      "bearish": 1
+    }
+  },
+  "signal": {
+    "player": "Casemiro",
+    "target_club": "Manchester United",
+    "club": "Manchester United",
+    "target_role": "seller",
+    "rumor_stage": "unclear",
+    "credibility_score": 0.4125,
+    "transfer_indicator": 0.0,
+    "predicted_label": "negative",
+    "blended_label": "negative",
+    "prediction_confidence": 0.638,
+    "latest_source": "Sports Mole"
+  },
+  "agents": [
+    {
+      "round": 2,
+      "id": "club_finance",
+      "name": "Club Finance Agent",
+      "description": "Reads the rumor through fee, wage, transfer value, and club balance-sheet pressure.",
+      "agent_id": "club_finance",
+      "stance": "watch",
+      "confidence": 0.71,
+      "evidence_bullets": [
+        "Selling-side rumors can be financially constructive if they reduce wages or monetize an aging player."
+      ],
+      "risk_caveats": [
+        "Wage data is often incomplete, so fee/value logic may miss salary pressure."
+      ]
+    },
+    {
+      "round": 2,
+      "id": "market_reaction",
+      "name": "Market Reaction Agent",
+      "description": "Reads the rumor through stock context, model signal, liquidity, and match-result timing.",
+      "agent_id": "market_reaction",
+      "stance": "watch",
+      "confidence": 0.829,
+      "evidence_bullets": [
+        "Model/blended label is negative in the current payload.",
+        "Loaded stock path latest change is 28.00%.",
+        "37 match markers are present on the club stock path."
+      ],
+      "risk_caveats": [
+        "Football club stocks are thin and can react to non-transfer news.",
+        "Recent stock path already moved materially, so some rumor/match information may be priced in.",
+        "Match-result markers overlap the stock path and can confound transfer-rumor interpretation."
+      ]
+    },
+    {
+      "round": 2,
+      "id": "journalist_credibility",
+      "name": "Journalist Credibility Agent",
+      "description": "Reads the rumor through source mix, journalist history, and rumor-stage reliability.",
+      "agent_id": "journalist_credibility",
+      "stance": "watch",
+      "confidence": 0.564,
+      "evidence_bullets": [
+        "Credibility score is moderate.",
+        "Multiple sources support the event cluster."
+      ],
+      "risk_caveats": [
+        "No reporter profile is attached to this signal.",
+        "Aggregated articles can repeat the same underlying report, so source count is not pure independence."
+      ]
+    },
+    {
+      "round": 2,
+      "id": "fan_sentiment",
+      "name": "Fan/Sentiment Agent",
+      "description": "Reads the rumor through fan narrative, player importance, age, and role.",
+      "agent_id": "fan_sentiment",
+      "stance": "watch",
+      "confidence": 0.5856,
+      "evidence_bullets": [
+        "Selling Casemiro could be read as losing talent if he is viewed as important."
+      ],
+      "risk_caveats": [
+        "Fan sentiment is proxied from role/age/position only; no social feed is included yet."
+      ]
+    },
+    {
+      "round": 2,
+      "id": "risk_officer",
+      "name": "Risk Officer Agent",
+      "description": "Challenges the scenario, flags weak evidence, and reduces overconfident conclusions.",
+      "agent_id": "risk_officer",
+      "stance": "bearish",
+      "confidence": 0.756,
+      "evidence_bullets": [
+        "Credibility is below the stronger-evidence band.",
+        "Rumor stage is early or unclear."
+      ],
+      "risk_caveats": [
+        "Scenario output is for research triage only, not a buy/sell instruction.",
+        "No agent isolates causality from match results, ownership news, earnings, or market liquidity.",
+        "Prior round had broad disagreement, so confidence is tempered."
+      ]
+    }
+  ],
+  "agent_catalog": [
+    {
+      "id": "club_finance",
+      "name": "Club Finance Agent",
+      "description": "Reads the rumor through fee, wage, transfer value, and club balance-sheet pressure."
+    },
+    {
+      "id": "market_reaction",
+      "name": "Market Reaction Agent",
+      "description": "Reads the rumor through stock context, model signal, liquidity, and match-result timing."
+    },
+    {
+      "id": "journalist_credibility",
+      "name": "Journalist Credibility Agent",
+      "description": "Reads the rumor through source mix, journalist history, and rumor-stage reliability."
+    },
+    {
+      "id": "fan_sentiment",
+      "name": "Fan/Sentiment Agent",
+      "description": "Reads the rumor through fan narrative, player importance, age, and role."
+    },
+    {
+      "id": "risk_officer",
+      "name": "Risk Officer Agent",
+      "description": "Challenges the scenario, flags weak evidence, and reduces overconfident conclusions."
+    }
+  ],
+  "evidence": {
+    "stock_path": {
+      "club": "Manchester United",
+      "ticker": "MANU",
+      "latest_change": 0.28,
+      "latest_date": "2026-05-20",
+      "match_marker_count": 37,
+      "recent_match_markers": [
+        {
+          "kind": "match",
+          "index": 157,
+          "match_date": "2026-05-17",
+          "trading_date": "2026-05-18",
+          "opponent": "Nott'm Forest",
+          "competition": "E0",
+          "venue": "H",
+          "result": "W",
+          "score": "3-2",
+          "sentiment": "positive",
+          "source_url": "https://www.football-data.co.uk/mmz4281/2526/e0.csv"
+        },
+        {
+          "kind": "match",
+          "index": 152,
+          "match_date": "2026-05-09",
+          "trading_date": "2026-05-11",
+          "opponent": "Sunderland",
+          "competition": "E0",
+          "venue": "A",
+          "result": "D",
+          "score": "0-0",
+          "sentiment": "neutral",
+          "source_url": "https://www.football-data.co.uk/mmz4281/2526/e0.csv"
+        },
+        {
+          "kind": "match",
+          "index": 147,
+          "match_date": "2026-05-03",
+          "trading_date": "2026-05-04",
+          "opponent": "Liverpool",
+          "competition": "E0",
+          "venue": "H",
+          "result": "W",
+          "score": "3-2",
+          "sentiment": "positive",
+          "source_url": "https://www.football-data.co.uk/mmz4281/2526/e0.csv"
+        },
+        {
+          "kind": "match",
+          "index": 142,
+          "match_date": "2026-04-27",
+          "trading_date": "2026-04-27",
+          "opponent": "Brentford",
+          "competition": "E0",
+          "venue": "H",
+          "result": "W",
+          "score": "2-1",
+          "sentiment": "positive",
+          "source_url": "https://www.football-data.co.uk/mmz4281/2526/e0.csv"
+        },
+        {
+          "kind": "match",
+          "index": 137,
+          "match_date": "2026-04-18",
+          "trading_date": "2026-04-20",
+          "opponent": "Chelsea",
+          "competition": "E0",
+          "venue": "A",
+          "result": "W",
+          "score": "1-0",
+          "sentiment": "positive",
+          "source_url": "https://www.football-data.co.uk/mmz4281/2526/e0.csv"
+        },
+        {
+          "kind": "match",
+          "index": 132,
+          "match_date": "2026-04-13",
+          "trading_date": "2026-04-13",
+          "opponent": "Leeds",
+          "competition": "E0",
+          "venue": "H",
+          "result": "L",
+          "score": "1-2",
+          "sentiment": "negative",
+          "source_url": "https://www.football-data.co.uk/mmz4281/2526/e0.csv"
+        }
+      ]
+    },
+    "confirmed_transfer_links": [
+      {
+        "match_score": 0.55,
+        "date": "2022-08-22",
+        "season": "2022-23",
+        "player": "Casemiro",
+        "club": "Manchester United",
+        "buyer_club": "Manchester United",
+        "seller_club": "Real Madrid",
+        "target_role": "buyer",
+        "transfer_type": "permanent",
+        "transfer_fee_eur": 70650000.0,
+        "market_value_eur": 40000000.0,
+        "transfer_indicator": 0.3263,
+        "actual_label": "neutral",
+        "actual_abnormal_return_p3": -0.002409,
+        "transfer_key": "2022-08-22::Manchester United::Casemiro::buyer"
+      }
+    ],
+    "similar_examples": [
+      {
+        "similarity": 0.9449,
+        "date": "2025-06-24",
+        "club": "Borussia Dortmund",
+        "player": "Jamie Gittens",
+        "direction": "out",
+        "position": "",
+        "journalist": "Jacob Steinberg in Philadelphia",
+        "rumor_stage": "agreed",
+        "predicted_label": "neutral",
+        "actual_label": "neutral",
+        "target_abnormal_return_p3": 0.006998,
+        "credibility_score": 0.716,
+        "transfer_indicator": 0.0
+      },
+      {
+        "similarity": 0.701,
+        "date": "2021-06-17",
+        "club": "Borussia Dortmund",
+        "player": "Thomas Delaney",
+        "direction": "out",
+        "position": "Central Midfield",
+        "journalist": "",
+        "rumor_stage": "unclear",
+        "predicted_label": "neutral",
+        "actual_label": "neutral",
+        "target_abnormal_return_p3": -0.018532,
+        "credibility_score": 0.4709,
+        "transfer_indicator": 0.5054
+      },
+      {
+        "similarity": 0.6192,
+        "date": "2022-07-07",
+        "club": "Juventus",
+        "player": "Matthijs de Ligt",
+        "direction": "out",
+        "position": "Centre-Back",
+        "journalist": "",
+        "rumor_stage": "unclear",
+        "predicted_label": "negative",
+        "actual_label": "negative",
+        "target_abnormal_return_p3": -0.074157,
+        "credibility_score": 0.4819,
+        "transfer_indicator": 0.5838
+      }
+    ],
+    "reporter_profile": {},
+    "data_warnings": [
+      "Scenario Swarm is deterministic research context, not investment advice.",
+      "The agents all read the same local evidence bundle and do not fetch external facts."
+    ]
+  },
+  "risk_notes": [
+    "Wage data is often incomplete, so fee/value logic may miss salary pressure.",
+    "Football club stocks are thin and can react to non-transfer news.",
+    "Recent stock path already moved materially, so some rumor/match information may be priced in.",
+    "Match-result markers overlap the stock path and can confound transfer-rumor interpretation.",
+    "No reporter profile is attached to this signal.",
+    "Aggregated articles can repeat the same underlying report, so source count is not pure independence.",
+    "Fan sentiment is proxied from role/age/position only; no social feed is included yet.",
+    "Scenario output is for research triage only, not a buy/sell instruction."
+  ],
+  "report_markdown": "# Scenario Swarm Report\n\nQuestion: What are Manchester United current signals?\n\nPlayer: Casemiro\nTarget club: Manchester United\nTarget role: seller\nConsensus stance: watch (0.69 confidence)\n\n## Evidence Snapshot\n\n- Rumor stage: unclear\n- Credibility score: 0.412\n- Transfer index: 0.000\n- Model/blended label: negative / negative\n- Stock ticker: MANU\n- Match markers on stock path: 37\n- Confirmed transfer links: 1\n- Similar historical cases: 3\n\n## Agent Votes\n\n### Club Finance Agent\n\n- Stance: watch\n- Confidence: 0.71\n- Evidence:\n  - Selling-side rumors can be financially constructive if they reduce wages or monetize an aging player.\n- Caveats:\n  - Wage data is often incomplete, so fee/value logic may miss salary pressure.\n\n### Market Reaction Agent\n\n- Stance: watch\n- Confidence: 0.83\n- Evidence:\n  - Model/blended label is negative in the current payload.\n  - Loaded stock path latest change is 28.00%.\n  - 37 match markers are present on the club stock path.\n- Caveats:\n  - Football club stocks are thin and can react to non-transfer news.\n  - Recent stock path already moved materially, so some rumor/match information may be priced in.\n  - Match-result markers overlap the stock path and can confound transfer-rumor interpretation.\n\n### Journalist Credibility Agent\n\n- Stance: watch\n- Confidence: 0.56\n- Evidence:\n  - Credibility score is moderate.\n  - Multiple sources support the event cluster.\n- Caveats:\n  - No reporter profile is attached to this signal.\n  - Aggregated articles can repeat the same underlying report, so source count is not pure independence.\n\n### Fan/Sentiment Agent\n\n- Stance: watch\n- Confidence: 0.59\n- Evidence:\n  - Selling Casemiro could be read as losing talent if he is viewed as important.\n- Caveats:\n  - Fan sentiment is proxied from role/age/position only; no social feed is included yet.\n\n### Risk Officer Agent\n\n- Stance: bearish\n- Confidence: 0.76\n- Evidence:\n  - Credibility is below the stronger-evidence band.\n  - Rumor stage is early or unclear.\n- Caveats:\n  - Scenario output is for research triage only, not a buy/sell instruction.\n  - No agent isolates causality from match results, ownership news, earnings, or market liquidity.\n  - Prior round had broad disagreement, so confidence is tempered.\n\n## Research Verdict\n\nThe swarm consensus is **watch**. Treat this as a structured research view, not a trading recommendation.\n\nKey caution: listed football-club stocks can move on match results, ownership news, earnings, liquidity, and broader markets, so transfer-rumor scenarios are inherently confounded.\n",
+  "report_href": "data/scenario_latest_report.md",
+  "source_paths": {
+    "simulation_id": "latest-dashboard",
+    "simulation_dir": "/home/kaiwenmo/eecs486/transfer_scrape/data/simulations/latest-dashboard",
+    "scenario": "/home/kaiwenmo/eecs486/transfer_scrape/data/simulations/latest-dashboard/scenario.json",
+    "agents": "/home/kaiwenmo/eecs486/transfer_scrape/data/simulations/latest-dashboard/agents.json",
+    "trace": "/home/kaiwenmo/eecs486/transfer_scrape/data/simulations/latest-dashboard/trace.jsonl",
+    "report": "/home/kaiwenmo/eecs486/transfer_scrape/data/simulations/latest-dashboard/report.md"
+  }
+}

@@ -4,23 +4,67 @@ import json
 from pathlib import Path
 from typing import Any
 
+from .analyst import ask_analyst
 from .config import ROOT
 
 try:
     from fastapi import FastAPI, HTTPException, Query
+    from pydantic import BaseModel
 except ModuleNotFoundError:  # pragma: no cover - optional dependency
     FastAPI = None  # type: ignore[assignment]
     HTTPException = None  # type: ignore[assignment]
     Query = None  # type: ignore[assignment]
+    BaseModel = object  # type: ignore[assignment,misc]
 
 
 DEFAULT_PAYLOAD = ROOT / "app" / "static" / "data" / "dashboard_data.json"
+
+
+class AskRequest(BaseModel):  # type: ignore[misc]
+    question: str
 
 
 def load_payload(path: Path) -> dict[str, Any]:
     if not path.exists():
         raise FileNotFoundError(f"Dashboard payload not found: {path}")
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def club_dossier_response(data: dict[str, Any], club: str) -> dict[str, Any]:
+    dossiers = data.get("club_dossiers", {})
+    if club not in dossiers:
+        raise KeyError(f"Unknown club dossier: {club}")
+    return {
+        "club": club,
+        "dossier": dossiers[club],
+        "stock_path": data.get("club_stock_paths", {}).get(club, {}),
+        "media": data.get("club_media", {}).get(club, {}),
+    }
+
+
+def reporter_profile_response(data: dict[str, Any], reporter: str) -> dict[str, Any]:
+    profiles = data.get("reporter_profiles", {})
+    if reporter not in profiles:
+        raise KeyError(f"Unknown reporter profile: {reporter}")
+    return {
+        "reporter": reporter,
+        "profile": profiles[reporter],
+    }
+
+
+def compare_response(data: dict[str, Any], club_a: str, club_b: str) -> dict[str, Any]:
+    dossiers = data.get("club_dossiers", {})
+    missing = [club for club in (club_a, club_b) if club not in dossiers]
+    if missing:
+        raise KeyError(f"Unknown club dossier: {', '.join(missing)}")
+    return ask_analyst(f"Compare {club_a} and {club_b}", payload=data)
+
+
+def ask_response(data: dict[str, Any], question: str) -> dict[str, Any]:
+    normalized = question.strip()
+    if not normalized:
+        raise ValueError("Question is required")
+    return ask_analyst(normalized, payload=data)
 
 
 def create_app(payload_path: str | Path = DEFAULT_PAYLOAD) -> Any:
@@ -73,6 +117,37 @@ def create_app(payload_path: str | Path = DEFAULT_PAYLOAD) -> Any:
             "count": len(rows),
             "rows": rows[:limit],
         }
+
+    @app.get("/clubs/{club}/dossier")
+    def club_dossier(club: str) -> dict[str, Any]:
+        try:
+            return club_dossier_response(payload(), club)
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+    @app.get("/reporters/{reporter}")
+    def reporter_profile(reporter: str) -> dict[str, Any]:
+        try:
+            return reporter_profile_response(payload(), reporter)
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+    @app.get("/compare")
+    def compare_clubs(
+        club_a: str = Query(...),
+        club_b: str = Query(...),
+    ) -> dict[str, Any]:
+        try:
+            return compare_response(payload(), club_a, club_b)
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+    @app.post("/ask")
+    def ask(request: AskRequest) -> dict[str, Any]:
+        try:
+            return ask_response(payload(), request.question)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
 
     @app.get("/signals/watchlist")
     def signals_watchlist(limit: int = Query(default=10, ge=1, le=100)) -> dict[str, Any]:

@@ -1,0 +1,124 @@
+{
+  "query": "Explain Casemiro",
+  "index": "data/processed/evidence/evidence_index.json",
+  "generated_at": "2026-05-25T18:24:13.180507+00:00",
+  "count": 5,
+  "hits": [
+    {
+      "doc_id": "5cb8206988a89af7",
+      "doc_type": "article",
+      "title": "Sources: Miami closing in on signing Man United's Casemiro - ESPN",
+      "score": 26.078,
+      "normalized_score": 1.0,
+      "matched_terms": [
+        "casemiro"
+      ],
+      "snippet": "Sources: Miami closing in on signing Man United's Casemiro - ESPN Sources: Miami closing in on signing Man United's Casemiro ESPN Source Google News Global EN. Journalist . Club candidates Manchester United. Player candidates .",
+      "source_path": "data/raw/articles/current_fast.jsonl",
+      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNSFRyYVJEVVM2dFVPVVViTDlPVkN1QTlhbjM4aG5xYkJUU2M5aF9KeGIwaXA5ZEdsMTB1dDlLdWdMZjVudXNsZjd2NXF2TzdMU2ZIVVZWdVduaERiZ2t3MmJPWE15T1ZZdGltVnpRRUpZUUtZdnFxOVpVa1RDeXZiSXJTUjFwUV9WWTZfOWduVndwSU1KMmJxVUlrcUptWFU?oc=5",
+      "date": "2026-05-20",
+      "club": "Manchester United",
+      "player": "",
+      "reporter": "",
+      "source": "Google News Global EN",
+      "metadata": {
+        "crawl_method": "rss",
+        "language": "English",
+        "extraction_confidence": 0.5
+      }
+    },
+    {
+      "doc_id": "16e1820b554d809b",
+      "doc_type": "article",
+      "title": "Sources: Miami closing in on signing Man United's Casemiro - ESPN",
+      "score": 26.078,
+      "normalized_score": 1.0,
+      "matched_terms": [
+        "casemiro"
+      ],
+      "snippet": "Sources: Miami closing in on signing Man United's Casemiro - ESPN Sources: Miami closing in on signing Man United's Casemiro ESPN Source Google News Global EN. Journalist . Club candidates Manchester United. Player candidates .",
+      "source_path": "data/raw/articles/current_live.jsonl",
+      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNSFRyYVJEVVM2dFVPVVViTDlPVkN1QTlhbjM4aG5xYkJUU2M5aF9KeGIwaXA5ZEdsMTB1dDlLdWdMZjVudXNsZjd2NXF2TzdMU2ZIVVZWdVduaERiZ2t3MmJPWE15T1ZZdGltVnpRRUpZUUtZdnFxOVpVa1RDeXZiSXJTUjFwUV9WWTZfOWduVndwSU1KMmJxVUlrcUptWFU?oc=5",
+      "date": "2026-05-20",
+      "club": "Manchester United",
+      "player": "",
+      "reporter": "",
+      "source": "Google News Global EN",
+      "metadata": {
+        "crawl_method": "rss",
+        "language": "English",
+        "extraction_confidence": 0.5
+      }
+    },
+    {
+      "doc_id": "ffa0f04179004d57",
+      "doc_type": "article",
+      "title": "Casemiro closing in on transfer as Man United star prepares for final game - Manchester Evening News",
+      "score": 23.4633,
+      "normalized_score": 0.8997,
+      "matched_terms": [
+        "casemiro"
+      ],
+      "snippet": "Casemiro closing in on transfer as Man United star prepares for final game - Manchester Evening News Casemiro closing in on transfer as Man United star prepares for final game Manchester Evening News Source Google News Global EN. Journalist . Club candidates M...",
+      "source_path": "data/raw/articles/current_fast.jsonl",
+      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOV1dyOENGSGZZVEVNZDRtdmxyM1pnQWhtazVvTzFoUjRLLUNWUEh0VWZOQk9EMDYxRFAzV3N6S3ZGSTEwanVzalVEclhmb2RIenpDZGNnX0ZiUnNGbGhBNWpQa1NLRXlnNzV1SGR0U0FGaGhNRld2OE8zQVFiRHV6VXg2X2xtMkZYTk1xdzFqR1RjS1FSai1EbWhUNFBHU0lCSWY0U3F4R3dzX1JCSmI2NEVHR1rSAboBQVVfeXFMTW5SVEs3MnZFWVp4eHVianB4TDE4TW51SWxRZFRQeHlCWWV5S0hqM3dGVWhHOGsyWk9XMDRIM19OeUhLeks1U19vaXNWRnQyLWUxTmpNd2lyMENJQkFTUWpNOXcwTmlReG53R2FIdVFTRERqSlJLMVZ1R0JJUGVrVDVQSGstbUJWY25qd0Iwb0dLSnFhU2ZGc3JkUGt2QXlyQ0J1Tm5yQ2taSVJkWXlvSEZ0cHpVTmhVZ2NR?oc=5",
+      "date": "2026-05-20",
+      "club": "Manchester United",
+      "player": "",
+      "reporter": "",
+      "source": "Google News Global EN",
+      "metadata": {
+        "crawl_method": "rss",
+        "language": "English",
+        "extraction_confidence": 0.5
+      }
+    },
+    {
+      "doc_id": "e546e3b7fdfbcd09",
+      "doc_type": "article",
+      "title": "Casemiro Closes on Man Utd Exit Which \u2018Runs Afoul\u2019 of MLS Transfer Rules - Sports Illustrated",
+      "score": 22.7521,
+      "normalized_score": 0.8725,
+      "matched_terms": [
+        "casemiro"
+      ],
+      "snippet": "Casemiro Closes on Man Utd Exit Which \u2018Runs Afoul\u2019 of MLS Transfer Rules - Sports Illustrated Casemiro Closes on Man Utd Exit Which \u2018Runs Afoul\u2019 of MLS Transfer Rules Sports Illustrated Source Google News Global EN. Journalist . Club candidates Manchester Unit...",
+      "source_path": "data/raw/articles/current_live.jsonl",
+      "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxPQzNSNzVjdzI3WEVNWVVLZ0RsbnlQMGxmUmxHTGdmWkQ5cVRsSjJ0VGRFMExxLUY2cjM4b0VLQW9SU3Z2Smg0TUNTdzlUYzlncFRhRnoxN01QNVpjM3U4OUVXem5JT2ptc2xIXzZMNzZVZjZQMy1JdlVlV0VfTVBHaFFtcS1uVHJadVhXQkpVNXBCd09Vc0llLVhuMVg?oc=5",
+      "date": "2026-05-21",
+      "club": "Manchester United",
+      "player": "",
+      "reporter": "",
+      "source": "Google News Global EN",
+      "metadata": {
+        "crawl_method": "rss",
+        "language": "English",
+        "extraction_confidence": 0.5
+      }
+    },
+    {
+      "doc_id": "f5cf3e581bed2f88",
+      "doc_type": "transfer",
+      "title": "Casemiro confirmed transfer / Manchester United / 2022-23",
+      "score": 21.2901,
+      "normalized_score": 0.8164,
+      "matched_terms": [
+        "casemiro"
+      ],
+      "snippet": "Confirmed transfer row for Casemiro. Season 2022-23. Date 2022-08-22. Public target club Manchester United. Target role buyer. Buyer Manchester United. Seller Real Madrid. Transfer type permanent. Position Defensive Midfield. Age 30.0. Fee EUR 70650000.0. Mark...",
+      "source_path": "app/static/data/dashboard_data.json",
+      "url": "",
+      "date": "2022-08-22",
+      "club": "Manchester United",
+      "player": "Casemiro",
+      "reporter": "",
+      "source": "",
+      "metadata": {
+        "season": "2022-23",
+        "target_role": "buyer",
+        "actual_label": "neutral",
+        "transfer_indicator": 0.3263
+      }
+    }
+  ]
+}

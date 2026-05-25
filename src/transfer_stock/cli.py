@@ -1,13 +1,17 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 from datetime import UTC, date, datetime, time, timedelta
 from pathlib import Path
 
 from .api import create_app
+from .agent import DEFAULT_AGENT_OUTPUT_DIR, DEFAULT_DASHBOARD_AGENT, DEFAULT_DASHBOARD_AGENT_REPORT, run_agent
+from .analyst import ask_analyst
 from .article_store import article_store_stats, normalize_article_file, read_article_store
 from .backtesting import backtest_stats, run_backtests
+from .briefing import DEFAULT_BRIEFING_JSON, DEFAULT_BRIEFING_MD, generate_daily_briefing
 from .claims import claim_stats, extract_claims_from_file, read_claims
 from .config import DATA_DIR, load_clubs, load_credibility
 from .credibility_engine import credibility_outputs, credibility_stats, read_scored_claims
@@ -16,11 +20,19 @@ from .demo import demo_payload_stats, write_demo_payload
 from .ewenme import DEFAULT_LEAGUES, import_ewenme_transfers
 from .event_dates import infer_event_dates
 from .event_study import cumulative_abnormal_return, load_bars_if_exists
+from .evidence_rag import (
+    DEFAULT_BRIEFING,
+    DEFAULT_EVIDENCE_INDEX,
+    DEFAULT_SCENARIO,
+    build_evidence_index,
+    retrieve_from_index_file,
+)
 from .features import article_features, transfer_quality_score
 from .ingestion_v2 import fetch_articles_v2
 from .indicators import enrich_rumor_events, group_enriched_rumor_events
 from .io import append_jsonl, read_csv, read_jsonl, write_csv, write_jsonl
 from .market_features import build_market_features, market_feature_stats
+from .match_results import fetch_match_results_for_clubs
 from .ml import train_and_predict
 from .matching import match_claims_file, match_stats, read_matches
 from .model import heuristic_market_impact, impact_label
@@ -32,6 +44,7 @@ from .news import article_to_row, fetch_gdelt_articles, fetch_gdelt_articles_for
 from .provider_news import fetch_provider_club_articles, fetch_provider_event_articles
 from .report import build_report
 from .rumor_events import build_rumor_events
+from .scenario_swarm import DEFAULT_DASHBOARD_SCENARIO, DEFAULT_DASHBOARD_SCENARIO_REPORT, run_scenario_swarm
 from .stock import fetch_daily, save_price_bars
 from .targets import target_stats
 from .transfers import clean_transfer_files, filter_loans, load_transfers
@@ -165,6 +178,125 @@ def cmd_fetch_stocks(args: argparse.Namespace) -> None:
             index_out = DATA_DIR / "raw" / "stocks" / f"{club.key}_market.csv"
             save_price_bars(index_out, index_bars)
             print(f"{club.name} market index: wrote {len(index_bars)} bars to {index_out}")
+
+
+def cmd_fetch_match_results(args: argparse.Namespace) -> None:
+    clubs = load_clubs()
+    chosen = selected_clubs(clubs, args.clubs)
+    outputs = fetch_match_results_for_clubs(
+        chosen,
+        seasons=args.seasons,
+        output_dir=Path(args.output_dir),
+        timeout=args.timeout,
+        retries=args.retries,
+        pause=args.pause,
+        resume=args.resume,
+    )
+    for key, item in outputs.items():
+        print(f"{item['club']}: wrote {item['rows']} rows to {item['path']} ({item['new_rows']} fetched)")
+        for warning in item.get("warnings", []):
+            print(f"- {warning}")
+
+
+def cmd_ask(args: argparse.Namespace) -> None:
+    result = ask_analyst(
+        args.question,
+        payload_path=Path(args.payload),
+        include_evidence=args.with_evidence,
+        evidence_index_path=Path(args.evidence_index),
+        evidence_top_k=args.evidence_top_k,
+    )
+    indent = None if args.compact else 2
+    print(json.dumps(result, indent=indent))
+
+
+def cmd_build_evidence_index(args: argparse.Namespace) -> None:
+    article_paths = [Path(item) for item in args.articles] if args.articles else None
+    result = build_evidence_index(
+        payload_path=Path(args.payload),
+        article_paths=article_paths,
+        scenario_path=Path(args.scenario),
+        briefing_path=Path(args.briefing),
+        output_path=Path(args.output),
+    )
+    indent = None if args.compact else 2
+    print(json.dumps(result, indent=indent))
+
+
+def cmd_query_evidence(args: argparse.Namespace) -> None:
+    result = retrieve_from_index_file(Path(args.index), args.question, top_k=args.top_k)
+    indent = None if args.compact else 2
+    print(json.dumps(result, indent=indent))
+
+
+def cmd_ask_rag(args: argparse.Namespace) -> None:
+    index_path = Path(args.index)
+    if args.rebuild_index or not index_path.exists():
+        article_paths = [Path(item) for item in args.articles] if args.articles else None
+        build_evidence_index(
+            payload_path=Path(args.payload),
+            article_paths=article_paths,
+            scenario_path=Path(args.scenario),
+            briefing_path=Path(args.briefing),
+            output_path=index_path,
+        )
+    result = ask_analyst(
+        args.question,
+        payload_path=Path(args.payload),
+        include_evidence=True,
+        evidence_index_path=index_path,
+        evidence_top_k=args.top_k,
+    )
+    indent = None if args.compact else 2
+    print(json.dumps(result, indent=indent))
+
+
+def cmd_agent_run(args: argparse.Namespace) -> None:
+    result = run_agent(
+        goal=args.goal,
+        payload_path=Path(args.payload),
+        output_dir=Path(args.output_dir),
+        evidence_index=Path(args.evidence_index),
+        run_id=args.run_id,
+        scenario_policy=args.scenario,
+        rounds=args.rounds,
+        top_k=args.top_k,
+        rebuild_index=not args.no_rebuild_index,
+        dashboard_output=None if args.no_dashboard_publish else Path(args.dashboard_agent_output),
+        dashboard_report_output=Path(args.dashboard_report_output),
+    )
+    indent = None if args.compact else 2
+    print(json.dumps(result, indent=indent))
+
+
+def cmd_simulate_scenario(args: argparse.Namespace) -> None:
+    if not args.question and not args.player:
+        raise ValueError("Provide either --question or --player for scenario simulation")
+    result = run_scenario_swarm(
+        question=args.question,
+        player=args.player,
+        club=args.club,
+        payload_path=Path(args.payload),
+        output_dir=Path(args.output_dir),
+        rounds=args.rounds,
+        simulation_id=args.simulation_id,
+        dashboard_output=None if args.no_dashboard_publish else Path(args.dashboard_scenario_output),
+        dashboard_report_output=Path(args.dashboard_report_output),
+    )
+    indent = None if args.compact else 2
+    print(json.dumps(result, indent=indent))
+
+
+def cmd_generate_briefing(args: argparse.Namespace) -> None:
+    result = generate_daily_briefing(
+        payload_path=Path(args.payload),
+        scenario_path=None if args.no_scenario else Path(args.scenario),
+        output_markdown=Path(args.output),
+        output_json=None if args.no_json else Path(args.json_output),
+    )
+    print(f"markdown: {result['markdown']}")
+    if result.get("json"):
+        print(f"json: {result['json']}")
 
 
 def cmd_fetch_news(args: argparse.Namespace) -> None:
@@ -922,6 +1054,16 @@ def build_parser() -> argparse.ArgumentParser:
     stocks.add_argument("--clubs", nargs="*")
     stocks.set_defaults(func=cmd_fetch_stocks)
 
+    match_results = sub.add_parser("fetch-match-results", help="Fetch no-key football match results into dashboard overlay CSVs")
+    match_results.add_argument("--seasons", nargs="+", default=["2025-26"])
+    match_results.add_argument("--clubs", nargs="*")
+    match_results.add_argument("--output-dir", default=str(DATA_DIR / "raw" / "matches"))
+    match_results.add_argument("--timeout", type=int, default=45)
+    match_results.add_argument("--retries", type=int, default=2)
+    match_results.add_argument("--pause", type=float, default=0.1)
+    match_results.add_argument("--resume", action="store_true")
+    match_results.set_defaults(func=cmd_fetch_match_results)
+
     news = sub.add_parser("fetch-news", help="Fetch transfer-related articles from GDELT")
     news.add_argument("--days", type=int, default=14)
     news.add_argument("--max-records", type=int, default=50)
@@ -1236,6 +1378,82 @@ def build_parser() -> argparse.ArgumentParser:
     api.add_argument("--host", default="127.0.0.1")
     api.add_argument("--port", type=int, default=8010)
     api.set_defaults(func=cmd_serve_api)
+
+    ask = sub.add_parser("ask", help="Ask the local transfer-stock analyst a grounded question")
+    ask.add_argument("--question", required=True)
+    ask.add_argument("--payload", default=str(Path("app") / "static" / "data" / "dashboard_data.json"))
+    ask.add_argument("--with-evidence", action="store_true", help="Attach local Evidence RAG citations to the analyst answer")
+    ask.add_argument("--evidence-index", default=str(DEFAULT_EVIDENCE_INDEX), help="Path to an existing evidence index")
+    ask.add_argument("--evidence-top-k", type=int, default=5, help="Number of evidence citations to attach")
+    ask.add_argument("--compact", action="store_true", help="Print compact JSON instead of pretty JSON")
+    ask.set_defaults(func=cmd_ask)
+
+    evidence_index = sub.add_parser("build-evidence-index", help="Build a local Evidence RAG index from dashboard/articles/reports")
+    evidence_index.add_argument("--payload", default=str(Path("app") / "static" / "data" / "dashboard_data.json"))
+    evidence_index.add_argument("--articles", nargs="*", help="Optional normalized article JSONL files to include")
+    evidence_index.add_argument("--scenario", default=str(DEFAULT_SCENARIO))
+    evidence_index.add_argument("--briefing", default=str(DEFAULT_BRIEFING))
+    evidence_index.add_argument("--output", default=str(DEFAULT_EVIDENCE_INDEX))
+    evidence_index.add_argument("--compact", action="store_true", help="Print compact JSON instead of pretty JSON")
+    evidence_index.set_defaults(func=cmd_build_evidence_index)
+
+    evidence_query = sub.add_parser("query-evidence", help="Query the local Evidence RAG index directly")
+    evidence_query.add_argument("--question", required=True)
+    evidence_query.add_argument("--index", default=str(DEFAULT_EVIDENCE_INDEX))
+    evidence_query.add_argument("--top-k", type=int, default=6)
+    evidence_query.add_argument("--compact", action="store_true", help="Print compact JSON instead of pretty JSON")
+    evidence_query.set_defaults(func=cmd_query_evidence)
+
+    ask_rag = sub.add_parser("ask-rag", help="Ask the analyst with local Evidence RAG citations")
+    ask_rag.add_argument("--question", required=True)
+    ask_rag.add_argument("--payload", default=str(Path("app") / "static" / "data" / "dashboard_data.json"))
+    ask_rag.add_argument("--index", default=str(DEFAULT_EVIDENCE_INDEX))
+    ask_rag.add_argument("--articles", nargs="*", help="Optional normalized article JSONL files when rebuilding the index")
+    ask_rag.add_argument("--scenario", default=str(DEFAULT_SCENARIO))
+    ask_rag.add_argument("--briefing", default=str(DEFAULT_BRIEFING))
+    ask_rag.add_argument("--top-k", type=int, default=5)
+    ask_rag.add_argument("--rebuild-index", action="store_true", help="Rebuild the evidence index before answering")
+    ask_rag.add_argument("--compact", action="store_true", help="Print compact JSON instead of pretty JSON")
+    ask_rag.set_defaults(func=cmd_ask_rag)
+
+    agent = sub.add_parser("agent-run", help="Run the local transfer-stock analyst agent over one goal")
+    agent.add_argument("--goal", required=True, help="Research goal for the agent")
+    agent.add_argument("--payload", default=str(Path("app") / "static" / "data" / "dashboard_data.json"))
+    agent.add_argument("--output-dir", default=str(DEFAULT_AGENT_OUTPUT_DIR))
+    agent.add_argument("--evidence-index", default=str(DEFAULT_EVIDENCE_INDEX))
+    agent.add_argument("--run-id", default="", help="Optional stable output folder name")
+    agent.add_argument("--scenario", choices=["auto", "always", "never"], default="auto", help="Whether to run Scenario Swarm")
+    agent.add_argument("--rounds", type=int, default=2, help="Scenario Swarm rounds when a scenario runs")
+    agent.add_argument("--top-k", type=int, default=5, help="Number of evidence citations to retrieve")
+    agent.add_argument("--no-rebuild-index", action="store_true", help="Reuse an existing evidence index if available")
+    agent.add_argument("--dashboard-agent-output", default=str(DEFAULT_DASHBOARD_AGENT), help="Static dashboard agent snapshot output")
+    agent.add_argument("--dashboard-report-output", default=str(DEFAULT_DASHBOARD_AGENT_REPORT), help="Static dashboard agent report output")
+    agent.add_argument("--no-dashboard-publish", action="store_true", help="Skip writing the static dashboard latest agent snapshot")
+    agent.add_argument("--compact", action="store_true", help="Print compact JSON instead of pretty JSON")
+    agent.set_defaults(func=cmd_agent_run)
+
+    scenario = sub.add_parser("simulate-scenario", help="Run a bounded deterministic scenario swarm over a rumor signal")
+    scenario.add_argument("--question", default="", help="Analyst-style question, for example: What is the current signal for Casemiro?")
+    scenario.add_argument("--player", default="", help="Player name to anchor the scenario")
+    scenario.add_argument("--club", default="", help="Optional target club filter")
+    scenario.add_argument("--payload", default=str(Path("app") / "static" / "data" / "dashboard_data.json"))
+    scenario.add_argument("--output-dir", default=str(DATA_DIR / "simulations"))
+    scenario.add_argument("--rounds", type=int, default=2, help="Bounded agent rounds, clamped to 1-5")
+    scenario.add_argument("--simulation-id", default="", help="Optional stable output folder name")
+    scenario.add_argument("--dashboard-scenario-output", default=str(DEFAULT_DASHBOARD_SCENARIO))
+    scenario.add_argument("--dashboard-report-output", default=str(DEFAULT_DASHBOARD_SCENARIO_REPORT))
+    scenario.add_argument("--no-dashboard-publish", action="store_true", help="Skip writing the static dashboard scenario snapshot")
+    scenario.add_argument("--compact", action="store_true", help="Print compact JSON instead of pretty JSON")
+    scenario.set_defaults(func=cmd_simulate_scenario)
+
+    briefing = sub.add_parser("generate-briefing", help="Generate a deterministic daily transfer-stock briefing")
+    briefing.add_argument("--payload", default=str(Path("app") / "static" / "data" / "dashboard_data.json"))
+    briefing.add_argument("--scenario", default=str(DEFAULT_DASHBOARD_SCENARIO))
+    briefing.add_argument("--output", default=str(DEFAULT_BRIEFING_MD))
+    briefing.add_argument("--json-output", default=str(DEFAULT_BRIEFING_JSON))
+    briefing.add_argument("--no-scenario", action="store_true", help="Skip loading the latest Scenario Swarm snapshot")
+    briefing.add_argument("--no-json", action="store_true", help="Only write Markdown")
+    briefing.set_defaults(func=cmd_generate_briefing)
 
     inspect_demo = sub.add_parser("inspect-demo-data", help="Inspect Stage 8 dashboard payload JSON")
     inspect_demo.add_argument("--input", default=str(Path("app") / "static" / "data" / "dashboard_data.json"))

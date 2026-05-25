@@ -1,0 +1,123 @@
+{
+  "query": "Find today's strongest Manchester United transfer-stock watch item",
+  "index": "data/processed/evidence/evidence_index.json",
+  "generated_at": "2026-05-25T18:24:00.096224+00:00",
+  "count": 5,
+  "hits": [
+    {
+      "doc_id": "02279ac82bb8b925",
+      "doc_type": "stock_path",
+      "title": "Manchester United stock path context",
+      "score": 33.2617,
+      "normalized_score": 1.0,
+      "matched_terms": [
+        "manchester",
+        "united"
+      ],
+      "snippet": "Stock path for Manchester United. Ticker MANU. Latest date 2026-05-20. Latest change 0.28. Match marker count 37.",
+      "source_path": "app/static/data/dashboard_data.json",
+      "url": "",
+      "date": "2026-05-20",
+      "club": "Manchester United",
+      "player": "",
+      "reporter": "",
+      "source": "",
+      "metadata": {
+        "ticker": "MANU",
+        "latest_change": 0.28
+      }
+    },
+    {
+      "doc_id": "67ba1c13df884303",
+      "doc_type": "match_result",
+      "title": "Manchester United L vs Arsenal",
+      "score": 31.5548,
+      "normalized_score": 0.9487,
+      "matched_terms": [
+        "manchester",
+        "united"
+      ],
+      "snippet": "Match result marker for Manchester United. Opponent Arsenal. Competition E0. Venue H. Result L. Score 0-1. Match date 2025-08-17. Trading date 2025-10-01.",
+      "source_path": "app/static/data/dashboard_data.json",
+      "url": "https://www.football-data.co.uk/mmz4281/2526/e0.csv",
+      "date": "2025-08-17",
+      "club": "Manchester United",
+      "player": "",
+      "reporter": "",
+      "source": "",
+      "metadata": {
+        "trading_date": "2025-10-01",
+        "result": "L"
+      }
+    },
+    {
+      "doc_id": "f3557462f1080f81",
+      "doc_type": "match_result",
+      "title": "Manchester United D vs Fulham",
+      "score": 31.5548,
+      "normalized_score": 0.9487,
+      "matched_terms": [
+        "manchester",
+        "united"
+      ],
+      "snippet": "Match result marker for Manchester United. Opponent Fulham. Competition E0. Venue A. Result D. Score 1-1. Match date 2025-08-24. Trading date 2025-10-01.",
+      "source_path": "app/static/data/dashboard_data.json",
+      "url": "https://www.football-data.co.uk/mmz4281/2526/e0.csv",
+      "date": "2025-08-24",
+      "club": "Manchester United",
+      "player": "",
+      "reporter": "",
+      "source": "",
+      "metadata": {
+        "trading_date": "2025-10-01",
+        "result": "D"
+      }
+    },
+    {
+      "doc_id": "b920882f2342df1c",
+      "doc_type": "match_result",
+      "title": "Manchester United W vs Burnley",
+      "score": 31.5548,
+      "normalized_score": 0.9487,
+      "matched_terms": [
+        "manchester",
+        "united"
+      ],
+      "snippet": "Match result marker for Manchester United. Opponent Burnley. Competition E0. Venue H. Result W. Score 3-2. Match date 2025-08-30. Trading date 2025-10-01.",
+      "source_path": "app/static/data/dashboard_data.json",
+      "url": "https://www.football-data.co.uk/mmz4281/2526/e0.csv",
+      "date": "2025-08-30",
+      "club": "Manchester United",
+      "player": "",
+      "reporter": "",
+      "source": "",
+      "metadata": {
+        "trading_date": "2025-10-01",
+        "result": "W"
+      }
+    },
+    {
+      "doc_id": "5413d59916498ba7",
+      "doc_type": "match_result",
+      "title": "Manchester United W vs Chelsea",
+      "score": 31.5548,
+      "normalized_score": 0.9487,
+      "matched_terms": [
+        "manchester",
+        "united"
+      ],
+      "snippet": "Match result marker for Manchester United. Opponent Chelsea. Competition E0. Venue H. Result W. Score 2-1. Match date 2025-09-20. Trading date 2025-10-01.",
+      "source_path": "app/static/data/dashboard_data.json",
+      "url": "https://www.football-data.co.uk/mmz4281/2526/e0.csv",
+      "date": "2025-09-20",
+      "club": "Manchester United",
+      "player": "",
+      "reporter": "",
+      "source": "",
+      "metadata": {
+        "trading_date": "2025-10-01",
+        "result": "W"
+      }
+    }
+  ]
+}

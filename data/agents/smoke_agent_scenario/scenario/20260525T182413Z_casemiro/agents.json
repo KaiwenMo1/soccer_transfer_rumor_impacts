@@ -1,0 +1,27 @@
+[
+  {
+    "id": "club_finance",
+    "name": "Club Finance Agent",
+    "description": "Reads the rumor through fee, wage, transfer value, and club balance-sheet pressure."
+  },
+  {
+    "id": "market_reaction",
+    "name": "Market Reaction Agent",
+    "description": "Reads the rumor through stock context, model signal, liquidity, and match-result timing."
+  },
+  {
+    "id": "journalist_credibility",
+    "name": "Journalist Credibility Agent",
+    "description": "Reads the rumor through source mix, journalist history, and rumor-stage reliability."
+  },
+  {
+    "id": "fan_sentiment",
+    "name": "Fan/Sentiment Agent",
+    "description": "Reads the rumor through fan narrative, player importance, age, and role."
+  },
+  {
+    "id": "risk_officer",
+    "name": "Risk Officer Agent",
+    "description": "Challenges the scenario, flags weak evidence, and reduces overconfident conclusions."
+  }
+]

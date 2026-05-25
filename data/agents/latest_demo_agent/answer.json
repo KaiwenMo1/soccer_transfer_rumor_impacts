@@ -1,0 +1,226 @@
+{
+  "question": "Explain Casemiro",
+  "intent": "explain_rumor",
+  "short_answer": "Casemiro maps to Manchester United as seller. The signal is negative with model label negative and confidence 63.8%.",
+  "evidence_cards": [
+    {
+      "title": "Credibility",
+      "value": "0.412",
+      "detail": "Sports Mole"
+    },
+    {
+      "title": "Transfer index",
+      "value": "0.000",
+      "detail": "Stage unclear"
+    },
+    {
+      "title": "Scope",
+      "value": "direct",
+      "detail": "Direct only when mapped to a public listed-club target."
+    }
+  ],
+  "tables": [
+    {
+      "title": "Signals",
+      "columns": [
+        "date",
+        "club",
+        "player",
+        "stage",
+        "credibility",
+        "model",
+        "blend"
+      ],
+      "rows": [
+        {
+          "date": "2026-05-20",
+          "club": "Manchester United",
+          "player": "Casemiro",
+          "stage": "unclear",
+          "credibility": "0.412",
+          "model": "negative",
+          "blend": "negative"
+        }
+      ]
+    },
+    {
+      "title": "Closest confirmed transfer links",
+      "columns": [
+        "date",
+        "player",
+        "club",
+        "role",
+        "actual_label",
+        "car_p3"
+      ],
+      "rows": [
+        {
+          "date": "2022-08-22",
+          "player": "Casemiro",
+          "club": "Manchester United",
+          "role": "buyer",
+          "actual_label": "neutral",
+          "car_p3": "-0.0024"
+        }
+      ]
+    }
+  ],
+  "warnings": [
+    "This is a model-assisted research summary, not a trade recommendation.",
+    "Evidence citations use local lexical retrieval; read them as grounded context, not proof of causality."
+  ],
+  "confidence": 0.86,
+  "source_paths": {
+    "dashboard_payload": "app/static/data/dashboard_data.json",
+    "evidence_index": "data/processed/evidence/evidence_index.json"
+  },
+  "evidence_citations": [
+    {
+      "doc_id": "342303e562d6acdc",
+      "doc_type": "signal",
+      "title": "Man United transfer news: Spygate scandal could give Michael Carrick chance to sign 'affordable' star to replace Casemiro",
+      "score": 90.044,
+      "normalized_score": 1.0,
+      "matched_terms": [
+        "casemiro",
+        "confidence",
+        "label",
+        "manchester",
+        "negative",
+        "seller",
+        "signal",
+        "united"
+      ],
+      "snippet": "Rumor signal for Casemiro. Target club Manchester United. Target role seller. Counterparty . Buyer . Seller . Stage advanced. Source count 3. Sources . Journalists . Credibility score 0.4605. Transfer indicator 0.0. Rumor indicator . Prediction scope direct. P...",
+      "source_path": "app/static/data/dashboard_data.json",
+      "url": "",
+      "date": "2026-05-20",
+      "club": "Manchester United",
+      "player": "Casemiro",
+      "reporter": "",
+      "source": "Sports Mole",
+      "metadata": {
+        "group_key": "Manchester United::Casemiro",
+        "stage": "advanced",
+        "target_role": "seller",
+        "prediction_scope": "direct",
+        "credibility_score": 0.4605,
+        "prediction_confidence": 0.638,
+        "blended_label": "negative"
+      }
+    },
+    {
+      "doc_id": "ffa0f04179004d57",
+      "doc_type": "article",
+      "title": "Casemiro closing in on transfer as Man United star prepares for final game - Manchester Evening News",
+      "score": 72.8513,
+      "normalized_score": 0.8091,
+      "matched_terms": [
+        "casemiro",
+        "manchester",
+        "united"
+      ],
+      "snippet": "Casemiro closing in on transfer as Man United star prepares for final game - Manchester Evening News Casemiro closing in on transfer as Man United star prepares for final game Manchester Evening News Source Google News Global EN. Journalist . Club candidates M...",
+      "source_path": "data/raw/articles/current_fast.jsonl",
+      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOV1dyOENGSGZZVEVNZDRtdmxyM1pnQWhtazVvTzFoUjRLLUNWUEh0VWZOQk9EMDYxRFAzV3N6S3ZGSTEwanVzalVEclhmb2RIenpDZGNnX0ZiUnNGbGhBNWpQa1NLRXlnNzV1SGR0U0FGaGhNRld2OE8zQVFiRHV6VXg2X2xtMkZYTk1xdzFqR1RjS1FSai1EbWhUNFBHU0lCSWY0U3F4R3dzX1JCSmI2NEVHR1rSAboBQVVfeXFMTW5SVEs3MnZFWVp4eHVianB4TDE4TW51SWxRZFRQeHlCWWV5S0hqM3dGVWhHOGsyWk9XMDRIM19OeUhLeks1U19vaXNWRnQyLWUxTmpNd2lyMENJQkFTUWpNOXcwTmlReG53R2FIdVFTRERqSlJLMVZ1R0JJUGVrVDVQSGstbUJWY25qd0Iwb0dLSnFhU2ZGc3JkUGt2QXlyQ0J1Tm5yQ2taSVJkWXlvSEZ0cHpVTmhVZ2NR?oc=5",
+      "date": "2026-05-20",
+      "club": "Manchester United",
+      "player": "",
+      "reporter": "",
+      "source": "Google News Global EN",
+      "metadata": {
+        "crawl_method": "rss",
+        "language": "English",
+        "extraction_confidence": 0.5
+      }
+    },
+    {
+      "doc_id": "f5cf3e581bed2f88",
+      "doc_type": "transfer",
+      "title": "Casemiro confirmed transfer / Manchester United / 2022-23",
+      "score": 69.891,
+      "normalized_score": 0.7762,
+      "matched_terms": [
+        "casemiro",
+        "label",
+        "manchester",
+        "seller",
+        "united"
+      ],
+      "snippet": "Confirmed transfer row for Casemiro. Season 2022-23. Date 2022-08-22. Public target club Manchester United. Target role buyer. Buyer Manchester United. Seller Real Madrid. Transfer type permanent. Position Defensive Midfield. Age 30.0. Fee EUR 70650000.0. Mark...",
+      "source_path": "app/static/data/dashboard_data.json",
+      "url": "",
+      "date": "2022-08-22",
+      "club": "Manchester United",
+      "player": "Casemiro",
+      "reporter": "",
+      "source": "",
+      "metadata": {
+        "season": "2022-23",
+        "target_role": "buyer",
+        "actual_label": "neutral",
+        "transfer_indicator": 0.3263
+      }
+    },
+    {
+      "doc_id": "5cb8206988a89af7",
+      "doc_type": "article",
+      "title": "Sources: Miami closing in on signing Man United's Casemiro - ESPN",
+      "score": 68.4907,
+      "normalized_score": 0.7606,
+      "matched_terms": [
+        "casemiro",
+        "manchester",
+        "united"
+      ],
+      "snippet": "Sources: Miami closing in on signing Man United's Casemiro - ESPN Sources: Miami closing in on signing Man United's Casemiro ESPN Source Google News Global EN. Journalist . Club candidates Manchester United. Player candidates .",
+      "source_path": "data/raw/articles/current_fast.jsonl",
+      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNSFRyYVJEVVM2dFVPVVViTDlPVkN1QTlhbjM4aG5xYkJUU2M5aF9KeGIwaXA5ZEdsMTB1dDlLdWdMZjVudXNsZjd2NXF2TzdMU2ZIVVZWdVduaERiZ2t3MmJPWE15T1ZZdGltVnpRRUpZUUtZdnFxOVpVa1RDeXZiSXJTUjFwUV9WWTZfOWduVndwSU1KMmJxVUlrcUptWFU?oc=5",
+      "date": "2026-05-20",
+      "club": "Manchester United",
+      "player": "",
+      "reporter": "",
+      "source": "Google News Global EN",
+      "metadata": {
+        "crawl_method": "rss",
+        "language": "English",
+        "extraction_confidence": 0.5
+      }
+    },
+    {
+      "doc_id": "16e1820b554d809b",
+      "doc_type": "article",
+      "title": "Sources: Miami closing in on signing Man United's Casemiro - ESPN",
+      "score": 68.4907,
+      "normalized_score": 0.7606,
+      "matched_terms": [
+        "casemiro",
+        "manchester",
+        "united"
+      ],
+      "snippet": "Sources: Miami closing in on signing Man United's Casemiro - ESPN Sources: Miami closing in on signing Man United's Casemiro ESPN Source Google News Global EN. Journalist . Club candidates Manchester United. Player candidates .",
+      "source_path": "data/raw/articles/current_live.jsonl",
+      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNSFRyYVJEVVM2dFVPVVViTDlPVkN1QTlhbjM4aG5xYkJUU2M5aF9KeGIwaXA5ZEdsMTB1dDlLdWdMZjVudXNsZjd2NXF2TzdMU2ZIVVZWdVduaERiZ2t3MmJPWE15T1ZZdGltVnpRRUpZUUtZdnFxOVpVa1RDeXZiSXJTUjFwUV9WWTZfOWduVndwSU1KMmJxVUlrcUptWFU?oc=5",
+      "date": "2026-05-20",
+      "club": "Manchester United",
+      "player": "",
+      "reporter": "",
+      "source": "Google News Global EN",
+      "metadata": {
+        "crawl_method": "rss",
+        "language": "English",
+        "extraction_confidence": 0.5
+      }
+    }
+  ],
+  "what_would_change_mind": [
+    "Fresh stock and match-result context would reduce market-context uncertainty.",
+    "Newer high-credibility reports or official club disclosures can overturn the current read."
+  ],
+  "rag": {
+    "retriever": "local_lexical",
+    "index": "data/processed/evidence/evidence_index.json",
+    "top_k": 5,
+    "citation_count": 5
+  }
+}

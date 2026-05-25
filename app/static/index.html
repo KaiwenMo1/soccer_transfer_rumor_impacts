@@ -76,6 +76,120 @@
         <div class="insight-grid" id="takeawayCards"></div>
       </section>
 
+      <section class="ask-band" id="askAnalystSection">
+        <div class="section-head">
+          <h2>Ask The Analyst</h2>
+          <span class="section-meta">Grounded answers from the local dashboard payload.</span>
+        </div>
+        <form class="ask-form" id="askAnalystForm">
+          <input id="askAnalystInput" type="search" placeholder="Compare Manchester United and Juventus" autocomplete="off">
+          <button type="submit">Ask</button>
+        </form>
+        <div class="ask-examples" id="askAnalystExamples">
+          <button type="button" data-question="Compare Manchester United and Juventus">Compare clubs</button>
+          <button type="button" data-question="What is the current signal for Casemiro?">Explain player</button>
+          <button type="button" data-question="Who are the strongest reporters for Manchester United?">Club reporters</button>
+          <button type="button" data-question="What happened to Ajax stock around recent match results?">Match stock path</button>
+        </div>
+        <div class="ask-answer" id="askAnalystAnswer"></div>
+      </section>
+
+      <section class="report-band agent-band" id="agentRunSection">
+        <div class="section-head">
+          <h2>Latest Agent Run</h2>
+          <span class="section-meta" id="agentRunMeta">Goal, plan, evidence, memory, and report from the local agent.</span>
+        </div>
+        <div id="agentRun"></div>
+      </section>
+
+      <section class="report-band scenario-band" id="scenarioSwarmSection">
+        <div class="section-head">
+          <h2>Scenario Swarm</h2>
+          <span class="section-meta" id="scenarioSwarmMeta">Latest bounded multi-agent scenario report.</span>
+        </div>
+        <div id="scenarioSwarm"></div>
+      </section>
+
+      <section class="report-band simulator-band" id="scenarioSimulatorSection">
+        <div class="section-head">
+          <h2>Scenario Simulator</h2>
+          <span class="section-meta">Explore hypothetical rumors without needing an article.</span>
+        </div>
+        <form class="simulator-form" id="scenarioSimulatorForm">
+          <label>
+            Target club
+            <select id="simTargetClub"></select>
+          </label>
+          <label>
+            Role
+            <select id="simTargetRole">
+              <option value="buyer">Buyer</option>
+              <option value="seller">Seller</option>
+            </select>
+          </label>
+          <label>
+            Age
+            <input id="simAge" type="number" min="15" max="45" step="1" value="24">
+          </label>
+          <label>
+            Position
+            <input id="simPosition" type="text" value="Forward" list="simPositionOptions">
+          </label>
+          <label>
+            Market value EUR
+            <input id="simMarketValue" type="number" min="0" step="1000000" value="50000000">
+          </label>
+          <label>
+            Transfer fee EUR
+            <input id="simTransferFee" type="number" min="0" step="1000000" value="40000000">
+          </label>
+          <label>
+            Annual wage EUR
+            <input id="simWage" type="number" min="0" step="500000" value="8000000">
+          </label>
+          <label>
+            Rumor stage
+            <select id="simRumorStage">
+              <option value="linked">Linked</option>
+              <option value="talks">Talks</option>
+              <option value="bid">Bid</option>
+              <option value="advanced">Advanced</option>
+              <option value="agreed">Agreed</option>
+              <option value="medical">Medical</option>
+              <option value="official">Official</option>
+              <option value="unclear">Unclear</option>
+            </select>
+          </label>
+          <label>
+            Source
+            <input id="simSource" type="text" value="The Guardian / Fabrizio Romano" list="simSourceOptions">
+          </label>
+          <label>
+            Journalist
+            <input id="simJournalist" type="text" value="Fabrizio Romano" list="simJournalistOptions">
+          </label>
+          <label>
+            Transfer type
+            <select id="simTransferType">
+              <option value="permanent">Permanent</option>
+              <option value="loan">Loan</option>
+              <option value="loan_with_option">Loan with option</option>
+            </select>
+          </label>
+          <button type="submit">Simulate</button>
+        </form>
+        <datalist id="simPositionOptions">
+          <option value="Forward"></option>
+          <option value="Winger"></option>
+          <option value="Midfielder"></option>
+          <option value="Centre-Back"></option>
+          <option value="Goalkeeper"></option>
+        </datalist>
+        <datalist id="simSourceOptions"></datalist>
+        <datalist id="simJournalistOptions"></datalist>
+        <div id="scenarioSimulatorResult"></div>
+      </section>
+
       <section class="controls-band" id="controlsSection">
         <div class="control">
           <span class="control-label">View</span>
@@ -105,14 +219,6 @@
         </div>
       </section>
 
-      <section class="report-band" id="clubDossierSection">
-        <div class="section-head">
-          <h2>Club Dossier</h2>
-          <span class="section-meta" id="clubDossierMeta">Pick a club filter, or let the dashboard choose the most relevant club automatically.</span>
-        </div>
-        <div id="clubDossier"></div>
-      </section>
-
       <section class="workspace" id="workspaceSection">
         <div class="table-pane">
           <div class="section-head">
@@ -135,6 +241,32 @@
             <p>Pick a row to inspect the signal, indicators, and closest comps.</p>
           </div>
         </aside>
+      </section>
+
+      <section class="report-band" id="clubDossierSection">
+        <div class="section-head">
+          <h2>Club Dossier</h2>
+          <span class="section-meta" id="clubDossierMeta">Pick a club filter, or let the dashboard choose the most relevant club automatically.</span>
+        </div>
+        <div id="clubDossier"></div>
+      </section>
+
+      <section class="report-band" id="clubComparisonSection">
+        <div class="section-head">
+          <h2>Club vs Club</h2>
+          <span class="section-meta">Compare market sensitivity, rumor coverage, transfer quality, and recent stock path.</span>
+        </div>
+        <div class="comparison-controls">
+          <label>
+            Club A
+            <select id="compareClubA"></select>
+          </label>
+          <label>
+            Club B
+            <select id="compareClubB"></select>
+          </label>
+        </div>
+        <div id="clubComparisonGrid"></div>
       </section>
 
       <section class="report-band" id="watchlistSection">
@@ -245,6 +377,28 @@
             </div>
           </div>
         </div>
+      </section>
+
+      <section class="report-band" id="trustGraphSection">
+        <div class="section-head">
+          <h2>Reporter Trust Graph</h2>
+          <span class="section-meta">Reporter -> source -> club relationships, weighted by claim volume and match rate.</span>
+        </div>
+        <div id="trustGraph"></div>
+      </section>
+
+      <section class="report-band" id="reporterProfilesSection">
+        <div class="section-head">
+          <h2>Reporter Profiles</h2>
+          <span class="section-meta">See who covers which clubs, recent claims, and historical match rate.</span>
+        </div>
+        <div class="comparison-controls">
+          <label>
+            Reporter
+            <select id="reporterSelect"></select>
+          </label>
+        </div>
+        <div id="reporterProfile"></div>
       </section>
 
       <section class="report-band" id="seasonHistorySection">
