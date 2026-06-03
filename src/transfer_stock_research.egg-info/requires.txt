@@ -11,6 +11,9 @@ uvicorn>=0.30
 [claim_ai]
 dspy>=3.0
 
+[google_news_decode]
+googlenewsdecoder>=0.1.7
+
 [market_research]
 numpy>=1.24
 pandas>=2.0
@@ -26,3 +29,7 @@ fundus
 scrapy
 scrapy-playwright
 playwright
+
+[scrapling_scrape]
+scrapling[fetchers]>=0.4.8
+googlenewsdecoder>=0.1.7

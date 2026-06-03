@@ -26,6 +26,7 @@ Demo page after GitHub Pages is enabled:
 - **Ask The Analyst:** query the local payload in plain English.
 - **Evidence RAG:** attach cited local evidence to answers.
 - **Agent Run:** give the system a research goal and get plan, trace, evidence, and report files.
+- **Data Quality Audit:** grade freshness, source coverage, market context, matching, model reliability, and date hygiene.
 - **Scenario Swarm:** run role-based agents over one rumor.
 - **Club comparison:** compare public clubs side by side.
 - **Reporter profiles:** inspect journalist/source credibility.
@@ -78,6 +79,12 @@ Generate a daily briefing:
 PYTHONPATH=src python3 -m transfer_stock.cli generate-briefing
 ```
 
+Audit whether the current payload is fresh and research-ready:
+
+```bash
+PYTHONPATH=src python3 -m transfer_stock.cli audit-data-quality
+```
+
 ## Why This Exists
 
 Confirmed transfers are usually late. The more interesting signal is often the
@@ -100,6 +107,7 @@ not produce guaranteed buy/sell signals.
 - Score reporter/source credibility from historical claim outcomes.
 - Ask RAG-backed analyst questions with cited local evidence.
 - Run an agentic research loop that writes a plan, trace, answer, evidence, and report.
+- Audit data freshness, source diversity, date hygiene, and model readiness before trusting current signals.
 - Inspect target-aware predictions for buyer and seller sides.
 - Open club dossiers with stock paths, match markers, transfers, and reporters.
 - Compare clubs on live rumor volume, transfer quality, and realized returns.
@@ -161,6 +169,11 @@ Briefings write:
 
 - `data/reports/daily_briefing.md`
 - `data/reports/daily_briefing.json`
+
+Data-quality audits write:
+
+- `app/static/data/data_quality_latest.json`
+- `data/reports/data_quality_audit.md`
 
 Evidence RAG writes:
 
@@ -288,8 +301,8 @@ Use these in this order:
 - Stock prices: Yahoo chart endpoint by default, with Stooq CSV support when
   you provide an API key.
 - News and rumors: Guardian/GNews provider APIs, no-key RSS presets, GDELT for
-  broad discovery, and optional Fundus/Crawl4AI enrichment for deeper article
-  extraction.
+  broad discovery, optional Fundus publisher crawling, optional Scrapling
+  article-body enrichment, and Crawl4AI only for heavier fallback extraction.
 
 ## Club Config
 
@@ -310,6 +323,8 @@ Stage 1 of the upgrade guide adds a v2 ingestion path with optional extras:
 
 ```bash
 pip install -e ".[scrape_v2]"
+pip install -e ".[google_news_decode]"
+pip install -e ".[scrapling_scrape]"
 pip install -e ".[ai_scrape]"
 pip install -e ".[claim_ai]"
 pip install -e ".[market_research]"
@@ -319,20 +334,29 @@ pip install -e ".[api_server]"
 
 These extras are optional. The repo still works without them and will fall back
 to provider APIs, RSS ingestion, and a pure-Python market engine where
-possible. For the stronger current-news path, the most useful install right now
-is:
+possible. For the stronger current-news path, the most useful no-key install
+right now is:
 
 ```bash
-pip install -e ".[scrape_v2,api_server]"
+pip install -e ".[scrapling_scrape,api_server]"
 ```
 
 Then you can add:
 
 ```bash
+pip install -e ".[scrape_v2]"
+pip install -e ".[scrapling_scrape]"
 pip install -e ".[ai_scrape]"
 ```
 
-if you want Crawl4AI body enrichment for thinner article pages.
+if you want stronger article-body enrichment. Scrapling is the lighter first
+choice for resolving and parsing article pages; Crawl4AI is the heavier fallback
+for pages that need AI/browser extraction.
+
+Note: current Scrapling releases depend on `lxml >= 6`, while the installed
+Fundus/Crawl4AI versions in this environment expect `lxml < 6` or `~5.3`.
+Treat Scrapling mode as a separate enrichment lane from Fundus/Crawl4AI until
+those dependency ranges converge.
 
 ## Quick Start
 
@@ -647,31 +671,38 @@ Then open `http://127.0.0.1:8000`.
 
 Important:
 
-- the website does **not** read `current_fast.jsonl` directly
+- the website does **not** read `current_live.jsonl` directly
 - the website reads `app/static/data/dashboard_data.json`
-- `current_fast.jsonl` is a normalized article-store input file
+- `current_live.jsonl` is a normalized article-store input file
 - you update the site by rebuilding `dashboard_data.json`
 
-Fastest two-step workflow for current live data:
+Recommended two-step workflow for current live data:
 
 ```bash
 PYTHONPATH=src .venv/bin/python -m transfer_stock.cli refresh-live-fetch \
-  --start 2026-05-01 \
-  --end 2026-05-20 \
-  --source-preset fast_no_api \
+  --start "$(python3 -c 'from datetime import date, timedelta; print((date.today() - timedelta(days=21)).isoformat())')" \
+  --end "$(python3 -c 'from datetime import date; print(date.today().isoformat())')" \
+  --source-preset scrapling_wide_no_api \
   --max-records 10 \
   --pause 0.1 \
-  --clubs manchester_united juventus ajax \
-  --output data/raw/articles/current_fast.jsonl
+  --clubs manchester_united borussia_dortmund juventus lazio ajax sporting_cp fc_porto celtic benfica eagle_football_group \
+  --output data/raw/articles/current_live.jsonl
 
 PYTHONPATH=src .venv/bin/python -m transfer_stock.cli refresh-live-analyze \
-  --input data/raw/articles/current_fast.jsonl \
-  --clubs manchester_united juventus ajax \
-  --slug current_fast \
+  --input data/raw/articles/current_live.jsonl \
+  --clubs manchester_united borussia_dortmund juventus lazio ajax sporting_cp fc_porto celtic benfica eagle_football_group \
+  --slug current_live \
   --dashboard-output app/static/data/dashboard_data.json
+
+PYTHONPATH=src .venv/bin/python -m transfer_stock.cli audit-data-quality
 ```
 
 After that, refresh the browser on `http://127.0.0.1:8000`.
+
+This is also the default GitHub Actions refresh lane. It discovers articles
+from RSS and Google News feeds, decodes Google News wrapper URLs into real
+publisher URLs, then uses Scrapling to pull article bodies. That gives the
+claim extractor more context than headline-only RSS.
 
 Refresh the current-news dashboard in one command:
 
@@ -747,14 +778,14 @@ PYTHONPATH=src .venv/bin/python -m transfer_stock.cli refresh-live-dashboard \
 - Portugal / Sporting, Porto, Benfica
 - Netherlands / Ajax
 
-If you already fetched into `current_fast.jsonl`, you do **not** need to fetch
+If you already fetched into `current_live.jsonl`, you do **not** need to fetch
 again. Just run:
 
 ```bash
 PYTHONPATH=src .venv/bin/python -m transfer_stock.cli refresh-live-analyze \
-  --input data/raw/articles/current_fast.jsonl \
-  --clubs manchester_united juventus ajax \
-  --slug current_fast \
+  --input data/raw/articles/current_live.jsonl \
+  --clubs manchester_united borussia_dortmund juventus lazio ajax sporting_cp fc_porto celtic benfica eagle_football_group \
+  --slug current_live \
   --dashboard-output app/static/data/dashboard_data.json
 ```
 
@@ -797,6 +828,28 @@ publisher collections for:
 If `crawl4ai` is installed and you add `crawl4ai` to `--methods`, the v2
 ingestion path will also try to enrich thin article bodies from article URLs
 after the initial provider/RSS/Fundus collection.
+
+If `scrapling` is installed, you can use the Scrapling-enhanced no-API preset:
+
+```bash
+pip install -e ".[scrapling_scrape]"
+
+PYTHONPATH=src .venv/bin/python -m transfer_stock.cli refresh-live-fetch \
+  --source-preset scrapling_wide_no_api \
+  --max-records 20 \
+  --pause 0.1 \
+  --resume
+```
+
+This keeps discovery cheap through RSS, decodes Google News wrapper links into
+real publisher URLs, then uses Scrapling's browser-like HTTP fetcher to enrich
+thin article bodies. It is usually a better first fallback than opening full
+browser/AI crawlers for every article.
+
+In the latest local benchmark, this turned 13 Google News RSS rows from
+headline-only entries into 13 decoded publisher URLs with article bodies. See
+`data/reports/scrapling_benchmark.md` after running the benchmark or a live
+refresh.
 
 Serve the same dashboard payload through a small FastAPI layer:
 

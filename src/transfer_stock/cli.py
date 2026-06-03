@@ -16,6 +16,7 @@ from .claims import claim_stats, extract_claims_from_file, read_claims
 from .config import DATA_DIR, load_clubs, load_credibility
 from .credibility_engine import credibility_outputs, credibility_stats, read_scored_claims
 from .dcaribou import import_dcaribou_transfers
+from .data_quality import DEFAULT_QUALITY_JSON, DEFAULT_QUALITY_MD, write_data_quality_audit
 from .demo import demo_payload_stats, write_demo_payload
 from .ewenme import DEFAULT_LEAGUES, import_ewenme_transfers
 from .event_dates import infer_event_dates
@@ -297,6 +298,22 @@ def cmd_generate_briefing(args: argparse.Namespace) -> None:
     print(f"markdown: {result['markdown']}")
     if result.get("json"):
         print(f"json: {result['json']}")
+
+
+def cmd_audit_data_quality(args: argparse.Namespace) -> None:
+    audit = write_data_quality_audit(
+        Path(args.payload),
+        output_json=Path(args.output),
+        output_markdown=None if args.no_markdown else Path(args.markdown_output),
+    )
+    print(f"overall: {audit['overall_status']} ({audit['overall_score']:.0%})")
+    print(f"json: {audit['json_path']}")
+    if audit.get("markdown_path"):
+        print(f"markdown: {audit['markdown_path']}")
+    if audit.get("warnings"):
+        print("warnings:")
+        for warning in audit["warnings"][:8]:
+            print(f"- {warning}")
 
 
 def cmd_fetch_news(args: argparse.Namespace) -> None:
@@ -1454,6 +1471,13 @@ def build_parser() -> argparse.ArgumentParser:
     briefing.add_argument("--no-scenario", action="store_true", help="Skip loading the latest Scenario Swarm snapshot")
     briefing.add_argument("--no-json", action="store_true", help="Only write Markdown")
     briefing.set_defaults(func=cmd_generate_briefing)
+
+    quality = sub.add_parser("audit-data-quality", help="Audit dashboard data freshness, coverage, dates, and model readiness")
+    quality.add_argument("--payload", default=str(Path("app") / "static" / "data" / "dashboard_data.json"))
+    quality.add_argument("--output", default=str(DEFAULT_QUALITY_JSON))
+    quality.add_argument("--markdown-output", default=str(DEFAULT_QUALITY_MD))
+    quality.add_argument("--no-markdown", action="store_true", help="Only write the JSON audit")
+    quality.set_defaults(func=cmd_audit_data_quality)
 
     inspect_demo = sub.add_parser("inspect-demo-data", help="Inspect Stage 8 dashboard payload JSON")
     inspect_demo.add_argument("--input", default=str(Path("app") / "static" / "data" / "dashboard_data.json"))

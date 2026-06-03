@@ -15,6 +15,7 @@ const state = {
   askResult: null,
   agent: null,
   scenario: null,
+  dataQuality: null,
   simulatorResult: null,
 };
 
@@ -1893,6 +1894,86 @@ function renderTakeaways() {
   `).join("");
 }
 
+function qualityStatusClass(status) {
+  if (status === "strong") return "pill pill-positive";
+  if (status === "usable") return "pill pill-info";
+  if (status === "watch") return "pill pill-warning";
+  return "pill pill-negative";
+}
+
+function renderDataQuality() {
+  const panel = document.getElementById("dataQualityPanel");
+  const meta = document.getElementById("dataQualityMeta");
+  const audit = state.dataQuality;
+  if (!panel) return;
+  if (!audit || !audit.available) {
+    meta.textContent = "No data-quality audit snapshot is published yet.";
+    panel.innerHTML = `
+      <div class="quality-empty">
+        <div>
+          <strong>No audit snapshot yet</strong>
+          <span class="detail-meta">Run the local audit command, then refresh this page.</span>
+        </div>
+        <pre><code>PYTHONPATH=src python3 -m transfer_stock.cli audit-data-quality</code></pre>
+      </div>
+    `;
+    return;
+  }
+  meta.textContent = `${fmtDate(audit.audit_generated_at)} · ${escapeHtml(audit.overall_status || "unknown").replaceAll("_", " ")} · ${(audit.warnings || []).length} warnings`;
+  const dimensions = audit.dimensions || [];
+  const warnings = audit.warnings || [];
+  panel.innerHTML = `
+    <div class="quality-shell">
+      <div class="quality-summary">
+        <div>
+          <span class="metric-label">Overall Readiness</span>
+          <strong>${fmtPct(audit.overall_score, 0)}</strong>
+          <span class="detail-meta">${escapeHtml(audit.summary || "")}</span>
+        </div>
+        <span class="${qualityStatusClass(audit.overall_status)}">${escapeHtml((audit.overall_status || "unknown").replaceAll("_", " "))}</span>
+      </div>
+      <div class="quality-grid">
+        ${dimensions.map((item) => `
+          <div class="quality-card">
+            <div class="headline-row">
+              <strong>${escapeHtml(item.name || "-")}</strong>
+              <span class="${qualityStatusClass(item.status)}">${escapeHtml((item.status || "").replaceAll("_", " "))}</span>
+            </div>
+            <div class="quality-meter" aria-label="${escapeHtml(item.name || "Quality")} score">
+              <span style="width:${Math.max(0, Math.min(100, Number(item.score || 0) * 100))}%"></span>
+            </div>
+            <span class="detail-meta">${fmtPct(item.score, 0)} · ${escapeHtml(item.summary || "")}</span>
+          </div>
+        `).join("")}
+      </div>
+      <details class="quality-detail">
+        <summary>
+          <span>Warnings + next refresh commands</span>
+          <strong>${warnings.length}</strong>
+        </summary>
+        <div class="quality-detail-grid">
+          <div>
+            <span class="metric-label">Warnings</span>
+            ${warnings.length ? `
+              <ul class="scenario-risk-list">
+                ${warnings.slice(0, 10).map((warning) => `<li>${escapeHtml(warning)}</li>`).join("")}
+              </ul>
+            ` : `<p class="detail-note">No major warnings found in the latest audit.</p>`}
+          </div>
+          <div>
+            <span class="metric-label">Commands</span>
+            ${(audit.recommended_commands || []).length ? `
+              <div class="quality-command-list">
+                ${(audit.recommended_commands || []).slice(0, 5).map((command) => `<code>${escapeHtml(command)}</code>`).join("")}
+              </div>
+            ` : `<p class="detail-note">No commands suggested.</p>`}
+          </div>
+        </div>
+      </details>
+    </div>
+  `;
+}
+
 function renderAskTable(table) {
   const columns = table.columns || [];
   const rows = table.rows || [];
@@ -2735,6 +2816,7 @@ function renderAll() {
   renderRouteChrome();
   renderOverview();
   renderTakeaways();
+  renderDataQuality();
   renderAskAnalyst();
   renderAgentRun();
   renderScenarioSwarm();
@@ -2835,6 +2917,7 @@ async function boot() {
   state.payload = await response.json();
   state.agent = await loadAgentSnapshot();
   state.scenario = await loadScenarioSnapshot();
+  state.dataQuality = await loadDataQualitySnapshot();
   state.selectedSeason = state.payload.latest_season;
   applyRouteFromHash();
   wireControls();
@@ -2859,6 +2942,16 @@ async function loadScenarioSnapshot() {
 async function loadAgentSnapshot() {
   try {
     const response = await fetch("./data/agent_latest.json", { cache: "no-store" });
+    if (!response.ok) return null;
+    return await response.json();
+  } catch (error) {
+    return null;
+  }
+}
+
+async function loadDataQualitySnapshot() {
+  try {
+    const response = await fetch("./data/data_quality_latest.json", { cache: "no-store" });
     if (!response.ok) return null;
     return await response.json();
   } catch (error) {

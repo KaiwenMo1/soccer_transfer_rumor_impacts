@@ -5,6 +5,7 @@ import json
 import re
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import Any, Iterable
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
@@ -22,6 +23,7 @@ ARTICLE_FIELDS = [
     "journalist",
     "title",
     "url",
+    "original_url",
     "normalized_url",
     "language",
     "body_text",
@@ -56,6 +58,7 @@ class ArticleRecord:
     journalist: str
     title: str
     url: str
+    original_url: str
     normalized_url: str
     language: str
     body_text: str
@@ -78,6 +81,7 @@ class ArticleRecord:
             "journalist": self.journalist,
             "title": self.title,
             "url": self.url,
+            "original_url": self.original_url,
             "normalized_url": self.normalized_url,
             "language": self.language,
             "body_text": self.body_text,
@@ -95,6 +99,20 @@ class ArticleRecord:
 
 def now_iso() -> str:
     return datetime.now(tz=UTC).isoformat()
+
+
+def normalize_timestamp(value: Any) -> str:
+    text = compact_whitespace(str(value or ""))
+    if not text:
+        return ""
+    try:
+        return datetime.fromisoformat(text.replace("Z", "+00:00")).astimezone(UTC).isoformat()
+    except ValueError:
+        pass
+    try:
+        return parsedate_to_datetime(text).astimezone(UTC).isoformat()
+    except (TypeError, ValueError, IndexError, AttributeError):
+        return text
 
 
 def compact_whitespace(value: str) -> str:
@@ -211,10 +229,11 @@ def normalize_article_row(
 ) -> dict[str, object]:
     title = compact_whitespace(str(row.get("title", "")))
     url = compact_whitespace(str(row.get("url", "")))
+    original_url = compact_whitespace(str(row.get("original_url", "")))
     normalized = normalize_url(url)
     source = canonical_source(row)
-    published_at = compact_whitespace(str(row.get("published_at", "")))
-    seen_at = compact_whitespace(str(row.get("seen_at", ""))) or now_iso()
+    published_at = normalize_timestamp(row.get("published_at", ""))
+    seen_at = normalize_timestamp(row.get("seen_at", "")) or now_iso()
     snippet = compact_whitespace(str(row.get("snippet", "")))
     body_text = compact_whitespace(str(row.get("body_text", "")))
     club_hint = compact_whitespace(str(row.get("club", "")))
@@ -235,6 +254,7 @@ def normalize_article_row(
         journalist=infer_journalist(source, row),
         title=title,
         url=url,
+        original_url=original_url,
         normalized_url=normalized,
         language=compact_whitespace(str(row.get("language", ""))) or "English",
         body_text=body_text,

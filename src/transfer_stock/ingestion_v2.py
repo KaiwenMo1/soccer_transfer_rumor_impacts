@@ -11,12 +11,14 @@ from .article_store import dedupe_articles, normalize_article_row, read_article_
 from .crawl4ai_adapter import enrich_rows_with_crawl4ai
 from .config import Club
 from .fundus_adapter import fetch_fundus_rows
+from .google_news_adapter import decode_google_news_rows
 from .http import FetchError, get_text, polite_pause
 from .news_sources import NewsSource, mentions_club, mentions_transfer, render_source_url, source_supports_club
 from .provider_news import fetch_provider_club_articles
+from .scrapling_adapter import enrich_rows_with_scrapling
 
 
-SUPPORTED_METHODS = {"provider", "rss", "fundus", "crawl4ai", "scrapy-playwright"}
+SUPPORTED_METHODS = {"provider", "rss", "fundus", "google-news-decode", "scrapling", "crawl4ai", "scrapy-playwright"}
 
 
 @dataclass(frozen=True)
@@ -247,6 +249,14 @@ def fetch_articles_v2(
                 warnings.append(f"{source.key}:{club.name}: {exc}")
                 polite_pause(pause)
                 continue
+            if "google-news-decode" in allowed_methods and raw_rows:
+                try:
+                    raw_rows, decoded_updates = decode_google_news_rows(raw_rows, limit=max_records)
+                except FetchError as exc:
+                    warnings.append(f"google-news-decode:{source.key}:{club.name}: {exc}")
+                else:
+                    if decoded_updates:
+                        warnings.append(f"google-news-decode:{source.key}:{club.name}: decoded {decoded_updates} URLs")
             normalized_rows = [
                 normalize_article_row(row, {club.key: club}, crawl_method=row.get("crawl_method", source.crawl_method or source.kind), provider=source.key)
                 for row in raw_rows
@@ -276,5 +286,18 @@ def fetch_articles_v2(
         else:
             if crawl4ai_updates:
                 warnings.append(f"crawl4ai: enriched {crawl4ai_updates} article bodies")
+    if "scrapling" in allowed_methods and deduped:
+        try:
+            deduped, scrapling_updates = enrich_rows_with_scrapling(
+                deduped,
+                limit=max_records * max(1, len(club_list)),
+                timeout=timeout,
+                retries=retries,
+            )
+        except FetchError as exc:
+            warnings.append(f"scrapling: {exc}")
+        else:
+            if scrapling_updates:
+                warnings.append(f"scrapling: enriched {scrapling_updates} article bodies")
     write_article_store(output_path, deduped)
     return IngestionResult(rows=deduped, fetched_rows=fetched_rows, skipped_duplicates=skipped_duplicates, warnings=tuple(warnings))

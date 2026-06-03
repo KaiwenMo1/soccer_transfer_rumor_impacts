@@ -2,7 +2,7 @@ import csv
 import json
 from pathlib import Path
 import tempfile
-from datetime import date, timedelta
+from datetime import UTC, date, datetime, timedelta
 import unittest
 
 from transfer_stock.article_store import dedupe_articles, normalize_article_row, normalize_url
@@ -14,6 +14,7 @@ from transfer_stock.briefing import build_briefing_sections, briefing_markdown, 
 from transfer_stock.claims import heuristic_extract_claim
 from transfer_stock.config import load_clubs
 from transfer_stock.credibility_engine import AggregateStat, credibility_outputs, credibility_row
+from transfer_stock.data_quality import build_data_quality_audit
 from transfer_stock.dcaribou import transfer_kind_tags
 from transfer_stock.demo import (
     build_demo_payload,
@@ -24,6 +25,7 @@ from transfer_stock.demo import (
     load_match_results,
     match_result_sentiment,
     next_bar_index_on_or_after,
+    parse_timestamp,
     publisher_label,
     similar_examples,
     summarize_watchlist_cluster,
@@ -41,7 +43,8 @@ from transfer_stock.market_features import compute_market_features_for_event
 from transfer_stock.match_results import football_data_season_code, normalize_football_data_rows, parse_football_data_date
 from transfer_stock.matching import single_match, transfer_id_for, TransferCandidate
 from transfer_stock.ml_v2 import LEAKY_FIELDS, parse_datetime_to_date, unmatched_claim_row, usable_rows as usable_rows_v2
-from transfer_stock.news_sources import NewsSource, render_source_url, source_supports_club
+from transfer_stock.google_news_adapter import is_google_news_url, title_suffix_source
+from transfer_stock.news_sources import NewsSource, methods_for_preset, render_source_url, source_supports_club
 from transfer_stock.scenario_swarm import (
     build_dashboard_scenario_payload,
     collect_evidence,
@@ -49,6 +52,7 @@ from transfer_stock.scenario_swarm import (
     run_scenario_swarm,
     summarize_trace,
 )
+from transfer_stock.scrapling_adapter import readable_page_text, row_needs_enrichment, strip_html
 from transfer_stock.simulator import credibility_from_payload, simulate_hypothetical_transfer
 from transfer_stock.stock import PriceBar
 from transfer_stock.targets import direct_target_rows
@@ -225,6 +229,46 @@ class CoreTests(unittest.TestCase):
         self.assertEqual(result["intent"], "unknown")
         self.assertLess(result["confidence"], 0.5)
         self.assertTrue(result["warnings"])
+
+    def test_data_quality_audit_scores_payload(self):
+        payload = self.sample_analyst_payload()
+        payload["generated_at"] = "2026-05-20T12:00:00+00:00"
+        payload["club_media"] = {
+            "Manchester United": {"ticker": "MANU"},
+            "Juventus": {"ticker": "JUVE.MI"},
+        }
+        payload["model_summary"] = {
+            "xgboost": {
+                "test": {
+                    "n": 80,
+                    "accuracy": 0.55,
+                    "macro_f1": 0.42,
+                    "class_balance": {"negative": 30, "neutral": 30, "positive": 20},
+                }
+            }
+        }
+        result = build_data_quality_audit(
+            payload,
+            now=datetime(2026, 5, 21, tzinfo=UTC),
+        )
+        self.assertTrue(result["available"])
+        self.assertIn(result["overall_status"], {"strong", "usable", "watch", "needs_refresh"})
+        self.assertEqual(len(result["dimensions"]), 6)
+        self.assertIn("Freshness", [item["name"] for item in result["dimensions"]])
+        source_dim = next(item for item in result["dimensions"] if item["name"] == "Source Coverage")
+        self.assertGreaterEqual(source_dim["evidence"]["unique_sources"], 1)
+
+    def test_data_quality_audit_flags_future_dates(self):
+        payload = self.sample_analyst_payload()
+        payload["generated_at"] = "2026-05-20T12:00:00+00:00"
+        payload["transfers_by_season"]["2025-26"][0]["date"] = "2026-07-01"
+        result = build_data_quality_audit(
+            payload,
+            now=datetime(2026, 6, 2, tzinfo=UTC),
+        )
+        date_dim = next(item for item in result["dimensions"] if item["name"] == "Date Hygiene")
+        self.assertGreater(date_dim["evidence"]["future_date_count"], 0)
+        self.assertTrue(any("future-dated" in warning for warning in result["warnings"]))
 
     def test_evidence_rag_builds_and_retrieves_local_citations(self):
         payload = self.sample_analyst_payload()
@@ -671,6 +715,27 @@ class CoreTests(unittest.TestCase):
         self.assertIn("Example Player", row["player_candidates"])
         self.assertEqual(row["provider"], "guardian_api")
 
+    def test_normalize_article_row_converts_rss_dates_to_iso(self):
+        clubs = load_clubs()
+        row = normalize_article_row(
+            {
+                "seen_at": "Tue, 02 Jun 2026 15:30:00 GMT",
+                "published_at": "Wed, 20 May 2026 09:15:00 GMT",
+                "source": "Google News Global EN",
+                "title": "Juventus in transfer talks for Example Player",
+                "url": "https://example.com/juventus-transfer",
+                "snippet": "Juventus are in transfer talks.",
+            },
+            clubs,
+            crawl_method="rss",
+            provider="google_news_global_en",
+        )
+        self.assertTrue(str(row["published_at"]).startswith("2026-05-20T09:15:00"))
+        self.assertTrue(str(row["seen_at"]).startswith("2026-06-02T15:30:00"))
+
+    def test_parse_timestamp_handles_iso_offsets(self):
+        self.assertEqual(parse_timestamp("2026-06-02T11:14:35+00:00").date(), date(2026, 6, 2))
+
     def test_transfer_history_rows_excludes_future_and_loan_returns(self):
         clubs = load_clubs()
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -795,6 +860,44 @@ class CoreTests(unittest.TestCase):
         self.assertIn("news.google.com/rss/search", rendered)
         self.assertIn("hl=nl", rendered)
         self.assertIn("ceid=NL:nl", rendered)
+
+    def test_scrapling_source_preset_adds_enrichment_method(self):
+        self.assertEqual(methods_for_preset("scrapling_wide_no_api"), ["rss", "google-news-decode", "scrapling"])
+
+    def test_google_news_helpers_identify_wrappers_and_publishers(self):
+        self.assertTrue(is_google_news_url("https://news.google.com/rss/articles/CBMiabc?oc=5"))
+        self.assertFalse(is_google_news_url("https://www.bbc.com/sport/football"))
+        self.assertEqual(
+            title_suffix_source("Man Utd transfer latest - The Athletic - Google News"),
+            "The Athletic",
+        )
+
+    def test_scrapling_text_helpers_extract_readable_body(self):
+        html = """
+        <html>
+          <head><style>.hidden{display:none}</style><script>bad()</script></head>
+          <body><article><h1>Transfer update</h1><p>Manchester United are in talks over a midfielder.</p></article></body>
+        </html>
+        """
+        self.assertIn("Transfer update", strip_html(html))
+        self.assertTrue(row_needs_enrichment({"url": "https://example.com/a", "body_text": ""}, 400))
+
+        class FakeSelection:
+            def __init__(self, values):
+                self.values = values
+
+            def getall(self):
+                return self.values
+
+        class FakePage:
+            body = b""
+
+            def css(self, selector):
+                if selector == "article ::text":
+                    return FakeSelection(["Transfer update", "Manchester United are in talks over a midfielder."] * 5)
+                return FakeSelection([])
+
+        self.assertIn("Manchester United", readable_page_text(FakePage(), min_chars=40))
 
     def test_headline_fingerprint_strips_source_suffix(self):
         left = "Sources: Miami closing in on signing Man United's Casemiro - ESPN"

@@ -1,0 +1,116 @@
+{
+  "available": true,
+  "audit_generated_at": "2026-06-02T13:56:47.667964+00:00",
+  "payload_path": "app/static/data/dashboard_data.json",
+  "overall_score": 0.7874,
+  "overall_status": "usable",
+  "summary": "Data quality is usable (79%).",
+  "dimensions": [
+    {
+      "name": "Freshness",
+      "score": 1.0,
+      "status": "strong",
+      "summary": "Latest signal date: 2026-06-02",
+      "warnings": [],
+      "evidence": {
+        "latest_signal_date": "2026-06-02",
+        "days_stale": 0,
+        "payload_generated_at": "2026-06-02T00:00:00+00:00",
+        "payload_age_days": 0
+      }
+    },
+    {
+      "name": "Source Coverage",
+      "score": 0.5254,
+      "status": "watch",
+      "summary": "10 live clusters, 12 sources, 0 journalists",
+      "warnings": [
+        "8 live clusters have only one article/source; consensus is thin.",
+        "10 live clusters are missing journalist attribution."
+      ],
+      "evidence": {
+        "live_clusters": 10,
+        "article_count": 13,
+        "unique_sources": 12,
+        "unique_journalists": 0,
+        "multi_source_clusters": 2,
+        "thin_clusters": 8
+      }
+    },
+    {
+      "name": "Market Context",
+      "score": 1.0,
+      "status": "strong",
+      "summary": "10 stock paths, latest stock date 2026-05-20, 353 match markers",
+      "warnings": [],
+      "evidence": {
+        "stock_path_count": 10,
+        "missing_stock_paths": 0,
+        "stale_stock_paths": 0,
+        "match_marker_count": 353,
+        "latest_stock_date": "2026-05-20"
+      }
+    },
+    {
+      "name": "Entity + Target Matching",
+      "score": 0.7111,
+      "status": "usable",
+      "summary": "73 direct public-target rows out of 92 total signals",
+      "warnings": [
+        "21 direct signal rows have weak entity-match scores below 0.65."
+      ],
+      "evidence": {
+        "signal_rows": 92,
+        "direct_rows": 73,
+        "direct_ratio": 0.7935,
+        "avg_match_score": 0.6659,
+        "weak_match_rows": 21
+      }
+    },
+    {
+      "name": "Model Reliability",
+      "score": 0.422,
+      "status": "watch",
+      "summary": "Holdout n=68, accuracy=0.471, macro F1=0.306",
+      "warnings": [
+        "Positive class is sparse in holdout data; positive predictions need extra skepticism.",
+        "Macro F1 is low, so the model is more useful for triage than final decisions."
+      ],
+      "evidence": {
+        "holdout_rows": 68,
+        "accuracy": 0.4706,
+        "macro_f1": 0.3064,
+        "class_balance": {
+          "negative": 34,
+          "neutral": 31,
+          "positive": 3
+        }
+      }
+    },
+    {
+      "name": "Date Hygiene",
+      "score": 1.0,
+      "status": "strong",
+      "summary": "No future-dated rows found",
+      "warnings": [],
+      "evidence": {
+        "future_date_count": 0,
+        "future_date_fields": {},
+        "examples": []
+      }
+    }
+  ],
+  "warnings": [
+    "8 live clusters have only one article/source; consensus is thin.",
+    "10 live clusters are missing journalist attribution.",
+    "21 direct signal rows have weak entity-match scores below 0.65.",
+    "Positive class is sparse in holdout data; positive predictions need extra skepticism.",
+    "Macro F1 is low, so the model is more useful for triage than final decisions."
+  ],
+  "recommended_commands": [
+    "PYTHONPATH=src python3 -m transfer_stock.cli audit-data-quality"
+  ],
+  "source_paths": [
+    "app/static/data/dashboard_data.json"
+  ]
+}

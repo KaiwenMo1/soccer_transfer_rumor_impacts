@@ -96,8 +96,13 @@ def parse_timestamp(value: str) -> datetime:
     text = (value or "").strip()
     if not text:
         return datetime(1970, 1, 1, tzinfo=UTC)
+    if "T" in text and "-" in text:
+        try:
+            return datetime.fromisoformat(text.replace("Z", "+00:00")).astimezone(UTC)
+        except ValueError:
+            pass
     if text.endswith("Z") and "-" in text:
-        return datetime.fromisoformat(text.replace("Z", "+00:00"))
+        return datetime.fromisoformat(text.replace("Z", "+00:00")).astimezone(UTC)
     if text.endswith("Z") and "T" in text:
         try:
             return datetime.strptime(text, "%Y%m%dT%H%M%SZ").replace(tzinfo=UTC)

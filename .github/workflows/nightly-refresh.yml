@@ -44,7 +44,7 @@ jobs:
       - name: Install project
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[scrape_v2,market_research,ml_pipeline,api_server]"
+          pip install -e ".[scrapling_scrape,market_research,ml_pipeline,api_server]"
 
       - name: Fetch live articles
         id: fetch
@@ -53,7 +53,7 @@ jobs:
           PYTHONPATH=src python -m transfer_stock.cli refresh-live-fetch \
             --start "$(python -c 'from datetime import date, timedelta; print((date.today() - timedelta(days=21)).isoformat())')" \
             --end "$(python -c 'from datetime import date; print(date.today().isoformat())')" \
-            --source-preset wide_no_api \
+            --source-preset scrapling_wide_no_api \
             --max-records 10 \
             --pause 0.1 \
             --clubs manchester_united borussia_dortmund juventus lazio ajax sporting_cp fc_porto celtic benfica eagle_football_group \
@@ -75,6 +75,16 @@ jobs:
         run: |
           cp /tmp/dashboard-backup/dashboard_data.json app/static/data/dashboard_data.json
 
+      - name: Audit dashboard data quality
+        id: audit
+        if: ${{ always() }}
+        continue-on-error: true
+        run: |
+          PYTHONPATH=src python -m transfer_stock.cli audit-data-quality \
+            --payload app/static/data/dashboard_data.json \
+            --output app/static/data/data_quality_latest.json \
+            --markdown-output data/reports/data_quality_audit.md
+
       - name: Write refresh status
         if: ${{ always() }}
         run: |
@@ -88,6 +98,8 @@ jobs:
               "workflow_refresh_attempted": True,
               "workflow_fetch_status": "${{ steps.fetch.outcome }}",
               "workflow_analyze_status": "${{ steps.analyze.outcome || 'skipped' }}",
+              "workflow_audit_status": "${{ steps.audit.outcome || 'skipped' }}",
+              "workflow_source_preset": "scrapling_wide_no_api",
           }
           payload_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
           PY
@@ -100,6 +112,8 @@ jobs:
           path: |
             data/live
             app/static/data/dashboard_data.json
+            app/static/data/data_quality_latest.json
+            data/reports/data_quality_audit.md
 
       - name: Setup Pages (auto-enable if PAT is present)
         if: ${{ env.PAGES_PAT != '' }}

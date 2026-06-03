@@ -22,6 +22,13 @@ scrape_v2 = [
 ai_scrape = [
   "crawl4ai",
 ]
+scrapling_scrape = [
+  "scrapling[fetchers]>=0.4.8",
+  "googlenewsdecoder>=0.1.7",
+]
+google_news_decode = [
+  "googlenewsdecoder>=0.1.7",
+]
 claim_ai = [
   "dspy>=3.0",
 ]

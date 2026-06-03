@@ -12,6 +12,8 @@ Requires-Dist: scrapy-playwright; extra == "scrape-v2"
 Requires-Dist: playwright; extra == "scrape-v2"
 Provides-Extra: ai-scrape
 Requires-Dist: crawl4ai; extra == "ai-scrape"
+Provides-Extra: scrapling-scrape
+Requires-Dist: scrapling[fetchers]>=0.4.8; extra == "scrapling-scrape"
 Provides-Extra: claim-ai
 Requires-Dist: dspy>=3.0; extra == "claim-ai"
 Provides-Extra: market-research

@@ -81,6 +81,17 @@ SOURCE_PRESETS: dict[str, tuple[str, ...]] = {
         "fundus_pt",
         "fundus_fr",
     ),
+    "scrapling_wide_no_api": (
+        "guardian_rss",
+        "bbc_football_rss",
+        "google_news_global_en",
+        "google_news_ajax_nl",
+        "google_news_portugal_pt",
+        "google_news_germany_de",
+        "google_news_italy_it",
+        "google_news_france_fr",
+        "google_news_scotland_en",
+    ),
     "fundus_only": (
         "fundus_uk",
         "fundus_de",
@@ -110,6 +121,7 @@ METHOD_PRESETS: dict[str, tuple[str, ...]] = {
     "fast_no_api": ("rss",),
     "balanced_no_api": ("rss", "fundus"),
     "wide_no_api": ("rss", "fundus"),
+    "scrapling_wide_no_api": ("rss", "google-news-decode", "scrapling"),
     "fundus_only": ("fundus",),
     "api_plus_no_api": ("provider", "rss", "fundus"),
 }
