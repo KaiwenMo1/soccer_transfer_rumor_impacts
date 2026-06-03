@@ -9,9 +9,10 @@
   <body>
     <div class="shell">
       <header class="topbar">
-        <div>
+        <div class="topbar-copy">
           <p class="eyebrow">Transfer + Stock Signals</p>
           <h1>Transfer Stock Dashboard</h1>
+          <p class="topbar-subtitle">A local AI research terminal for football rumors, reporter credibility, and listed-club market context.</p>
         </div>
         <div class="topbar-meta">
           <div class="meta-block">
@@ -28,6 +29,15 @@
           </div>
         </div>
       </header>
+
+      <nav class="command-rail" aria-label="Dashboard shortcuts">
+        <button type="button" data-jump="askAnalystSection">Ask</button>
+        <button type="button" data-jump="signalCardsSection">Live Cards</button>
+        <button type="button" data-jump="workspaceSection">Signals</button>
+        <button type="button" data-jump="clubDossierSection">Clubs</button>
+        <button type="button" data-jump="leaderboardsSection">Reporters</button>
+        <button type="button" data-jump="dataQualitySection">Quality</button>
+      </nav>
 
       <section class="route-band" id="routeBand" hidden>
         <div class="route-band-inner">
@@ -66,6 +76,10 @@
           <span class="metric-label">Historical References</span>
           <strong id="metricHistory">-</strong>
         </div>
+      </section>
+
+      <section class="cockpit-band" id="marketCockpitSection">
+        <div id="marketCockpit"></div>
       </section>
 
       <section class="insight-band" id="insightSection">

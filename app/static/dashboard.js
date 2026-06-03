@@ -144,6 +144,19 @@ function currentSeasonTransfers() {
   return state.payload.transfers_by_season[state.selectedSeason] || [];
 }
 
+function allCurrentPublicClubs() {
+  const names = new Set();
+  (state.payload.current_signals || []).forEach((row) => {
+    const name = row.target_club || row.club;
+    if (name) names.add(name);
+  });
+  (state.payload.live_watchlist || []).forEach((row) => {
+    const name = row.target_club || row.club;
+    if (name) names.add(name);
+  });
+  return Array.from(names).sort();
+}
+
 function availableClubNames() {
   return Object.keys(state.payload.club_dossiers || {}).sort();
 }
@@ -1894,6 +1907,69 @@ function renderTakeaways() {
   `).join("");
 }
 
+function renderMarketCockpit() {
+  const container = document.getElementById("marketCockpit");
+  if (!container || !state.payload) return;
+  const watchlist = state.payload.live_watchlist || [];
+  const meta = state.payload.live_watchlist_meta || {};
+  const quality = state.dataQuality || {};
+  const top = watchlist[0] || {};
+  const publicClubs = allCurrentPublicClubs();
+  const qualityScore = quality.available ? fmtPct(quality.overall_score, 0) : "-";
+  const qualityStatus = quality.available ? (quality.overall_status || "unknown").replaceAll("_", " ") : "not audited";
+  const freshnessLabel = meta.is_stale ? "Stale" : "Fresh";
+  const freshnessDetail = meta.latest_published_at
+    ? `${fmtDate(meta.latest_published_at)} · ${meta.recent_cluster_count || watchlist.length} recent clusters`
+    : "No live window loaded";
+  const warnings = quality.available ? (quality.warnings || []) : [];
+  const topGroupKey = top.group_key || "";
+  container.innerHTML = `
+    <div class="cockpit-shell">
+      <div class="cockpit-main">
+        <div class="cockpit-kicker">
+          <span class="${meta.is_stale ? "status-dot status-warn" : "status-dot status-good"}"></span>
+          <span>${escapeHtml(freshnessLabel)} live intelligence</span>
+        </div>
+        <div class="cockpit-title-row">
+          <div>
+            <span class="metric-label">Top Live Signal</span>
+            <h2>${top.player ? `${escapeHtml(top.player)} · ${escapeHtml(top.target_club || top.club || "-")}` : "Run a live refresh to populate the board"}</h2>
+          </div>
+          ${top.confidence_tier ? `<span class="${confidencePillClass(top.confidence_tier)}">${confidenceTierLabel(top.confidence_tier)}</span>` : ""}
+        </div>
+        <p class="cockpit-summary">${escapeHtml(top.signal_summary || top.primary_headline || "The cockpit summarizes the latest direct-target rumor, data freshness, and audit warnings from local payload files.")}</p>
+        <div class="cockpit-actions">
+          ${topGroupKey ? `<button type="button" data-select-signal="${escapeHtml(topGroupKey)}">Inspect signal</button>` : ""}
+          <button type="button" data-jump="askAnalystSection">Ask analyst</button>
+          <button type="button" data-jump="dataQualitySection">Audit details</button>
+        </div>
+      </div>
+      <div class="cockpit-side">
+        <div class="cockpit-metric">
+          <span class="metric-label">Freshness</span>
+          <strong>${escapeHtml(freshnessLabel)}</strong>
+          <span class="detail-meta">${escapeHtml(freshnessDetail)}</span>
+        </div>
+        <div class="cockpit-metric">
+          <span class="metric-label">Quality</span>
+          <strong>${qualityScore}</strong>
+          <span class="detail-meta">${escapeHtml(qualityStatus)}</span>
+        </div>
+        <div class="cockpit-metric">
+          <span class="metric-label">Public Clubs</span>
+          <strong>${publicClubs.length}</strong>
+          <span class="detail-meta">${escapeHtml(publicClubs.slice(0, 4).join(", ") || "No current public targets")}</span>
+        </div>
+        <div class="cockpit-metric">
+          <span class="metric-label">Warnings</span>
+          <strong>${warnings.length}</strong>
+          <span class="detail-meta">${escapeHtml(warnings[0] || "No audit warning loaded")}</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 function qualityStatusClass(status) {
   if (status === "strong") return "pill pill-positive";
   if (status === "usable") return "pill pill-info";
@@ -2815,6 +2891,7 @@ function renderAll() {
   renderClubFilters();
   renderRouteChrome();
   renderOverview();
+  renderMarketCockpit();
   renderTakeaways();
   renderDataQuality();
   renderAskAnalyst();
@@ -2876,6 +2953,25 @@ function wireControls() {
   document.getElementById("searchInput").addEventListener("input", (event) => {
     state.search = event.target.value;
     renderAll();
+  });
+  document.addEventListener("click", (event) => {
+    const jump = event.target.closest("[data-jump]");
+    if (!jump) return;
+    const section = document.getElementById(jump.dataset.jump);
+    if (!section) return;
+    event.preventDefault();
+    section.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  document.addEventListener("click", (event) => {
+    const signal = event.target.closest("[data-select-signal]");
+    if (!signal) return;
+    event.preventDefault();
+    state.selectedView = "rumors";
+    state.selectedSeason = state.payload.latest_season;
+    state.clubFilter = "All";
+    state.selectedKey = signal.dataset.selectSignal || null;
+    renderAll();
+    document.getElementById("workspaceSection")?.scrollIntoView({ behavior: "smooth", block: "start" });
   });
   document.querySelectorAll("#sortFilters button").forEach((button) => {
     button.addEventListener("click", () => {
