@@ -1,207 +1,638 @@
 {
   "available": true,
-  "run_id": "latest_demo_agent",
-  "generated_at": "2026-05-25T18:31:01.773383+00:00",
-  "goal": "Explain Casemiro",
-  "primary_question": "Explain Casemiro",
+  "run_id": "autopilot-20260604T030815Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
+  "generated_at": "2026-06-04T03:08:15.563834+00:00",
+  "goal": "Explain Alex Oxlade-Chamberlain at Celtic plc",
+  "primary_question": "Explain Alex Oxlade-Chamberlain at Celtic plc",
   "freshness": {
-    "generated_at": "2026-05-23T14:21:52.974300+00:00",
+    "generated_at": "2026-06-02T13:56:25.042727+00:00",
     "latest_season": "2025-26",
     "live_status": "fresh",
-    "latest_live_date": "2026-05-20",
-    "recent_live_clusters": 5,
-    "live_watchlist_count": 5,
+    "latest_live_date": "2026-06-02",
+    "recent_live_clusters": 23,
+    "live_watchlist_count": 10,
     "warnings": [
       "Outputs are research context, not trading recommendations."
     ]
   },
   "answer": {
     "intent": "explain_rumor",
-    "short_answer": "Casemiro maps to Manchester United as seller. The signal is negative with model label negative and confidence 63.8%.",
+    "short_answer": "Alex Oxlade-Chamberlain maps to Celtic plc as buyer. The signal is positive with model label neutral and confidence 80.8%.",
     "confidence": 0.86,
     "warnings": [
       "This is a model-assisted research summary, not a trade recommendation.",
-      "Evidence citations use local lexical retrieval; read them as grounded context, not proof of causality."
+      "Evidence citations use local hybrid retrieval; read them as grounded context, not proof of causality."
     ],
     "what_would_change_mind": [
-      "Fresh stock and match-result context would reduce market-context uncertainty.",
+      "More primary article evidence would improve the answer.",
       "Newer high-credibility reports or official club disclosures can overturn the current read."
     ],
-    "citation_count": 5
+    "citation_count": 6
   },
   "evidence_citations": [
     {
-      "doc_id": "342303e562d6acdc",
-      "doc_type": "signal",
-      "title": "Man United transfer news: Spygate scandal could give Michael Carrick chance to sign 'affordable' star to replace Casemiro",
-      "score": 90.044,
+      "doc_id": "69e1b09034276633",
+      "doc_type": "transfer",
+      "title": "Alex Oxlade-Chamberlain confirmed transfer / Celtic plc / 2025-26",
+      "score": 164.1667,
       "normalized_score": 1.0,
       "matched_terms": [
-        "casemiro",
-        "confidence",
+        "alex",
+        "buyer",
+        "celtic",
         "label",
-        "manchester",
-        "negative",
-        "seller",
-        "signal",
-        "united"
+        "neutral",
+        "oxlade-chamberlain",
+        "plc"
       ],
-      "snippet": "Rumor signal for Casemiro. Target club Manchester United. Target role seller. Counterparty . Buyer . Seller . Stage advanced. Source count 3. Sources . Journalists . Credibility score 0.4605. Transfer indicator 0.0. Rumor indicator . Prediction scope direct. P...",
+      "matched_fields": [
+        "club",
+        "player"
+      ],
+      "retrieval_methods": [
+        "lexical",
+        "semantic_chargram",
+        "structured_entity",
+        "recency"
+      ],
+      "score_breakdown": {
+        "lexical": 147.2401,
+        "semantic_chargram": 2.4048,
+        "structured_entity": 14.4219,
+        "recency": 0.1,
+        "final": 164.1667,
+        "retrieval_methods": [
+          "lexical",
+          "semantic_chargram",
+          "structured_entity",
+          "recency"
+        ],
+        "matched_fields": [
+          "club",
+          "player"
+        ]
+      },
+      "snippet": "Confirmed transfer row for Alex Oxlade-Chamberlain. Season 2025-26. Date 2026-02-07. Public target club Celtic plc. Target role buyer. Buyer Celtic plc. Seller Without Club. Transfer type permanent. Position Central Midfield. Age 32.0. Fee EUR . Market value E...",
       "source_path": "app/static/data/dashboard_data.json",
       "url": "",
-      "date": "2026-05-20",
-      "club": "Manchester United",
-      "player": "Casemiro",
-      "reporter": "",
-      "source": "Sports Mole",
-      "metadata": {
-        "group_key": "Manchester United::Casemiro",
-        "stage": "advanced",
-        "target_role": "seller",
-        "prediction_scope": "direct",
-        "credibility_score": 0.4605,
-        "prediction_confidence": 0.638,
-        "blended_label": "negative"
-      }
-    },
-    {
-      "doc_id": "ffa0f04179004d57",
-      "doc_type": "article",
-      "title": "Casemiro closing in on transfer as Man United star prepares for final game - Manchester Evening News",
-      "score": 72.8513,
-      "normalized_score": 0.8091,
-      "matched_terms": [
-        "casemiro",
-        "manchester",
-        "united"
-      ],
-      "snippet": "Casemiro closing in on transfer as Man United star prepares for final game - Manchester Evening News Casemiro closing in on transfer as Man United star prepares for final game Manchester Evening News Source Google News Global EN. Journalist . Club candidates M...",
-      "source_path": "data/raw/articles/current_fast.jsonl",
-      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOV1dyOENGSGZZVEVNZDRtdmxyM1pnQWhtazVvTzFoUjRLLUNWUEh0VWZOQk9EMDYxRFAzV3N6S3ZGSTEwanVzalVEclhmb2RIenpDZGNnX0ZiUnNGbGhBNWpQa1NLRXlnNzV1SGR0U0FGaGhNRld2OE8zQVFiRHV6VXg2X2xtMkZYTk1xdzFqR1RjS1FSai1EbWhUNFBHU0lCSWY0U3F4R3dzX1JCSmI2NEVHR1rSAboBQVVfeXFMTW5SVEs3MnZFWVp4eHVianB4TDE4TW51SWxRZFRQeHlCWWV5S0hqM3dGVWhHOGsyWk9XMDRIM19OeUhLeks1U19vaXNWRnQyLWUxTmpNd2lyMENJQkFTUWpNOXcwTmlReG53R2FIdVFTRERqSlJLMVZ1R0JJUGVrVDVQSGstbUJWY25qd0Iwb0dLSnFhU2ZGc3JkUGt2QXlyQ0J1Tm5yQ2taSVJkWXlvSEZ0cHpVTmhVZ2NR?oc=5",
-      "date": "2026-05-20",
-      "club": "Manchester United",
-      "player": "",
-      "reporter": "",
-      "source": "Google News Global EN",
-      "metadata": {
-        "crawl_method": "rss",
-        "language": "English",
-        "extraction_confidence": 0.5
-      }
-    },
-    {
-      "doc_id": "f5cf3e581bed2f88",
-      "doc_type": "transfer",
-      "title": "Casemiro confirmed transfer / Manchester United / 2022-23",
-      "score": 69.891,
-      "normalized_score": 0.7762,
-      "matched_terms": [
-        "casemiro",
-        "label",
-        "manchester",
-        "seller",
-        "united"
-      ],
-      "snippet": "Confirmed transfer row for Casemiro. Season 2022-23. Date 2022-08-22. Public target club Manchester United. Target role buyer. Buyer Manchester United. Seller Real Madrid. Transfer type permanent. Position Defensive Midfield. Age 30.0. Fee EUR 70650000.0. Mark...",
-      "source_path": "app/static/data/dashboard_data.json",
-      "url": "",
-      "date": "2022-08-22",
-      "club": "Manchester United",
-      "player": "Casemiro",
+      "date": "2026-02-07",
+      "club": "Celtic plc",
+      "player": "Alex Oxlade-Chamberlain",
       "reporter": "",
       "source": "",
       "metadata": {
-        "season": "2022-23",
+        "season": "2025-26",
         "target_role": "buyer",
         "actual_label": "neutral",
-        "transfer_indicator": 0.3263
+        "transfer_indicator": 0.6167
       }
     },
     {
-      "doc_id": "5cb8206988a89af7",
-      "doc_type": "article",
-      "title": "Sources: Miami closing in on signing Man United's Casemiro - ESPN",
-      "score": 68.4907,
-      "normalized_score": 0.7606,
+      "doc_id": "63cf9ca0917658d1",
+      "doc_type": "signal",
+      "title": "'O'Neill and Keane in battle for Celtic job'",
+      "score": 161.9092,
+      "normalized_score": 0.9862,
       "matched_terms": [
-        "casemiro",
-        "manchester",
-        "united"
+        "alex",
+        "buyer",
+        "celtic",
+        "confidence",
+        "label",
+        "neutral",
+        "oxlade-chamberlain",
+        "plc",
+        "positive",
+        "signal"
       ],
-      "snippet": "Sources: Miami closing in on signing Man United's Casemiro - ESPN Sources: Miami closing in on signing Man United's Casemiro ESPN Source Google News Global EN. Journalist . Club candidates Manchester United. Player candidates .",
-      "source_path": "data/raw/articles/current_fast.jsonl",
-      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNSFRyYVJEVVM2dFVPVVViTDlPVkN1QTlhbjM4aG5xYkJUU2M5aF9KeGIwaXA5ZEdsMTB1dDlLdWdMZjVudXNsZjd2NXF2TzdMU2ZIVVZWdVduaERiZ2t3MmJPWE15T1ZZdGltVnpRRUpZUUtZdnFxOVpVa1RDeXZiSXJTUjFwUV9WWTZfOWduVndwSU1KMmJxVUlrcUptWFU?oc=5",
-      "date": "2026-05-20",
-      "club": "Manchester United",
-      "player": "",
+      "matched_fields": [
+        "club",
+        "doc_type",
+        "player"
+      ],
+      "retrieval_methods": [
+        "lexical",
+        "semantic_chargram",
+        "structured_entity",
+        "recency"
+      ],
+      "score_breakdown": {
+        "lexical": 132.9339,
+        "semantic_chargram": 1.9863,
+        "structured_entity": 16.0469,
+        "recency": 0.35,
+        "final": 161.9092,
+        "retrieval_methods": [
+          "lexical",
+          "semantic_chargram",
+          "structured_entity",
+          "recency"
+        ],
+        "matched_fields": [
+          "club",
+          "doc_type",
+          "player"
+        ]
+      },
+      "snippet": "Rumor signal for Alex Oxlade-Chamberlain. Target club Celtic plc. Target role buyer. Counterparty Without Club. Buyer . Seller . Stage medical. Source count 1. Sources . Journalists . Credibility score 0.7312. Transfer indicator 0.6167. Rumor indicator . Predi...",
+      "source_path": "app/static/data/dashboard_data.json",
+      "url": "",
+      "date": "2026-06-02",
+      "club": "Celtic plc",
+      "player": "Alex Oxlade-Chamberlain",
       "reporter": "",
-      "source": "Google News Global EN",
+      "source": "BBC Sport Football RSS",
       "metadata": {
-        "crawl_method": "rss",
-        "language": "English",
-        "extraction_confidence": 0.5
+        "group_key": "Celtic plc::Alex Oxlade-Chamberlain",
+        "stage": "medical",
+        "target_role": "buyer",
+        "prediction_scope": "direct",
+        "credibility_score": 0.7312,
+        "prediction_confidence": 0.8082,
+        "blended_label": "positive"
       }
     },
     {
-      "doc_id": "16e1820b554d809b",
-      "doc_type": "article",
-      "title": "Sources: Miami closing in on signing Man United's Casemiro - ESPN",
-      "score": 68.4907,
-      "normalized_score": 0.7606,
+      "doc_id": "8c3f496d0844cdd5",
+      "doc_type": "club_dossier",
+      "title": "Celtic plc club dossier",
+      "score": 75.2317,
+      "normalized_score": 0.4583,
       "matched_terms": [
-        "casemiro",
-        "manchester",
-        "united"
+        "celtic",
+        "plc",
+        "positive",
+        "signal"
       ],
-      "snippet": "Sources: Miami closing in on signing Man United's Casemiro - ESPN Sources: Miami closing in on signing Man United's Casemiro ESPN Source Google News Global EN. Journalist . Club candidates Manchester United. Player candidates .",
-      "source_path": "data/raw/articles/current_live.jsonl",
-      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNSFRyYVJEVVM2dFVPVVViTDlPVkN1QTlhbjM4aG5xYkJUU2M5aF9KeGIwaXA5ZEdsMTB1dDlLdWdMZjVudXNsZjd2NXF2TzdMU2ZIVVZWdVduaERiZ2t3MmJPWE15T1ZZdGltVnpRRUpZUUtZdnFxOVpVa1RDeXZiSXJTUjFwUV9WWTZfOWduVndwSU1KMmJxVUlrcUptWFU?oc=5",
-      "date": "2026-05-20",
-      "club": "Manchester United",
+      "matched_fields": [
+        "club"
+      ],
+      "retrieval_methods": [
+        "lexical",
+        "semantic_chargram",
+        "structured_entity"
+      ],
+      "score_breakdown": {
+        "lexical": 69.3007,
+        "semantic_chargram": 1.056,
+        "structured_entity": 4.875,
+        "recency": 0.0,
+        "final": 75.2317,
+        "retrieval_methods": [
+          "lexical",
+          "semantic_chargram",
+          "structured_entity"
+        ],
+        "matched_fields": [
+          "club"
+        ]
+      },
+      "snippet": "Club dossier for Celtic plc. Live signal count 3. Average live credibility 0.5343. Average transfer index 0.5981. Average realized CAR t+3 -0.004837. Realized positive share 0.0798. Recent transfer count 12. Top reporters",
+      "source_path": "app/static/data/dashboard_data.json",
+      "url": "",
+      "date": "",
+      "club": "Celtic plc",
       "player": "",
       "reporter": "",
-      "source": "Google News Global EN",
+      "source": "",
       "metadata": {
-        "crawl_method": "rss",
-        "language": "English",
-        "extraction_confidence": 0.5
+        "live_signal_count": 3,
+        "avg_live_credibility": 0.5343,
+        "avg_realized_car_p3": -0.004837
+      }
+    },
+    {
+      "doc_id": "e7ac1b25fd471a61",
+      "doc_type": "signal",
+      "title": "Celtic Manager Latest On O\u2019Neill, Keane & Bellamy After Talks Held | Transfer Planning - Celtic news now",
+      "score": 72.6237,
+      "normalized_score": 0.4424,
+      "matched_terms": [
+        "buyer",
+        "celtic",
+        "confidence",
+        "label",
+        "neutral",
+        "plc",
+        "signal"
+      ],
+      "matched_fields": [
+        "club",
+        "doc_type",
+        "source"
+      ],
+      "retrieval_methods": [
+        "lexical",
+        "semantic_chargram",
+        "structured_entity",
+        "recency"
+      ],
+      "score_breakdown": {
+        "lexical": 58.6208,
+        "semantic_chargram": 1.3727,
+        "structured_entity": 7.5292,
+        "recency": 0.35,
+        "final": 72.6237,
+        "retrieval_methods": [
+          "lexical",
+          "semantic_chargram",
+          "structured_entity",
+          "recency"
+        ],
+        "matched_fields": [
+          "club",
+          "doc_type",
+          "source"
+        ]
+      },
+      "snippet": "Rumor signal for Kieran Tierney. Target club Celtic plc. Target role buyer. Counterparty Arsenal. Buyer . Seller . Stage unclear. Source count 1. Sources . Journalists . Credibility score 0.4389. Transfer indicator 0.7333. Rumor indicator . Prediction scope di...",
+      "source_path": "app/static/data/dashboard_data.json",
+      "url": "",
+      "date": "2026-06-02",
+      "club": "Celtic plc",
+      "player": "Kieran Tierney",
+      "reporter": "",
+      "source": "Celtic FC News",
+      "metadata": {
+        "group_key": "Celtic plc::Kieran Tierney",
+        "stage": "unclear",
+        "target_role": "buyer",
+        "prediction_scope": "direct",
+        "credibility_score": 0.4389,
+        "prediction_confidence": 0.7244,
+        "blended_label": "neutral"
+      }
+    },
+    {
+      "doc_id": "ad2aaf83767bb099",
+      "doc_type": "signal",
+      "title": "Celtic Wait On O\u2019Neill Decision & Hold Talks With Keane | Manager Latest & A Big Celtic AM Update - Celtic news now - Celtic FC News",
+      "score": 72.1115,
+      "normalized_score": 0.4393,
+      "matched_terms": [
+        "buyer",
+        "celtic",
+        "confidence",
+        "label",
+        "neutral",
+        "plc",
+        "signal"
+      ],
+      "matched_fields": [
+        "club",
+        "doc_type",
+        "source"
+      ],
+      "retrieval_methods": [
+        "lexical",
+        "semantic_chargram",
+        "structured_entity",
+        "recency"
+      ],
+      "score_breakdown": {
+        "lexical": 58.2409,
+        "semantic_chargram": 1.2738,
+        "structured_entity": 7.5292,
+        "recency": 0.35,
+        "final": 72.1115,
+        "retrieval_methods": [
+          "lexical",
+          "semantic_chargram",
+          "structured_entity",
+          "recency"
+        ],
+        "matched_fields": [
+          "club",
+          "doc_type",
+          "source"
+        ]
+      },
+      "snippet": "Rumor signal for . Target club Celtic plc. Target role . Counterparty . Buyer . Seller . Stage talks. Source count 1. Sources Celtic FC News. Journalists . Credibility score 0.4739. Transfer indicator 0.0. Rumor indicator 0.4946. Prediction scope none. Predict...",
+      "source_path": "app/static/data/dashboard_data.json",
+      "url": "",
+      "date": "2026-06-02",
+      "club": "Celtic plc",
+      "player": "",
+      "reporter": "",
+      "source": "Celtic FC News",
+      "metadata": {
+        "group_key": "Celtic plc::",
+        "stage": "talks",
+        "target_role": "",
+        "prediction_scope": "none",
+        "credibility_score": 0.4739,
+        "prediction_confidence": 0.0,
+        "blended_label": "neutral"
+      }
+    },
+    {
+      "doc_id": "e302745bc33f87d5",
+      "doc_type": "stock_path",
+      "title": "Celtic plc stock path context",
+      "score": 71.8574,
+      "normalized_score": 0.4377,
+      "matched_terms": [
+        "celtic",
+        "plc"
+      ],
+      "matched_fields": [
+        "club"
+      ],
+      "retrieval_methods": [
+        "lexical",
+        "semantic_chargram",
+        "structured_entity",
+        "recency"
+      ],
+      "score_breakdown": {
+        "lexical": 65.5338,
+        "semantic_chargram": 1.2286,
+        "structured_entity": 4.875,
+        "recency": 0.22,
+        "final": 71.8574,
+        "retrieval_methods": [
+          "lexical",
+          "semantic_chargram",
+          "structured_entity",
+          "recency"
+        ],
+        "matched_fields": [
+          "club"
+        ]
+      },
+      "snippet": "Stock path for Celtic plc. Ticker CCP.L. Latest date 2026-05-20. Latest change 0.1286. Match marker count 38.",
+      "source_path": "app/static/data/dashboard_data.json",
+      "url": "",
+      "date": "2026-05-20",
+      "club": "Celtic plc",
+      "player": "",
+      "reporter": "",
+      "source": "",
+      "metadata": {
+        "ticker": "CCP.L",
+        "latest_change": 0.1286
       }
     }
   ],
+  "rag_lens": {
+    "mode": "agentic_hybrid_rag",
+    "retriever": "local_hybrid",
+    "query_plan": [
+      {
+        "purpose": "primary_answer",
+        "query": "Explain Alex Oxlade-Chamberlain at Celtic plc Explain Alex Oxlade-Chamberlain at Celtic plc"
+      },
+      {
+        "purpose": "rumor_signal",
+        "query": "Alex Oxlade-Chamberlain rumor signal transfer indicator credibility"
+      },
+      {
+        "purpose": "historical_transfer",
+        "query": "Alex Oxlade-Chamberlain confirmed transfer similar examples actual abnormal return"
+      },
+      {
+        "purpose": "club_market_context",
+        "query": "Celtic plc stock path match result latest change market context"
+      },
+      {
+        "purpose": "club_reporters",
+        "query": "Celtic plc reporter profile credibility smoothed rate source"
+      },
+      {
+        "purpose": "club_transfers",
+        "query": "Celtic plc confirmed transfer buyer seller transfer indicator"
+      }
+    ],
+    "per_query": [
+      {
+        "purpose": "primary_answer",
+        "query": "Explain Alex Oxlade-Chamberlain at Celtic plc Explain Alex Oxlade-Chamberlain at Celtic plc",
+        "count": 6,
+        "top_doc_types": [
+          "signal",
+          "stock_path",
+          "transfer"
+        ]
+      },
+      {
+        "purpose": "rumor_signal",
+        "query": "Alex Oxlade-Chamberlain rumor signal transfer indicator credibility",
+        "count": 6,
+        "top_doc_types": [
+          "signal",
+          "transfer"
+        ]
+      },
+      {
+        "purpose": "historical_transfer",
+        "query": "Alex Oxlade-Chamberlain confirmed transfer similar examples actual abnormal return",
+        "count": 6,
+        "top_doc_types": [
+          "signal",
+          "transfer"
+        ]
+      },
+      {
+        "purpose": "club_market_context",
+        "query": "Celtic plc stock path match result latest change market context",
+        "count": 6,
+        "top_doc_types": [
+          "stock_path"
+        ]
+      },
+      {
+        "purpose": "club_reporters",
+        "query": "Celtic plc reporter profile credibility smoothed rate source",
+        "count": 6,
+        "top_doc_types": [
+          "reporter_profile"
+        ]
+      },
+      {
+        "purpose": "club_transfers",
+        "query": "Celtic plc confirmed transfer buyer seller transfer indicator",
+        "count": 6,
+        "top_doc_types": [
+          "transfer"
+        ]
+      }
+    ],
+    "total_candidates": 31,
+    "shown_citations": 6,
+    "retrieval_methods": [
+      {
+        "method": "lexical",
+        "count": 6
+      },
+      {
+        "method": "semantic_chargram",
+        "count": 6
+      },
+      {
+        "method": "structured_entity",
+        "count": 6
+      },
+      {
+        "method": "recency",
+        "count": 5
+      }
+    ],
+    "doc_type_mix": [
+      {
+        "doc_type": "signal",
+        "count": 3
+      },
+      {
+        "doc_type": "transfer",
+        "count": 1
+      },
+      {
+        "doc_type": "club_dossier",
+        "count": 1
+      },
+      {
+        "doc_type": "stock_path",
+        "count": 1
+      }
+    ],
+    "source_mix": [
+      {
+        "source": "app/static/data/dashboard_data.json",
+        "count": 3
+      },
+      {
+        "source": "Celtic FC News",
+        "count": 2
+      },
+      {
+        "source": "BBC Sport Football RSS",
+        "count": 1
+      }
+    ],
+    "what_would_change_mind": [
+      "More primary article evidence would improve the answer.",
+      "Newer high-credibility reports or official club disclosures can overturn the current read."
+    ]
+  },
   "memory": {
     "available": true,
-    "previous_run_id": "smoke_agent_scenario",
-    "previous_created_at": "2026-05-25T18:24:12.742127+00:00",
-    "previous_goal": "Explain Casemiro",
+    "previous_run_id": "autopilot-20260604T030606Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
+    "previous_created_at": "2026-06-04T03:06:06.143858+00:00",
+    "previous_goal": "Explain Alex Oxlade-Chamberlain at Celtic plc",
     "summary": "No major answer/evidence change from the previous agent run.",
     "changes": [
       "No major answer/evidence change from the previous agent run."
     ],
     "new_evidence": [],
     "dropped_evidence": [],
-    "confidence_delta": 0.0
+    "confidence_delta": 0.0,
+    "persistent": {
+      "runs_total": 7,
+      "updated_at": "2026-06-04T03:08:25.911102+00:00",
+      "top_entities": [
+        {
+          "entity": "Celtic plc",
+          "kind": "club",
+          "count": 44
+        },
+        {
+          "entity": "Alex Oxlade-Chamberlain",
+          "kind": "player",
+          "count": 24
+        },
+        {
+          "entity": "BBC Sport Football RSS",
+          "kind": "source",
+          "count": 12
+        },
+        {
+          "entity": "Manchester United",
+          "kind": "club",
+          "count": 10
+        },
+        {
+          "entity": "Juventus",
+          "kind": "club",
+          "count": 6
+        },
+        {
+          "entity": "Lazio",
+          "kind": "club",
+          "count": 6
+        },
+        {
+          "entity": "Rob Smyth",
+          "kind": "reporter",
+          "count": 6
+        },
+        {
+          "entity": "Celtic FC News",
+          "kind": "source",
+          "count": 6
+        }
+      ],
+      "top_evidence": [
+        {
+          "doc_id": "42ef27b6c447bbb5",
+          "count": 6,
+          "title": "Rob Smyth reporter profile",
+          "doc_type": "reporter_profile",
+          "source_path": "app/static/data/dashboard_data.json"
+        },
+        {
+          "doc_id": "63cf9ca0917658d1",
+          "count": 6,
+          "title": "'O'Neill and Keane in battle for Celtic job'",
+          "doc_type": "signal",
+          "source_path": "app/static/data/dashboard_data.json"
+        },
+        {
+          "doc_id": "69e1b09034276633",
+          "count": 6,
+          "title": "Alex Oxlade-Chamberlain confirmed transfer / Celtic plc / 2025-26",
+          "doc_type": "transfer",
+          "source_path": "app/static/data/dashboard_data.json"
+        },
+        {
+          "doc_id": "6c23e43dd1666903",
+          "count": 6,
+          "title": "Juventus stock path context",
+          "doc_type": "stock_path",
+          "source_path": "app/static/data/dashboard_data.json"
+        },
+        {
+          "doc_id": "8c3f496d0844cdd5",
+          "count": 6,
+          "title": "Celtic plc club dossier",
+          "doc_type": "club_dossier",
+          "source_path": "app/static/data/dashboard_data.json"
+        },
+        {
+          "doc_id": "e302745bc33f87d5",
+          "count": 6,
+          "title": "Celtic plc stock path context",
+          "doc_type": "stock_path",
+          "source_path": "app/static/data/dashboard_data.json"
+        }
+      ],
+      "recent_run_count": 7
+    },
+    "persistent_path": "data/agents/memory.json"
   },
   "scenario": {
-    "available": true,
-    "simulation_id": "20260525T183102Z_casemiro",
-    "summary": {
-      "consensus_stance": "watch",
-      "consensus_score": -0.2195,
-      "consensus_confidence": 0.6889,
-      "stance_counts": {
-        "watch": 4,
-        "bearish": 1
-      }
-    },
-    "report": "/home/kaiwenmo/eecs486/transfer_scrape/data/agents/latest_demo_agent/scenario/20260525T183102Z_casemiro/report.md"
+    "available": false,
+    "simulation_id": "",
+    "summary": {},
+    "report": ""
   },
   "outputs": {
-    "goal": "data/agents/latest_demo_agent/goal.json",
-    "plan": "data/agents/latest_demo_agent/plan.json",
-    "trace": "data/agents/latest_demo_agent/trace.jsonl",
-    "answer": "data/agents/latest_demo_agent/answer.json",
-    "evidence": "data/agents/latest_demo_agent/evidence.json",
-    "report": "data/agents/latest_demo_agent/agent_report.md"
+    "goal": "data/agents/autopilot-20260604T030815Z-explain-alex-oxlade-chamberlain-at-celtic-plc/goal.json",
+    "plan": "data/agents/autopilot-20260604T030815Z-explain-alex-oxlade-chamberlain-at-celtic-plc/plan.json",
+    "trace": "data/agents/autopilot-20260604T030815Z-explain-alex-oxlade-chamberlain-at-celtic-plc/trace.jsonl",
+    "answer": "data/agents/autopilot-20260604T030815Z-explain-alex-oxlade-chamberlain-at-celtic-plc/answer.json",
+    "evidence": "data/agents/autopilot-20260604T030815Z-explain-alex-oxlade-chamberlain-at-celtic-plc/evidence.json",
+    "memory": "data/agents/memory.json",
+    "report": "data/agents/autopilot-20260604T030815Z-explain-alex-oxlade-chamberlain-at-celtic-plc/agent_report.md"
   },
   "report_href": "data/agent_latest_report.md"
 }

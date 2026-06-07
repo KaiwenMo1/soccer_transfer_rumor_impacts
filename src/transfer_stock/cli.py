@@ -7,9 +7,10 @@ from datetime import UTC, date, datetime, time, timedelta
 from pathlib import Path
 
 from .api import create_app
-from .agent import DEFAULT_AGENT_OUTPUT_DIR, DEFAULT_DASHBOARD_AGENT, DEFAULT_DASHBOARD_AGENT_REPORT, run_agent
+from .agent import DEFAULT_AGENT_MEMORY, DEFAULT_AGENT_OUTPUT_DIR, DEFAULT_DASHBOARD_AGENT, DEFAULT_DASHBOARD_AGENT_REPORT, run_agent
 from .analyst import ask_analyst
 from .article_store import article_store_stats, normalize_article_file, read_article_store
+from .autopilot import DEFAULT_AUTOPILOT_JSON, DEFAULT_AUTOPILOT_REPORT, DEFAULT_DASHBOARD_AUTOPILOT, run_autopilot
 from .backtesting import backtest_stats, run_backtests
 from .briefing import DEFAULT_BRIEFING_JSON, DEFAULT_BRIEFING_MD, generate_daily_briefing
 from .claims import claim_stats, extract_claims_from_file, read_claims
@@ -42,9 +43,19 @@ from .live_refresh import analyze_live_articles, fetch_live_articles, refresh_li
 from .news_sources import SOURCE_PRESETS, load_news_sources, methods_for_preset, select_source_preset, select_sources, source_preset_names
 from .http import FetchError, polite_pause
 from .news import article_to_row, fetch_gdelt_articles, fetch_gdelt_articles_for_event
+from .nlweb import DEFAULT_AGENT_MANIFEST, build_agent_manifest, nlweb_ask, write_agent_manifest
 from .provider_news import fetch_provider_club_articles, fetch_provider_event_articles
+from .operator import (
+    DEFAULT_DASHBOARD_OPERATOR,
+    DEFAULT_OPERATOR_JSON,
+    DEFAULT_OPERATOR_REPORT,
+    run_research_cycle,
+)
+from .rag_eval import DEFAULT_RAG_AUDIT_JSON, DEFAULT_RAG_AUDIT_MD, write_rag_audit
 from .report import build_report
 from .rumor_events import build_rumor_events
+from .rumor_graph import DEFAULT_DASHBOARD_RUMOR_GRAPH, DEFAULT_RUMOR_GRAPH, write_rumor_graph
+from .runbooks import DEFAULT_DASHBOARD_RUNBOOKS, list_runbooks, runbook_operator_kwargs, write_runbook_snapshot
 from .scenario_swarm import DEFAULT_DASHBOARD_SCENARIO, DEFAULT_DASHBOARD_SCENARIO_REPORT, run_scenario_swarm
 from .stock import fetch_daily, save_price_bars
 from .targets import target_stats
@@ -263,8 +274,102 @@ def cmd_agent_run(args: argparse.Namespace) -> None:
         rounds=args.rounds,
         top_k=args.top_k,
         rebuild_index=not args.no_rebuild_index,
+        memory_path=Path(args.memory_path) if args.memory_path else None,
         dashboard_output=None if args.no_dashboard_publish else Path(args.dashboard_agent_output),
         dashboard_report_output=Path(args.dashboard_report_output),
+    )
+    indent = None if args.compact else 2
+    print(json.dumps(result, indent=indent))
+
+
+def cmd_agent_autopilot(args: argparse.Namespace) -> None:
+    result = run_autopilot(
+        payload_path=Path(args.payload),
+        output_json=Path(args.output),
+        output_report=Path(args.report),
+        dashboard_output=None if args.no_dashboard_publish else Path(args.dashboard_output),
+        evidence_index=Path(args.evidence_index),
+        agent_output_dir=Path(args.agent_output_dir),
+        dry_run=args.dry_run,
+        scenario_policy=args.scenario,
+        top_k=args.top_k,
+    )
+    indent = None if args.compact else 2
+    print(json.dumps(result, indent=indent))
+
+
+def cmd_research_cycle(args: argparse.Namespace) -> None:
+    result = run_research_cycle(
+        payload_path=Path(args.payload),
+        mode=args.mode,
+        allow_network=args.allow_network,
+        dry_run=args.dry_run,
+        source_preset=args.source_preset,
+        max_records=args.max_records,
+        clubs=args.clubs,
+        output_json=Path(args.output),
+        output_report=Path(args.report),
+        dashboard_output=None if args.no_dashboard_publish else Path(args.dashboard_output),
+    )
+    indent = None if args.compact else 2
+    print(json.dumps(result, indent=indent))
+
+
+def cmd_list_runbooks(args: argparse.Namespace) -> None:
+    if args.publish:
+        result = write_runbook_snapshot(Path(args.output))
+        indent = None if args.compact else 2
+        print(json.dumps(result, indent=indent))
+        return
+    result = list_runbooks()
+    indent = None if args.compact else 2
+    print(json.dumps(result, indent=indent))
+
+
+def cmd_run_runbook(args: argparse.Namespace) -> None:
+    request = runbook_operator_kwargs(args.runbook_id)
+    result = run_research_cycle(
+        payload_path=Path(args.payload),
+        mode=request["mode"],
+        allow_network=bool(request["allow_network"]),
+        dry_run=args.dry_run,
+        source_preset=request["source_preset"],
+        max_records=int(request["max_records"]),
+        clubs=request.get("clubs") or [],
+        output_json=Path(args.output),
+        output_report=Path(args.report),
+        dashboard_output=None if args.no_dashboard_publish else Path(args.dashboard_output),
+    )
+    indent = None if args.compact else 2
+    print(json.dumps(result, indent=indent))
+
+
+def cmd_publish_agent_manifest(args: argparse.Namespace) -> None:
+    if args.print_only:
+        result = build_agent_manifest(base_url=args.base_url)
+    else:
+        result = write_agent_manifest(Path(args.output), base_url=args.base_url)
+    indent = None if args.compact else 2
+    print(json.dumps(result, indent=indent))
+
+
+def cmd_nlweb_ask(args: argparse.Namespace) -> None:
+    result = nlweb_ask(
+        args.question,
+        payload_path=Path(args.payload),
+        evidence_index_path=Path(args.evidence_index),
+        top_k=args.top_k,
+    )
+    indent = None if args.compact else 2
+    print(json.dumps(result, indent=indent))
+
+
+def cmd_build_rumor_graph(args: argparse.Namespace) -> None:
+    result = write_rumor_graph(
+        payload_path=Path(args.payload),
+        output_path=Path(args.output),
+        dashboard_output=None if args.no_dashboard_publish else Path(args.dashboard_output),
+        limit=args.limit,
     )
     indent = None if args.compact else 2
     print(json.dumps(result, indent=indent))
@@ -298,6 +403,16 @@ def cmd_generate_briefing(args: argparse.Namespace) -> None:
     print(f"markdown: {result['markdown']}")
     if result.get("json"):
         print(f"json: {result['json']}")
+
+
+def cmd_audit_rag(args: argparse.Namespace) -> None:
+    audit = write_rag_audit(
+        agent_path=Path(args.agent),
+        output_json=Path(args.output),
+        output_markdown=None if args.no_markdown else Path(args.markdown_output),
+    )
+    indent = None if args.compact else 2
+    print(json.dumps(audit, indent=indent))
 
 
 def cmd_audit_data_quality(args: argparse.Namespace) -> None:
@@ -1016,7 +1131,7 @@ def cmd_serve_api(args: argparse.Namespace) -> None:
         import uvicorn
     except ModuleNotFoundError as exc:  # pragma: no cover - optional dependency
         raise RuntimeError("uvicorn is not installed. Install it with: pip install -e '.[api_server]'") from exc
-    app = create_app(Path(args.payload))
+    app = create_app(Path(args.payload), static_dir=None if args.no_static else Path(args.static_dir))
     uvicorn.run(app, host=args.host, port=args.port)
 
 
@@ -1394,6 +1509,8 @@ def build_parser() -> argparse.ArgumentParser:
     api.add_argument("--payload", default=str(Path("app") / "static" / "data" / "dashboard_data.json"))
     api.add_argument("--host", default="127.0.0.1")
     api.add_argument("--port", type=int, default=8010)
+    api.add_argument("--static-dir", default=str(Path("app") / "static"), help="Serve the dashboard from this directory")
+    api.add_argument("--no-static", action="store_true", help="Serve API routes only")
     api.set_defaults(func=cmd_serve_api)
 
     ask = sub.add_parser("ask", help="Ask the local transfer-stock analyst a grounded question")
@@ -1438,6 +1555,7 @@ def build_parser() -> argparse.ArgumentParser:
     agent.add_argument("--payload", default=str(Path("app") / "static" / "data" / "dashboard_data.json"))
     agent.add_argument("--output-dir", default=str(DEFAULT_AGENT_OUTPUT_DIR))
     agent.add_argument("--evidence-index", default=str(DEFAULT_EVIDENCE_INDEX))
+    agent.add_argument("--memory-path", default=str(DEFAULT_AGENT_MEMORY), help="Persistent agent memory JSON path")
     agent.add_argument("--run-id", default="", help="Optional stable output folder name")
     agent.add_argument("--scenario", choices=["auto", "always", "never"], default="auto", help="Whether to run Scenario Swarm")
     agent.add_argument("--rounds", type=int, default=2, help="Scenario Swarm rounds when a scenario runs")
@@ -1448,6 +1566,76 @@ def build_parser() -> argparse.ArgumentParser:
     agent.add_argument("--no-dashboard-publish", action="store_true", help="Skip writing the static dashboard latest agent snapshot")
     agent.add_argument("--compact", action="store_true", help="Print compact JSON instead of pretty JSON")
     agent.set_defaults(func=cmd_agent_run)
+
+    autopilot = sub.add_parser("agent-autopilot", help="Run a bounded local autopilot: audit, RAG index, briefing, analyst agent, and snapshot")
+    autopilot.add_argument("--payload", default=str(Path("app") / "static" / "data" / "dashboard_data.json"))
+    autopilot.add_argument("--output", default=str(DEFAULT_AUTOPILOT_JSON))
+    autopilot.add_argument("--report", default=str(DEFAULT_AUTOPILOT_REPORT))
+    autopilot.add_argument("--dashboard-output", default=str(DEFAULT_DASHBOARD_AUTOPILOT))
+    autopilot.add_argument("--evidence-index", default=str(DEFAULT_EVIDENCE_INDEX))
+    autopilot.add_argument("--agent-output-dir", default=str(DEFAULT_AGENT_OUTPUT_DIR))
+    autopilot.add_argument("--scenario", choices=["auto", "always", "never"], default="never", help="Whether autopilot should allow Scenario Swarm during the agent step")
+    autopilot.add_argument("--top-k", type=int, default=5, help="Evidence citations for the agent step")
+    autopilot.add_argument("--dry-run", action="store_true", help="Plan actions without running local pipeline steps")
+    autopilot.add_argument("--no-dashboard-publish", action="store_true", help="Skip writing the static dashboard autopilot snapshot")
+    autopilot.add_argument("--compact", action="store_true", help="Print compact JSON instead of pretty JSON")
+    autopilot.set_defaults(func=cmd_agent_autopilot)
+
+    operator = sub.add_parser("research-cycle", help="Run the one-click research operator and publish a decision brief")
+    operator.add_argument("--payload", default=str(Path("app") / "static" / "data" / "dashboard_data.json"))
+    operator.add_argument("--mode", choices=["research", "smart", "refresh"], default="smart")
+    operator.add_argument("--allow-network", action="store_true", help="Allow smart/refresh mode to fetch current news")
+    operator.add_argument("--source-preset", choices=source_preset_names(), default="fast_no_api")
+    operator.add_argument("--max-records", type=int, default=20)
+    operator.add_argument("--clubs", nargs="*")
+    operator.add_argument("--output", default=str(DEFAULT_OPERATOR_JSON))
+    operator.add_argument("--report", default=str(DEFAULT_OPERATOR_REPORT))
+    operator.add_argument("--dashboard-output", default=str(DEFAULT_DASHBOARD_OPERATOR))
+    operator.add_argument("--dry-run", action="store_true", help="Publish a plan without running the research steps")
+    operator.add_argument("--no-dashboard-publish", action="store_true", help="Skip writing the static dashboard operator snapshot")
+    operator.add_argument("--compact", action="store_true", help="Print compact JSON instead of pretty JSON")
+    operator.set_defaults(func=cmd_research_cycle)
+
+    runbooks = sub.add_parser("list-runbooks", help="List one-click research runbooks or publish the dashboard snapshot")
+    runbooks.add_argument("--output", default=str(DEFAULT_DASHBOARD_RUNBOOKS))
+    runbooks.add_argument("--publish", action="store_true", help="Write the static dashboard runbook snapshot")
+    runbooks.add_argument("--compact", action="store_true", help="Print compact JSON instead of pretty JSON")
+    runbooks.set_defaults(func=cmd_list_runbooks)
+
+    runbook = sub.add_parser("run-runbook", help="Run an API-supported research runbook from the CLI")
+    runbook.add_argument("runbook_id", help="Runbook id, for example daily_research_cycle")
+    runbook.add_argument("--payload", default=str(Path("app") / "static" / "data" / "dashboard_data.json"))
+    runbook.add_argument("--output", default=str(DEFAULT_OPERATOR_JSON))
+    runbook.add_argument("--report", default=str(DEFAULT_OPERATOR_REPORT))
+    runbook.add_argument("--dashboard-output", default=str(DEFAULT_DASHBOARD_OPERATOR))
+    runbook.add_argument("--dry-run", action="store_true", help="Publish a plan without running the research steps")
+    runbook.add_argument("--no-dashboard-publish", action="store_true", help="Skip writing the static dashboard operator snapshot")
+    runbook.add_argument("--compact", action="store_true", help="Print compact JSON instead of pretty JSON")
+    runbook.set_defaults(func=cmd_run_runbook)
+
+    agent_manifest = sub.add_parser("publish-agent-manifest", help="Publish the NLWeb-style agent manifest for the dashboard")
+    agent_manifest.add_argument("--output", default=str(DEFAULT_AGENT_MANIFEST))
+    agent_manifest.add_argument("--base-url", default="", help="Optional public base URL to include in endpoint examples")
+    agent_manifest.add_argument("--print-only", action="store_true", help="Print the manifest instead of writing it")
+    agent_manifest.add_argument("--compact", action="store_true", help="Print compact JSON instead of pretty JSON")
+    agent_manifest.set_defaults(func=cmd_publish_agent_manifest)
+
+    nlweb = sub.add_parser("nlweb-ask", help="Ask the NLWeb-style website endpoint from CLI")
+    nlweb.add_argument("--question", required=True)
+    nlweb.add_argument("--payload", default=str(Path("app") / "static" / "data" / "dashboard_data.json"))
+    nlweb.add_argument("--evidence-index", default=str(DEFAULT_EVIDENCE_INDEX))
+    nlweb.add_argument("--top-k", type=int, default=5)
+    nlweb.add_argument("--compact", action="store_true", help="Print compact JSON instead of pretty JSON")
+    nlweb.set_defaults(func=cmd_nlweb_ask)
+
+    rumor_graph = sub.add_parser("build-rumor-graph", help="Build a temporal rumor knowledge graph for the dashboard")
+    rumor_graph.add_argument("--payload", default=str(Path("app") / "static" / "data" / "dashboard_data.json"))
+    rumor_graph.add_argument("--output", default=str(DEFAULT_RUMOR_GRAPH))
+    rumor_graph.add_argument("--dashboard-output", default=str(DEFAULT_DASHBOARD_RUMOR_GRAPH))
+    rumor_graph.add_argument("--limit", type=int, default=80)
+    rumor_graph.add_argument("--no-dashboard-publish", action="store_true")
+    rumor_graph.add_argument("--compact", action="store_true", help="Print compact JSON instead of pretty JSON")
+    rumor_graph.set_defaults(func=cmd_build_rumor_graph)
 
     scenario = sub.add_parser("simulate-scenario", help="Run a bounded deterministic scenario swarm over a rumor signal")
     scenario.add_argument("--question", default="", help="Analyst-style question, for example: What is the current signal for Casemiro?")
@@ -1478,6 +1666,14 @@ def build_parser() -> argparse.ArgumentParser:
     quality.add_argument("--markdown-output", default=str(DEFAULT_QUALITY_MD))
     quality.add_argument("--no-markdown", action="store_true", help="Only write the JSON audit")
     quality.set_defaults(func=cmd_audit_data_quality)
+
+    rag_audit = sub.add_parser("audit-rag", help="Evaluate the latest agent answer against its retrieved evidence")
+    rag_audit.add_argument("--agent", default=str(Path("app") / "static" / "data" / "agent_latest.json"))
+    rag_audit.add_argument("--output", default=str(DEFAULT_RAG_AUDIT_JSON))
+    rag_audit.add_argument("--markdown-output", default=str(DEFAULT_RAG_AUDIT_MD))
+    rag_audit.add_argument("--no-markdown", action="store_true", help="Only write the JSON audit")
+    rag_audit.add_argument("--compact", action="store_true", help="Print compact JSON instead of pretty JSON")
+    rag_audit.set_defaults(func=cmd_audit_rag)
 
     inspect_demo = sub.add_parser("inspect-demo-data", help="Inspect Stage 8 dashboard payload JSON")
     inspect_demo.add_argument("--input", default=str(Path("app") / "static" / "data" / "dashboard_data.json"))

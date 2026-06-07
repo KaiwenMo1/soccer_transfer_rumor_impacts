@@ -1,0 +1,67 @@
+{
+  "schema_version": "0.1",
+  "name": "Transfer Stock Analyst",
+  "description": "A local football-finance intelligence site for transfer rumors, reporter credibility, listed-club exposure, and market-context research.",
+  "generated_at": "2026-06-05T19:48:39.044826+00:00",
+  "inspired_by": {
+    "pattern": "NLWeb-style natural-language website endpoint",
+    "source": "https://github.com/microsoft/NLWeb"
+  },
+  "endpoints": {
+    "manifest": "/nlweb/manifest",
+    "ask": "/nlweb/ask",
+    "static_manifest": "/.well-known/transfer-stock-agent.json"
+  },
+  "capabilities": [
+    {
+      "name": "ask",
+      "description": "Ask a grounded natural-language question over the local dashboard payload and evidence index.",
+      "input_schema": {
+        "question": "string"
+      },
+      "output_schema": {
+        "question": "string",
+        "short_answer": "string",
+        "confidence": "number",
+        "evidence": "array",
+        "warnings": "array",
+        "source_paths": "object"
+      }
+    },
+    {
+      "name": "club_context",
+      "description": "Explain public-club exposure, stock-path context, match markers, and current rumor signals."
+    },
+    {
+      "name": "reporter_context",
+      "description": "Explain reporter/source credibility from local historical claim outcomes."
+    },
+    {
+      "name": "scenario_context",
+      "description": "Summarize bounded scenario-swarm outputs when available."
+    }
+  ],
+  "example_questions": [
+    "What changed today?",
+    "Compare Manchester United and Juventus",
+    "Explain the strongest current listed-club rumor",
+    "Who are the strongest reporters for Borussia Dortmund?",
+    "What happened to Ajax stock around recent match results?"
+  ],
+  "data_sources": [
+    "app/static/data/dashboard_data.json",
+    "data/processed/evidence/evidence_index.json",
+    "app/static/data/operator_latest.json",
+    "app/static/data/data_quality_latest.json"
+  ],
+  "safety": {
+    "trading_advice": false,
+    "uses_local_data": true,
+    "requires_api_keys": false,
+    "notes": [
+      "Outputs are research context, not investment advice.",
+      "Stock-impact language is only valid when a listed-club ticker is directly mapped.",
+      "Football club stocks can move for match results, ownership news, liquidity, earnings, qualification, and broader markets."
+    ]
+  }
+}

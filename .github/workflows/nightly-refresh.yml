@@ -85,6 +85,41 @@ jobs:
             --output app/static/data/data_quality_latest.json \
             --markdown-output data/reports/data_quality_audit.md
 
+      - name: Build daily research operator package
+        id: operator
+        if: ${{ always() }}
+        continue-on-error: true
+        run: |
+          PYTHONPATH=src python -m transfer_stock.cli research-cycle \
+            --mode research \
+            --output data/operators/operator_latest.json \
+            --report data/operators/operator_latest.md \
+            --dashboard-output app/static/data/operator_latest.json
+
+      - name: Publish research runbooks
+        if: ${{ always() }}
+        continue-on-error: true
+        run: |
+          PYTHONPATH=src python -m transfer_stock.cli list-runbooks \
+            --publish \
+            --output app/static/data/runbooks.json
+
+      - name: Publish agent manifest
+        if: ${{ always() }}
+        continue-on-error: true
+        run: |
+          PYTHONPATH=src python -m transfer_stock.cli publish-agent-manifest \
+            --output app/static/.well-known/transfer-stock-agent.json
+
+      - name: Build temporal rumor graph
+        if: ${{ always() }}
+        continue-on-error: true
+        run: |
+          PYTHONPATH=src python -m transfer_stock.cli build-rumor-graph \
+            --payload app/static/data/dashboard_data.json \
+            --output data/processed/graphs/rumor_graph.json \
+            --dashboard-output app/static/data/rumor_graph.json
+
       - name: Write refresh status
         if: ${{ always() }}
         run: |
@@ -99,6 +134,7 @@ jobs:
               "workflow_fetch_status": "${{ steps.fetch.outcome }}",
               "workflow_analyze_status": "${{ steps.analyze.outcome || 'skipped' }}",
               "workflow_audit_status": "${{ steps.audit.outcome || 'skipped' }}",
+              "workflow_operator_status": "${{ steps.operator.outcome || 'skipped' }}",
               "workflow_source_preset": "scrapling_wide_no_api",
           }
           payload_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
@@ -113,7 +149,16 @@ jobs:
             data/live
             app/static/data/dashboard_data.json
             app/static/data/data_quality_latest.json
+            app/static/data/operator_latest.json
+            app/static/data/runbooks.json
+            app/static/.well-known/transfer-stock-agent.json
+            app/static/data/rumor_graph.json
+            data/processed/graphs/rumor_graph.json
+            app/static/data/agent_latest.json
+            app/static/data/rag_audit_latest.json
             data/reports/data_quality_audit.md
+            data/operators/operator_latest.json
+            data/operators/operator_latest.md
 
       - name: Setup Pages (auto-enable if PAT is present)
         if: ${{ env.PAGES_PAT != '' }}

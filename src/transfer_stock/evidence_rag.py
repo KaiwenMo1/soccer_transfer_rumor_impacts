@@ -63,6 +63,19 @@ STOPWORDS = {
     "with",
 }
 
+QUERY_ALIASES = {
+    "man u": "manchester united",
+    "man utd": "manchester united",
+    "man united": "manchester united",
+    "manu": "manchester united",
+    "juve": "juventus",
+    "bvb": "borussia dortmund",
+    "dortmund": "borussia dortmund",
+    "benfica": "sl benfica",
+    "porto": "fc porto",
+    "sporting": "sporting cp",
+}
+
 
 def rel_path(path: str | Path) -> str:
     path_obj = Path(path)
@@ -562,8 +575,8 @@ def build_evidence_index_from_payload(
         "schema_version": "evidence-index-v1",
         "generated_at": datetime.now(tz=UTC).isoformat(),
         "retriever": {
-            "type": "local_lexical",
-            "description": "Deterministic BM25-style lexical retrieval over local project evidence.",
+            "type": "local_hybrid",
+            "description": "Deterministic hybrid retrieval over local evidence: lexical terms, fuzzy semantic text similarity, and structured entity matches.",
         },
         "stats": index_stats(docs),
         "documents": docs,
@@ -619,8 +632,108 @@ def doc_search_text(doc: dict[str, Any]) -> str:
     )
 
 
-def retrieval_scores(index: dict[str, Any], query: str) -> list[tuple[float, dict[str, Any], list[str]]]:
-    query_tokens = tokenize(query)
+def expand_query_aliases(query: str) -> str:
+    expanded = str(query or "")
+    lowered = f" {expanded.lower()} "
+    additions = []
+    for alias, canonical in QUERY_ALIASES.items():
+        if re.search(rf"\b{re.escape(alias)}\b", lowered) and canonical not in lowered:
+            additions.append(canonical)
+    if additions:
+        expanded = text_join([expanded, " ".join(additions)])
+    return expanded
+
+
+def char_ngrams(value: Any, n: int = 3) -> Counter[str]:
+    text = re.sub(r"\s+", " ", str(value or "").lower()).strip()
+    if not text:
+        return Counter()
+    compacted = f"  {text}  "
+    if len(compacted) <= n:
+        return Counter([compacted])
+    return Counter(compacted[index : index + n] for index in range(0, len(compacted) - n + 1))
+
+
+def cosine_counter(left: Counter[str], right: Counter[str]) -> float:
+    if not left or not right:
+        return 0.0
+    numerator = sum(left[key] * right.get(key, 0) for key in left)
+    if numerator <= 0:
+        return 0.0
+    left_norm = math.sqrt(sum(value * value for value in left.values()))
+    right_norm = math.sqrt(sum(value * value for value in right.values()))
+    if not left_norm or not right_norm:
+        return 0.0
+    return numerator / (left_norm * right_norm)
+
+
+def field_match_score(query: str, query_tokens: list[str], doc: dict[str, Any]) -> tuple[float, list[str], list[str]]:
+    query_text = " ".join(query_tokens)
+    query_grams = char_ngrams(query)
+    score = 0.0
+    matched_fields: list[str] = []
+    matched_terms: list[str] = []
+    weights = {"club": 1.2, "player": 2.35, "reporter": 1.15, "source": 0.95}
+    for field in ["club", "player", "reporter", "source"]:
+        raw_value = str(doc.get(field) or "")
+        field_tokens = tokenize(raw_value)
+        if not field_tokens:
+            continue
+        field_text = " ".join(field_tokens)
+        overlap = sorted(set(query_tokens) & set(field_tokens))
+        whole_query_fuzzy = cosine_counter(query_grams, char_ngrams(field_text))
+        token_fuzzy = max(
+            [
+                cosine_counter(char_ngrams(query_token), char_ngrams(field_token))
+                for query_token in query_tokens
+                for field_token in field_tokens
+            ]
+            or [0.0]
+        )
+        fuzzy = max(whole_query_fuzzy, token_fuzzy)
+        weight = weights.get(field, 1.0)
+        if field_text and field_text in query_text:
+            score += 1.25 * weight
+            matched_fields.append(field)
+            matched_terms.extend(field_tokens)
+        elif overlap:
+            score += min(1.0, len(overlap) / max(len(set(field_tokens)), 1)) * weight
+            matched_fields.append(field)
+            matched_terms.extend(overlap)
+        elif fuzzy >= 0.58:
+            score += fuzzy * 0.8 * weight
+            matched_fields.append(field)
+            matched_terms.extend(field_tokens[:4])
+    doc_type = str(doc.get("doc_type") or "")
+    if doc_type and doc_type.replace("_", " ") in query_text:
+        score += 0.5
+        matched_fields.append("doc_type")
+    return score, sorted(set(matched_fields)), sorted(set(matched_terms))
+
+
+def recency_score(doc: dict[str, Any]) -> float:
+    raw_date = str(doc.get("date") or "")[:10]
+    if not re.match(r"\d{4}-\d{2}-\d{2}", raw_date):
+        return 0.0
+    try:
+        doc_day = datetime.fromisoformat(raw_date).date()
+    except ValueError:
+        return 0.0
+    days = (datetime.now(tz=UTC).date() - doc_day).days
+    if days < 0:
+        return 0.03
+    if days <= 14:
+        return 0.35
+    if days <= 60:
+        return 0.22
+    if days <= 365:
+        return 0.1
+    return 0.0
+
+
+def retrieval_scores(index: dict[str, Any], query: str) -> list[tuple[float, dict[str, Any], list[str], dict[str, Any]]]:
+    expanded_query = expand_query_aliases(query)
+    query_tokens = tokenize(expanded_query)
     if not query_tokens:
         return []
     documents = index.get("documents", []) or []
@@ -629,34 +742,71 @@ def retrieval_scores(index: dict[str, Any], query: str) -> list[tuple[float, dic
     for tokens in doc_tokens:
         df.update(set(tokens))
     corpus_size = max(len(documents), 1)
-    scored: list[tuple[float, dict[str, Any], list[str]]] = []
+    query_grams = char_ngrams(expanded_query)
+    scored: list[tuple[float, dict[str, Any], list[str], dict[str, Any]]] = []
     for doc, tokens in zip(documents, doc_tokens):
         if not tokens:
             continue
         tf = Counter(tokens)
         length_norm = 1.0 / math.sqrt(max(len(tokens), 1))
-        score = 0.0
-        matched = []
+        lexical = 0.0
+        matched: list[str] = []
         for token in query_tokens:
             if token not in tf:
                 continue
             idf = math.log((corpus_size + 1) / (df[token] + 0.5)) + 1.0
-            score += (1.0 + math.log(tf[token])) * idf
+            lexical += (1.0 + math.log(tf[token])) * idf
             matched.append(token)
-        if not matched:
-            continue
         normalized_query = " ".join(query_tokens)
         title_tokens = " ".join(tokenize(doc.get("title", "")))
         text_tokens = " ".join(tokens)
         if normalized_query and normalized_query in title_tokens:
-            score += 4.0
+            lexical += 4.0
         elif normalized_query and normalized_query in text_tokens:
-            score += 2.0
+            lexical += 2.0
+        if lexical:
+            lexical *= 1.0 + min(0.25, len(set(matched)) / max(len(set(query_tokens)), 1) * 0.25)
+            lexical *= max(0.35, length_norm * 9.0)
+        doc_preview = text_join(
+            [
+                doc.get("title", ""),
+                doc.get("club", ""),
+                doc.get("player", ""),
+                doc.get("reporter", ""),
+                doc.get("source", ""),
+                compact(doc.get("text", ""), 900),
+            ]
+        )
+        semantic_raw = cosine_counter(query_grams, char_ngrams(doc_preview))
+        semantic = semantic_raw * 4.25 if semantic_raw >= 0.05 else 0.0
+        structured_raw, matched_fields, field_terms = field_match_score(expanded_query, query_tokens, doc)
+        structured = structured_raw * 3.25
+        recency = recency_score(doc)
+        score = lexical + semantic + structured + recency
         if str(doc.get("doc_type")) in {"signal", "article"}:
-            score *= 1.12
-        score *= 1.0 + min(0.25, len(set(matched)) / max(len(set(query_tokens)), 1) * 0.25)
-        score *= max(0.35, length_norm * 9.0)
-        scored.append((score, doc, sorted(set(matched))))
+            score *= 1.07
+        matched_terms = sorted(set(matched + field_terms))
+        if score < 0.35 and not matched_terms:
+            continue
+        methods = []
+        if lexical:
+            methods.append("lexical")
+        if semantic:
+            methods.append("semantic_chargram")
+        if structured:
+            methods.append("structured_entity")
+        if recency:
+            methods.append("recency")
+        breakdown = {
+            "lexical": round(lexical, 4),
+            "semantic_chargram": round(semantic, 4),
+            "structured_entity": round(structured, 4),
+            "recency": round(recency, 4),
+            "final": round(score, 4),
+            "retrieval_methods": methods,
+            "matched_fields": matched_fields,
+        }
+        scored.append((score, doc, matched_terms, breakdown))
     return sorted(scored, key=lambda item: item[0], reverse=True)
 
 
@@ -679,7 +829,7 @@ def retrieve_evidence(index: dict[str, Any], query: str, *, top_k: int = 6) -> l
     scored = retrieval_scores(index, query)[: max(top_k, 0)]
     max_score = scored[0][0] if scored else 1.0
     hits = []
-    for score, doc, matched in scored:
+    for score, doc, matched, breakdown in scored:
         hits.append(
             {
                 "doc_id": doc.get("doc_id", ""),
@@ -688,6 +838,9 @@ def retrieve_evidence(index: dict[str, Any], query: str, *, top_k: int = 6) -> l
                 "score": round(score, 4),
                 "normalized_score": round(score / max_score, 4) if max_score else 0.0,
                 "matched_terms": matched[:12],
+                "matched_fields": breakdown.get("matched_fields", []),
+                "retrieval_methods": breakdown.get("retrieval_methods", []),
+                "score_breakdown": breakdown,
                 "snippet": snippet_for(doc, matched),
                 "source_path": doc.get("source_path", ""),
                 "url": doc.get("url", ""),
@@ -709,6 +862,7 @@ def retrieve_from_index_file(index_path: str | Path, query: str, *, top_k: int =
         "query": query,
         "index": rel_path(index_path),
         "generated_at": index.get("generated_at", ""),
+        "retriever": (index.get("retriever") or {}).get("type", "local_hybrid"),
         "count": len(hits),
         "hits": hits,
     }
@@ -750,13 +904,14 @@ def attach_evidence_to_answer(
     enriched["evidence_citations"] = hits
     enriched["what_would_change_mind"] = what_would_change_mind(hits)
     enriched["rag"] = {
-        "retriever": "local_lexical",
+        "retriever": "local_hybrid",
         "index": index_source,
         "top_k": top_k,
         "citation_count": len(hits),
+        "methods": sorted({method for hit in hits for method in hit.get("retrieval_methods", [])}),
     }
     warnings = list(enriched.get("warnings", []) or [])
-    warnings.append("Evidence citations use local lexical retrieval; read them as grounded context, not proof of causality.")
+    warnings.append("Evidence citations use local hybrid retrieval; read them as grounded context, not proof of causality.")
     enriched["warnings"] = warnings
     source_paths = dict(enriched.get("source_paths", {}) or {})
     source_paths["evidence_index"] = index_source

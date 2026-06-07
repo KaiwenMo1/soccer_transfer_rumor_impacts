@@ -2,18 +2,20 @@ from __future__ import annotations
 
 import json
 import re
+from collections import Counter
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 from .analyst import ask_analyst, candidate_names, load_dashboard_payload, match_clubs, match_name
 from .config import DATA_DIR, ROOT
-from .evidence_rag import DEFAULT_EVIDENCE_INDEX, build_evidence_index, retrieve_from_index_file
+from .evidence_rag import DEFAULT_EVIDENCE_INDEX, build_evidence_index, load_evidence_index, retrieve_evidence
 from .io import ensure_parent
 from .scenario_swarm import run_scenario_swarm
 
 
 DEFAULT_AGENT_OUTPUT_DIR = DATA_DIR / "agents"
+DEFAULT_AGENT_MEMORY = DATA_DIR / "agents" / "memory.json"
 DEFAULT_DASHBOARD_AGENT = ROOT / "app" / "static" / "data" / "agent_latest.json"
 DEFAULT_DASHBOARD_AGENT_REPORT = ROOT / "app" / "static" / "data" / "agent_latest_report.md"
 
@@ -138,14 +140,19 @@ def plan_agent_run(goal: str, payload: dict[str, Any], scenario_policy: str = "a
             "reason": "Create a local cited evidence layer over dashboard/articles/reports.",
         },
         {
+            "id": "plan_retrieval",
+            "tool": "agentic_rag_planner",
+            "reason": "Break the goal into focused evidence queries for signals, market context, and credibility.",
+        },
+        {
             "id": "ask_with_evidence",
-            "tool": "ask_analyst + Evidence RAG",
+            "tool": "ask_analyst + Hybrid Evidence RAG",
             "reason": "Answer the selected question with evidence citations and uncertainty.",
         },
         {
             "id": "retrieve_evidence",
-            "tool": "query_evidence",
-            "reason": "Capture top supporting evidence as a standalone artifact.",
+            "tool": "agentic_hybrid_retrieval",
+            "reason": "Capture merged supporting evidence from multiple targeted retrieval queries.",
         },
         {
             "id": "compare_previous_run",
@@ -174,6 +181,106 @@ def plan_agent_run(goal: str, payload: dict[str, Any], scenario_policy: str = "a
         "primary_question": question,
         "scenario_policy": scenario_policy,
         "steps": steps,
+    }
+
+
+def add_query(queries: list[dict[str, str]], purpose: str, query: str) -> None:
+    clean = re.sub(r"\s+", " ", query).strip()
+    if not clean:
+        return
+    if any(item["query"].lower() == clean.lower() for item in queries):
+        return
+    queries.append({"purpose": purpose, "query": clean})
+
+
+def agentic_rag_queries(goal: str, primary_question: str, payload: dict[str, Any]) -> list[dict[str, str]]:
+    clubs = match_clubs(f"{goal} {primary_question}", payload)
+    player = match_name(f"{goal} {primary_question}", candidate_names(payload, "player"))
+    reporter = match_name(f"{goal} {primary_question}", candidate_names(payload, "reporter"))
+    queries: list[dict[str, str]] = []
+    add_query(queries, "primary_answer", text_join_for_agent([primary_question, goal]))
+    if player:
+        add_query(queries, "rumor_signal", text_join_for_agent([player, "rumor signal transfer indicator credibility"]))
+        add_query(queries, "historical_transfer", text_join_for_agent([player, "confirmed transfer similar examples actual abnormal return"]))
+    for club in clubs[:2]:
+        add_query(queries, "club_market_context", f"{club} stock path match result latest change market context")
+        add_query(queries, "club_reporters", f"{club} reporter profile credibility smoothed rate source")
+        add_query(queries, "club_transfers", f"{club} confirmed transfer buyer seller transfer indicator")
+    if reporter:
+        add_query(queries, "reporter_credibility", f"{reporter} reporter profile credibility smoothed rate source clubs")
+    if not clubs and not player and not reporter:
+        add_query(queries, "broad_context", "latest live watchlist strongest credibility transfer stock signals")
+    return queries[:8]
+
+
+def text_join_for_agent(parts: list[Any]) -> str:
+    return " ".join(str(part).strip() for part in parts if str(part or "").strip())
+
+
+def retrieve_agentic_evidence(
+    *,
+    index_path: str | Path,
+    goal: str,
+    primary_question: str,
+    payload: dict[str, Any],
+    top_k: int = 5,
+    query_plan: list[dict[str, str]] | None = None,
+) -> dict[str, Any]:
+    index = load_evidence_index(index_path)
+    queries = query_plan or agentic_rag_queries(goal, primary_question, payload)
+    merged: dict[str, dict[str, Any]] = {}
+    per_query: list[dict[str, Any]] = []
+    per_query_top_k = max(top_k, 1)
+    for item in queries:
+        query = item["query"]
+        purpose = item["purpose"]
+        hits = retrieve_evidence(index, query, top_k=per_query_top_k)
+        per_query.append(
+            {
+                "purpose": purpose,
+                "query": query,
+                "count": len(hits),
+                "top_doc_types": sorted({str(hit.get("doc_type") or "") for hit in hits[:3] if hit.get("doc_type")}),
+            }
+        )
+        for hit in hits:
+            key = str(hit.get("doc_id") or hit.get("title") or hit.get("url") or "")
+            if not key:
+                continue
+            enriched_hit = dict(hit)
+            enriched_hit["retrieval_query"] = query
+            enriched_hit["query_purpose"] = purpose
+            enriched_hit["supporting_queries"] = [{"purpose": purpose, "query": query}]
+            if key not in merged:
+                merged[key] = enriched_hit
+                continue
+            existing = merged[key]
+            existing["score"] = max(float(existing.get("score", 0.0) or 0.0), float(hit.get("score", 0.0) or 0.0))
+            existing["normalized_score"] = max(
+                float(existing.get("normalized_score", 0.0) or 0.0),
+                float(hit.get("normalized_score", 0.0) or 0.0),
+            )
+            existing["retrieval_methods"] = sorted(
+                set(existing.get("retrieval_methods", []) or []) | set(hit.get("retrieval_methods", []) or [])
+            )
+            existing["matched_terms"] = sorted(set(existing.get("matched_terms", []) or []) | set(hit.get("matched_terms", []) or []))[:12]
+            existing["matched_fields"] = sorted(set(existing.get("matched_fields", []) or []) | set(hit.get("matched_fields", []) or []))
+            existing["supporting_queries"].append({"purpose": purpose, "query": query})
+    hits = sorted(merged.values(), key=lambda item: float(item.get("score", 0.0) or 0.0), reverse=True)
+    limit = max(top_k * 2, top_k, 1)
+    selected = hits[:limit]
+    return {
+        "query": goal,
+        "primary_question": primary_question,
+        "mode": "agentic_hybrid_rag",
+        "index": rel_path(index_path),
+        "generated_at": index.get("generated_at", ""),
+        "retriever": (index.get("retriever") or {}).get("type", "local_hybrid"),
+        "query_plan": queries,
+        "per_query": per_query,
+        "count": len(selected),
+        "total_candidates": len(hits),
+        "hits": selected,
     }
 
 
@@ -257,6 +364,135 @@ def compare_previous_run(
         "new_evidence": [current_map[key] for key in new_keys[:6]],
         "dropped_evidence": [previous_map[key] for key in dropped_keys[:6]],
         "confidence_delta": confidence_delta,
+    }
+
+
+def default_memory() -> dict[str, Any]:
+    return {
+        "schema_version": "agent-memory-v1",
+        "created_at": now_iso(),
+        "updated_at": "",
+        "runs_total": 0,
+        "recent_runs": [],
+        "frequent_entities": {},
+        "useful_evidence": {},
+        "warnings_seen": {},
+    }
+
+
+def load_agent_memory(path: str | Path) -> dict[str, Any]:
+    memory_path = Path(path)
+    if not memory_path.exists():
+        return default_memory()
+    try:
+        payload = json.loads(memory_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return default_memory()
+    base = default_memory()
+    base.update(payload if isinstance(payload, dict) else {})
+    return base
+
+
+def increment_counter_map(mapping: dict[str, Any], key: str, amount: int = 1) -> None:
+    clean = str(key or "").strip()
+    if not clean:
+        return
+    mapping[clean] = int(mapping.get(clean, 0) or 0) + amount
+
+
+def update_agent_memory(
+    *,
+    memory_path: str | Path,
+    run_id: str,
+    goal: str,
+    primary_question: str,
+    answer: dict[str, Any],
+    evidence: dict[str, Any],
+    freshness: dict[str, Any],
+) -> dict[str, Any]:
+    memory = load_agent_memory(memory_path)
+    memory["updated_at"] = now_iso()
+    memory["runs_total"] = int(memory.get("runs_total", 0) or 0) + 1
+    hits = list(answer.get("evidence_citations", []) or []) + list(evidence.get("hits", []) or [])
+    seen_doc_ids: set[str] = set()
+    useful_evidence = dict(memory.get("useful_evidence", {}) or {})
+    frequent_entities = dict(memory.get("frequent_entities", {}) or {})
+    for hit in hits:
+        doc_id = str(hit.get("doc_id") or hit.get("title") or hit.get("url") or "").strip()
+        if doc_id and doc_id not in seen_doc_ids:
+            seen_doc_ids.add(doc_id)
+            previous = useful_evidence.get(doc_id, {}) or {}
+            useful_evidence[doc_id] = {
+                "doc_id": doc_id,
+                "count": int(previous.get("count", 0) or 0) + 1,
+                "last_seen": memory["updated_at"],
+                "title": hit.get("title", previous.get("title", "")),
+                "doc_type": hit.get("doc_type", previous.get("doc_type", "")),
+                "source_path": hit.get("source_path", previous.get("source_path", "")),
+                "club": hit.get("club", previous.get("club", "")),
+                "player": hit.get("player", previous.get("player", "")),
+                "reporter": hit.get("reporter", previous.get("reporter", "")),
+                "source": hit.get("source", previous.get("source", "")),
+            }
+        for field in ["club", "player", "reporter", "source"]:
+            value = str(hit.get(field) or "").strip()
+            if value:
+                increment_counter_map(frequent_entities, f"{field}:{value}")
+    warnings_seen = dict(memory.get("warnings_seen", {}) or {})
+    for warning in list(freshness.get("warnings", []) or []) + list(answer.get("warnings", []) or []):
+        increment_counter_map(warnings_seen, warning)
+    recent_runs = list(memory.get("recent_runs", []) or [])
+    recent_runs.append(
+        {
+            "run_id": run_id,
+            "time": memory["updated_at"],
+            "goal": goal,
+            "primary_question": primary_question,
+            "intent": answer.get("intent", ""),
+            "confidence": answer.get("confidence", 0.0),
+            "latest_live_date": freshness.get("latest_live_date", ""),
+            "top_evidence": list(seen_doc_ids)[:6],
+        }
+    )
+    memory["recent_runs"] = recent_runs[-20:]
+    memory["frequent_entities"] = dict(sorted(frequent_entities.items()))
+    memory["useful_evidence"] = dict(sorted(useful_evidence.items()))
+    memory["warnings_seen"] = dict(sorted(warnings_seen.items()))
+    output_path = Path(memory_path)
+    write_json(output_path, memory)
+    return {
+        "path": rel_path(output_path),
+        "summary": agent_memory_summary(memory),
+    }
+
+
+def agent_memory_summary(memory: dict[str, Any]) -> dict[str, Any]:
+    entity_counts = Counter({key: int(value or 0) for key, value in (memory.get("frequent_entities", {}) or {}).items()})
+    evidence_counts = Counter(
+        {
+            key: int((value or {}).get("count", 0) or 0)
+            for key, value in (memory.get("useful_evidence", {}) or {}).items()
+        }
+    )
+    useful_evidence = memory.get("useful_evidence", {}) or {}
+    return {
+        "runs_total": int(memory.get("runs_total", 0) or 0),
+        "updated_at": memory.get("updated_at", ""),
+        "top_entities": [
+            {"entity": key.split(":", 1)[-1], "kind": key.split(":", 1)[0], "count": count}
+            for key, count in entity_counts.most_common(8)
+        ],
+        "top_evidence": [
+            {
+                "doc_id": doc_id,
+                "count": count,
+                "title": (useful_evidence.get(doc_id, {}) or {}).get("title", ""),
+                "doc_type": (useful_evidence.get(doc_id, {}) or {}).get("doc_type", ""),
+                "source_path": (useful_evidence.get(doc_id, {}) or {}).get("source_path", ""),
+            }
+            for doc_id, count in evidence_counts.most_common(6)
+        ],
+        "recent_run_count": len(memory.get("recent_runs", []) or []),
     }
 
 
@@ -358,6 +594,16 @@ def agent_report_markdown(
     if memory.get("new_evidence"):
         lines.extend(["", "New top evidence:"])
         lines.extend(f"- {item}" for item in memory.get("new_evidence", []))
+    persistent = memory.get("persistent", {}) or {}
+    if persistent:
+        lines.extend(["", "## Persistent Agent Memory", ""])
+        lines.append(f"- Remembered runs: {persistent.get('runs_total', 0)}")
+        top_entities = persistent.get("top_entities", []) or []
+        if top_entities:
+            lines.append("- Recurring entities: " + ", ".join(f"{item.get('kind')}: {item.get('entity')} ({item.get('count')})" for item in top_entities[:5]))
+        top_evidence = persistent.get("top_evidence", []) or []
+        if top_evidence:
+            lines.append("- Reused evidence: " + ", ".join(str(item.get("title") or item.get("doc_id")) for item in top_evidence[:4]))
     lines.extend(["", "## What Would Change The Read", ""])
     for item in answer.get("what_would_change_mind", []) or []:
         lines.append(f"- {item}")
@@ -396,6 +642,13 @@ def build_dashboard_agent_payload(
     report_path: str | Path,
 ) -> dict[str, Any]:
     citations = list(answer.get("evidence_citations", []) or evidence.get("hits", []) or [])
+    method_counts = Counter(
+        method
+        for hit in citations
+        for method in (hit.get("retrieval_methods", []) or [])
+    )
+    doc_type_counts = Counter(str(hit.get("doc_type") or "evidence") for hit in citations)
+    source_counts = Counter(str(hit.get("source") or hit.get("source_path") or "local") for hit in citations)
     return {
         "available": True,
         "run_id": run_id,
@@ -412,6 +665,27 @@ def build_dashboard_agent_payload(
             "citation_count": len(citations),
         },
         "evidence_citations": citations[:8],
+        "rag_lens": {
+            "mode": evidence.get("mode") or (answer.get("agentic_rag", {}) or {}).get("mode", ""),
+            "retriever": evidence.get("retriever") or (answer.get("rag", {}) or {}).get("retriever", ""),
+            "query_plan": evidence.get("query_plan", [])[:8],
+            "per_query": evidence.get("per_query", [])[:8],
+            "total_candidates": evidence.get("total_candidates", len(citations)),
+            "shown_citations": len(citations[:8]),
+            "retrieval_methods": [
+                {"method": method, "count": count}
+                for method, count in method_counts.most_common()
+            ],
+            "doc_type_mix": [
+                {"doc_type": doc_type, "count": count}
+                for doc_type, count in doc_type_counts.most_common()
+            ],
+            "source_mix": [
+                {"source": source, "count": count}
+                for source, count in source_counts.most_common(6)
+            ],
+            "what_would_change_mind": answer.get("what_would_change_mind", []),
+        },
         "memory": memory,
         "scenario": {
             "available": bool(scenario),
@@ -441,6 +715,7 @@ def run_agent(
     rounds: int = 2,
     top_k: int = 5,
     rebuild_index: bool = True,
+    memory_path: str | Path | None = None,
     dashboard_output: str | Path | None = DEFAULT_DASHBOARD_AGENT,
     dashboard_report_output: str | Path = DEFAULT_DASHBOARD_AGENT_REPORT,
 ) -> dict[str, Any]:
@@ -469,6 +744,15 @@ def run_agent(
         evidence_result = {"output": rel_path(evidence_path), "stats": {}, "reused": True}
     append_trace(trace, "build_evidence_index", "completed", evidence_result)
 
+    append_trace(trace, "plan_retrieval", "started", {"goal": goal, "primary_question": plan["primary_question"]})
+    query_plan = agentic_rag_queries(goal, plan["primary_question"], payload)
+    append_trace(
+        trace,
+        "plan_retrieval",
+        "completed",
+        {"query_count": len(query_plan), "purposes": [item["purpose"] for item in query_plan]},
+    )
+
     append_trace(trace, "ask_with_evidence", "started", {"question": plan["primary_question"]})
     answer = ask_analyst(
         plan["primary_question"],
@@ -480,9 +764,22 @@ def run_agent(
     )
     append_trace(trace, "ask_with_evidence", "completed", {"intent": answer.get("intent"), "confidence": answer.get("confidence")})
 
-    append_trace(trace, "retrieve_evidence", "started", {"question": goal, "top_k": top_k})
-    evidence = retrieve_from_index_file(evidence_path, goal, top_k=top_k)
-    append_trace(trace, "retrieve_evidence", "completed", {"count": evidence.get("count", 0)})
+    append_trace(trace, "retrieve_evidence", "started", {"query_count": len(query_plan), "top_k": top_k})
+    evidence = retrieve_agentic_evidence(
+        index_path=evidence_path,
+        goal=goal,
+        primary_question=plan["primary_question"],
+        payload=payload,
+        top_k=top_k,
+        query_plan=query_plan,
+    )
+    answer["agentic_rag"] = {
+        "mode": evidence.get("mode", "agentic_hybrid_rag"),
+        "query_count": len(query_plan),
+        "queries": query_plan,
+        "retrieval_methods": sorted({method for hit in evidence.get("hits", []) for method in hit.get("retrieval_methods", [])}),
+    }
+    append_trace(trace, "retrieve_evidence", "completed", {"count": evidence.get("count", 0), "total_candidates": evidence.get("total_candidates", 0)})
 
     append_trace(trace, "compare_previous_run", "started", {"output_dir": rel_path(output_dir)})
     memory = compare_previous_run(
@@ -492,7 +789,28 @@ def run_agent(
         evidence=evidence,
         freshness=freshness,
     )
-    append_trace(trace, "compare_previous_run", "completed", {"available": memory.get("available"), "summary": memory.get("summary")})
+    resolved_memory_path = Path(memory_path) if memory_path else Path(output_dir) / "memory.json"
+    persistent_memory = update_agent_memory(
+        memory_path=resolved_memory_path,
+        run_id=agent_run_id,
+        goal=goal,
+        primary_question=plan["primary_question"],
+        answer=answer,
+        evidence=evidence,
+        freshness=freshness,
+    )
+    memory["persistent"] = persistent_memory["summary"]
+    memory["persistent_path"] = persistent_memory["path"]
+    append_trace(
+        trace,
+        "compare_previous_run",
+        "completed",
+        {
+            "available": memory.get("available"),
+            "summary": memory.get("summary"),
+            "persistent_runs_total": (memory.get("persistent") or {}).get("runs_total", 0),
+        },
+    )
 
     scenario_result: dict[str, Any] | None = None
     if scenario_policy != "never":
@@ -522,6 +840,7 @@ def run_agent(
         "trace": rel_path(run_dir / "trace.jsonl"),
         "answer": rel_path(run_dir / "answer.json"),
         "evidence": rel_path(run_dir / "evidence.json"),
+        "memory": rel_path(resolved_memory_path),
         "report": rel_path(run_dir / "agent_report.md"),
     }
     goal_doc = {
@@ -530,6 +849,7 @@ def run_agent(
         "created_at": created_at.isoformat(),
         "payload_path": rel_path(payload_file),
         "evidence_index": rel_path(evidence_path),
+        "memory_path": rel_path(resolved_memory_path),
     }
     report = agent_report_markdown(
         goal=goal,

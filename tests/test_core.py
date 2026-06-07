@@ -6,9 +6,17 @@ from datetime import UTC, date, datetime, timedelta
 import unittest
 
 from transfer_stock.article_store import dedupe_articles, normalize_article_row, normalize_url
-from transfer_stock.agent import compare_previous_run, plan_agent_run, run_agent
+from transfer_stock.agent import (
+    agentic_rag_queries,
+    compare_previous_run,
+    load_agent_memory,
+    plan_agent_run,
+    run_agent,
+    update_agent_memory,
+)
 from transfer_stock.analyst import ask_analyst
-from transfer_stock.api import ask_response, club_dossier_response, compare_response, reporter_profile_response
+from transfer_stock.api import ask_response, club_dossier_response, compare_response, operator_snapshot_response, reporter_profile_response, rumor_graph_response
+from transfer_stock.autopilot import choose_autopilot_goal, run_autopilot
 from transfer_stock.backtesting import blended_signal_label, blended_signal_score, candidate_for_strategy, dedupe_candidates
 from transfer_stock.briefing import build_briefing_sections, briefing_markdown, generate_daily_briefing
 from transfer_stock.claims import heuristic_extract_claim
@@ -45,6 +53,11 @@ from transfer_stock.matching import single_match, transfer_id_for, TransferCandi
 from transfer_stock.ml_v2 import LEAKY_FIELDS, parse_datetime_to_date, unmatched_claim_row, usable_rows as usable_rows_v2
 from transfer_stock.google_news_adapter import is_google_news_url, title_suffix_source
 from transfer_stock.news_sources import NewsSource, methods_for_preset, render_source_url, source_supports_club
+from transfer_stock.nlweb import build_agent_manifest, nlweb_ask, write_agent_manifest
+from transfer_stock.operator import build_decision_queue, run_research_cycle
+from transfer_stock.rag_eval import build_rag_audit
+from transfer_stock.rumor_graph import build_rumor_graph, write_rumor_graph
+from transfer_stock.runbooks import list_runbooks, runbook_operator_kwargs, write_runbook_snapshot
 from transfer_stock.scenario_swarm import (
     build_dashboard_scenario_payload,
     collect_evidence,
@@ -286,6 +299,21 @@ class CoreTests(unittest.TestCase):
         self.assertEqual(hits[0]["player"], "Casemiro")
         self.assertIn(hits[0]["doc_type"], {"signal", "transfer"})
 
+    def test_evidence_rag_uses_hybrid_retrieval_signals(self):
+        payload = self.sample_analyst_payload()
+        index = build_evidence_index_from_payload(
+            payload,
+            payload_path="app/static/data/dashboard_data.json",
+            article_paths=[],
+            scenario_path="missing_scenario.json",
+            briefing_path="missing_briefing.md",
+        )
+        hits = retrieve_evidence(index, "casmiro manu reporter credibility", top_k=3)
+        self.assertTrue(hits)
+        self.assertTrue(any(hit["player"] == "Casemiro" for hit in hits))
+        self.assertIn("score_breakdown", hits[0])
+        self.assertTrue(hits[0]["retrieval_methods"])
+
     def test_analyst_can_attach_evidence_citations(self):
         payload = self.sample_analyst_payload()
         result = ask_analyst(
@@ -318,6 +346,15 @@ class CoreTests(unittest.TestCase):
         plan = plan_agent_run("Find today's strongest Manchester United watch item", payload)
         self.assertEqual(plan["primary_question"], "What are Manchester United current signals?")
         self.assertTrue(any(step["id"] == "ask_with_evidence" for step in plan["steps"]))
+        self.assertTrue(any(step["id"] == "plan_retrieval" for step in plan["steps"]))
+
+    def test_agentic_rag_plans_contextual_subqueries(self):
+        payload = self.sample_analyst_payload()
+        queries = agentic_rag_queries("Explain Casemiro at Manchester United", "Explain Casemiro", payload)
+        purposes = {item["purpose"] for item in queries}
+        self.assertIn("rumor_signal", purposes)
+        self.assertIn("club_market_context", purposes)
+        self.assertIn("club_reporters", purposes)
 
     def test_agent_run_writes_traceable_outputs(self):
         payload = self.sample_analyst_payload()
@@ -333,18 +370,27 @@ class CoreTests(unittest.TestCase):
                 run_id="test_run",
                 scenario_policy="never",
                 top_k=2,
-                dashboard_output=None,
+                dashboard_output=root / "agent_latest.json",
+                dashboard_report_output=root / "agent_latest_report.md",
             )
             self.assertEqual(result["status"], "completed")
             self.assertEqual(result["answer"]["intent"], "explain_rumor")
             self.assertGreaterEqual(result["answer"]["citation_count"], 1)
             self.assertIn("memory", result)
+            self.assertIn("persistent", result["memory"])
             for key in ["goal", "plan", "trace", "answer", "evidence", "report"]:
                 self.assertTrue((root / result["outputs"][key]).exists(), key)
+            self.assertTrue(Path(result["outputs"]["memory"]).exists())
             report = (root / result["outputs"]["report"]).read_text(encoding="utf-8")
             self.assertIn("Agent Run Report", report)
             self.assertIn("Evidence Citations", report)
             self.assertIn("What Changed Since Last Run", report)
+            evidence = json.loads(Path(result["outputs"]["evidence"]).read_text(encoding="utf-8"))
+            self.assertEqual(evidence["mode"], "agentic_hybrid_rag")
+            self.assertTrue(evidence["query_plan"])
+            dashboard = json.loads((root / "agent_latest.json").read_text(encoding="utf-8"))
+            self.assertIn("rag_lens", dashboard)
+            self.assertTrue(dashboard["rag_lens"]["query_plan"])
 
     def test_agent_memory_compares_previous_run(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -368,6 +414,105 @@ class CoreTests(unittest.TestCase):
             self.assertTrue(memory["new_evidence"])
             self.assertTrue(any("confidence" in item for item in memory["changes"]))
 
+    def test_agent_memory_persists_entities_and_evidence(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            memory_path = Path(tmp) / "memory.json"
+            update_agent_memory(
+                memory_path=memory_path,
+                run_id="run-one",
+                goal="Explain Casemiro",
+                primary_question="Explain Casemiro",
+                answer={"intent": "explain_rumor", "confidence": 0.7, "warnings": []},
+                evidence={
+                    "hits": [
+                        {
+                            "doc_id": "casemiro-signal",
+                            "title": "Casemiro signal",
+                            "doc_type": "signal",
+                            "club": "Manchester United",
+                            "player": "Casemiro",
+                            "reporter": "Reporter One",
+                            "source": "Example Source",
+                            "source_path": "app/static/data/dashboard_data.json",
+                        }
+                    ]
+                },
+                freshness={"latest_live_date": "2026-05-20", "warnings": ["research context"]},
+            )
+            update_agent_memory(
+                memory_path=memory_path,
+                run_id="run-two",
+                goal="Explain Casemiro again",
+                primary_question="Explain Casemiro",
+                answer={"intent": "explain_rumor", "confidence": 0.72, "warnings": []},
+                evidence={"hits": [{"doc_id": "casemiro-signal", "title": "Casemiro signal", "doc_type": "signal", "club": "Manchester United", "player": "Casemiro"}]},
+                freshness={"latest_live_date": "2026-05-21", "warnings": []},
+            )
+            memory = load_agent_memory(memory_path)
+            self.assertEqual(memory["runs_total"], 2)
+            self.assertEqual(memory["useful_evidence"]["casemiro-signal"]["count"], 2)
+            self.assertGreaterEqual(memory["frequent_entities"]["player:Casemiro"], 2)
+
+    def test_rag_audit_scores_agent_grounding(self):
+        agent = {
+            "available": True,
+            "run_id": "unit",
+            "goal": "Explain Casemiro",
+            "answer": {
+                "short_answer": "Casemiro maps to Manchester United as seller.",
+                "confidence": 0.7,
+                "warnings": ["Research context only."],
+            },
+            "evidence_citations": [
+                {
+                    "title": "Casemiro Manchester United rumor signal",
+                    "snippet": "Casemiro maps to Manchester United as seller with transfer credibility context.",
+                    "doc_type": "signal",
+                    "club": "Manchester United",
+                    "player": "Casemiro",
+                    "source": "Example Source",
+                    "date": "2026-05-20",
+                    "normalized_score": 0.93,
+                    "retrieval_methods": ["lexical", "structured_entity"],
+                }
+            ],
+            "rag_lens": {
+                "query_plan": [{"purpose": "rumor_signal", "query": "Casemiro Manchester United"}],
+                "retrieval_methods": [{"method": "lexical", "count": 1}, {"method": "structured_entity", "count": 1}],
+                "total_candidates": 4,
+                "per_query": [{"purpose": "rumor_signal", "count": 1}],
+                "what_would_change_mind": ["More source diversity would improve the read."],
+            },
+        }
+        audit = build_rag_audit(agent, now=datetime(2026, 5, 21, tzinfo=UTC))
+        self.assertTrue(audit["available"])
+        self.assertGreater(audit["overall_score"], 0.4)
+        self.assertEqual(len(audit["dimensions"]), 6)
+        self.assertIn("Answer Support", [item["name"] for item in audit["dimensions"]])
+
+    def test_autopilot_selects_goal_and_dry_run_writes_snapshot(self):
+        payload = self.sample_analyst_payload()
+        selected = choose_autopilot_goal(payload)
+        self.assertIn("Casemiro", selected["goal"])
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            payload_path = root / "dashboard_data.json"
+            payload_path.write_text(json.dumps(payload), encoding="utf-8")
+            result = run_autopilot(
+                payload_path=payload_path,
+                output_json=root / "autopilot.json",
+                output_report=root / "autopilot.md",
+                dashboard_output=None,
+                evidence_index=root / "evidence_index.json",
+                agent_output_dir=root / "agents",
+                dry_run=True,
+            )
+            self.assertTrue(result["available"])
+            self.assertTrue(result["dry_run"])
+            self.assertTrue((root / "autopilot.json").exists())
+            self.assertTrue((root / "autopilot.md").exists())
+            self.assertTrue(all(step["status"] == "planned" for step in result["steps"]))
+
     def test_api_response_helpers_expose_analyst_contracts(self):
         payload = self.sample_analyst_payload()
         club = club_dossier_response(payload, "Manchester United")
@@ -387,6 +532,104 @@ class CoreTests(unittest.TestCase):
             ask_response(payload, "   ")
         with self.assertRaises(KeyError):
             club_dossier_response(payload, "Unknown FC")
+
+    def test_nlweb_manifest_and_ask_contract(self):
+        manifest = build_agent_manifest()
+        self.assertIn("ask", manifest["endpoints"])
+        self.assertFalse(manifest["safety"]["trading_advice"])
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            payload_path = root / "dashboard.json"
+            payload_path.write_text(json.dumps(self.sample_analyst_payload()), encoding="utf-8")
+            manifest_path = root / "manifest.json"
+            write_result = write_agent_manifest(manifest_path)
+            self.assertTrue(manifest_path.exists())
+            self.assertGreaterEqual(write_result["capability_count"], 1)
+            answer = nlweb_ask(
+                "Compare Manchester United and Juventus",
+                payload_path=payload_path,
+                evidence_index_path=root / "missing_evidence_index.json",
+            )
+            self.assertEqual(answer["intent"], "compare_clubs")
+            self.assertTrue(answer["safety"]["research_only"])
+            today = nlweb_ask(
+                "What changed today?",
+                payload_path=payload_path,
+                evidence_index_path=root / "missing_evidence_index.json",
+            )
+            self.assertEqual(today["intent"], "today_brief")
+            self.assertIn("Casemiro", today["short_answer"])
+
+    def test_temporal_rumor_graph_contract(self):
+        graph = build_rumor_graph(self.sample_analyst_payload())
+        self.assertGreater(graph["summary"]["node_count"], 0)
+        self.assertGreater(graph["summary"]["edge_count"], 0)
+        self.assertTrue(graph["timelines"])
+        self.assertIn("Graphiti", graph["inspired_by"]["project"])
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            payload_path = root / "dashboard.json"
+            output = root / "rumor_graph.json"
+            dashboard_output = root / "dashboard_rumor_graph.json"
+            payload_path.write_text(json.dumps(self.sample_analyst_payload()), encoding="utf-8")
+            result = write_rumor_graph(
+                payload_path=payload_path,
+                output_path=output,
+                dashboard_output=dashboard_output,
+            )
+            self.assertTrue(output.exists())
+            self.assertTrue(dashboard_output.exists())
+            self.assertGreater(result["node_count"], 0)
+            api_result = rumor_graph_response(dashboard_output)
+            self.assertTrue(api_result["available"])
+
+    def test_research_operator_builds_decision_queue_and_dry_run(self):
+        payload = self.sample_analyst_payload()
+        queue = build_decision_queue(payload)
+        self.assertEqual(queue[0]["player"], "Casemiro")
+        self.assertEqual(queue[0]["action"], "verify")
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            payload_path = root / "dashboard_data.json"
+            payload_path.write_text(json.dumps(payload), encoding="utf-8")
+            result = run_research_cycle(
+                payload_path=payload_path,
+                mode="research",
+                dry_run=True,
+                output_json=root / "operator.json",
+                output_report=root / "operator.md",
+                dashboard_output=root / "operator_dashboard.json",
+                autopilot_output=root / "autopilot.json",
+                autopilot_report=root / "autopilot.md",
+                dashboard_autopilot=None,
+                evidence_index=root / "evidence_index.json",
+                agent_output_dir=root / "agents",
+            )
+            self.assertEqual(result["status"], "planned")
+            self.assertIn("evidence-backed intelligence brief", result["purpose"])
+            self.assertTrue((root / "operator.json").exists())
+            self.assertTrue((root / "operator.md").exists())
+            self.assertTrue(operator_snapshot_response(root / "operator_dashboard.json")["available"])
+
+    def test_runbooks_include_api_supported_daily_cycle(self):
+        result = list_runbooks()
+        self.assertGreaterEqual(result["runbook_count"], 3)
+        runbook_ids = {row["id"] for row in result["runbooks"]}
+        self.assertIn("daily_research_cycle", runbook_ids)
+        request = runbook_operator_kwargs("daily_research_cycle")
+        self.assertEqual(request["mode"], "smart")
+        self.assertTrue(request["allow_network"])
+
+    def test_write_runbook_snapshot(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "runbooks.json"
+            result = write_runbook_snapshot(output)
+            self.assertTrue(output.exists())
+            self.assertGreaterEqual(result["runbook_count"], 3)
+            payload = json.loads(output.read_text(encoding="utf-8"))
+            self.assertEqual(payload["runbook_count"], result["runbook_count"])
 
     def test_scenario_swarm_collects_evidence_bundle(self):
         evidence = collect_evidence(

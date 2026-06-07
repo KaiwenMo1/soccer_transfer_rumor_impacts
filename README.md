@@ -1,11 +1,16 @@
 # Transfer Stock Analyst
 
-An open-source AI analyst for football transfer rumors, reporter credibility,
-and listed-club stock reactions.
+An open-source football-finance intelligence operator that turns noisy transfer
+coverage into a daily, evidence-backed brief for publicly listed clubs.
 
 It collects transfer news, turns articles into structured claims, scores
 journalist/source credibility, links rumors to public football-club tickers, and
 shows the evidence in a static dashboard plus local agent tools.
+
+The product goal is simple: a user opens the site and learns **what changed,
+what is credible, which listed club is exposed, what else could explain the
+stock move, and what deserves inspection next**. See
+[PRODUCT_VISION.md](PRODUCT_VISION.md) for the complete product framing.
 
 Demo page after GitHub Pages is enabled:
 
@@ -31,12 +36,83 @@ Demo page after GitHub Pages is enabled:
 - **Club comparison:** compare public clubs side by side.
 - **Reporter profiles:** inspect journalist/source credibility.
 - **Daily briefing:** generate a Markdown research brief from the latest data.
+- **One-click research operator:** refresh when permitted, audit, retrieve
+  evidence, run the analyst, and publish one decision queue.
+- **Research runbooks:** choose a purpose-built workflow instead of memorizing
+  the CLI.
+- **NLWeb-style Agent Access:** expose the website as a natural-language JSON
+  endpoint for local AI agents.
+- **Temporal Rumor Graph:** inspect evolving relationships between reporters,
+  sources, players, clubs, rumor stages, and market reads.
 
 ```bash
 python3 -m http.server 8000 --directory app/static
 ```
 
 Open `http://127.0.0.1:8000`.
+
+Run the complete local research package without fetching new data:
+
+```bash
+PYTHONPATH=src python3 -m transfer_stock.cli research-cycle --mode research
+```
+
+List the workflow gallery that powers the dashboard runbook cards:
+
+```bash
+PYTHONPATH=src python3 -m transfer_stock.cli list-runbooks
+```
+
+Publish the static runbook snapshot for GitHub Pages:
+
+```bash
+PYTHONPATH=src python3 -m transfer_stock.cli list-runbooks --publish
+```
+
+Publish the static agent manifest:
+
+```bash
+PYTHONPATH=src python3 -m transfer_stock.cli publish-agent-manifest
+```
+
+Ask through the NLWeb-style local website endpoint:
+
+```bash
+curl -X POST http://127.0.0.1:8011/nlweb/ask \
+  -H "Content-Type: application/json" \
+  -d '{"question":"What changed today?"}'
+```
+
+Build the temporal rumor graph:
+
+```bash
+PYTHONPATH=src python3 -m transfer_stock.cli build-rumor-graph
+```
+
+Run a supported runbook from CLI:
+
+```bash
+PYTHONPATH=src python3 -m transfer_stock.cli run-runbook daily_research_cycle
+```
+
+Run the smart cycle, allowing a bounded live-news refresh when the current
+payload is stale:
+
+```bash
+PYTHONPATH=src python3 -m transfer_stock.cli research-cycle \
+  --mode smart \
+  --allow-network
+```
+
+For the website's **Run today's cycle** button, install the optional API server
+and open the workbench:
+
+```bash
+pip install -e '.[api_server]'
+PYTHONPATH=src python3 -m transfer_stock.cli serve-api --port 8010
+```
+
+Open `http://127.0.0.1:8010`.
 
 Ask the local analyst:
 

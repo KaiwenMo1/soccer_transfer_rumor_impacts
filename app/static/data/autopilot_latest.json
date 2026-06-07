@@ -1,0 +1,146 @@
+{
+  "available": true,
+  "generated_at": "2026-06-04T03:08:15.132145+00:00",
+  "dry_run": false,
+  "payload_path": "app/static/data/dashboard_data.json",
+  "selected_goal": {
+    "goal": "Explain Alex Oxlade-Chamberlain at Celtic plc",
+    "reason": "Highest-scoring live watchlist row by directness, credibility, confidence, source count, and stage.",
+    "signal": {
+      "player": "Alex Oxlade-Chamberlain",
+      "club": "Celtic plc",
+      "stage": "medical",
+      "credibility_score": 0.7312,
+      "prediction_confidence": 0.8082,
+      "prediction_scope": "direct",
+      "source_count": 1
+    }
+  },
+  "plan": [
+    {
+      "id": "audit_data_quality",
+      "action": "write_data_quality_audit",
+      "reason": "Check freshness, coverage, market context, date hygiene, and model readiness."
+    },
+    {
+      "id": "build_evidence_index",
+      "action": "build_evidence_index",
+      "reason": "Refresh the local hybrid RAG layer over dashboard/articles/reports."
+    },
+    {
+      "id": "generate_briefing",
+      "action": "generate_daily_briefing",
+      "reason": "Create a human-readable daily research briefing from local evidence."
+    },
+    {
+      "id": "run_analyst_agent",
+      "action": "agent_run",
+      "reason": "Run the local analyst agent on: Explain Alex Oxlade-Chamberlain at Celtic plc"
+    },
+    {
+      "id": "audit_rag_grounding",
+      "action": "write_rag_audit",
+      "reason": "Evaluate whether the agent answer is supported by retrieved citations."
+    },
+    {
+      "id": "write_autopilot_snapshot",
+      "action": "write_report",
+      "reason": "Publish a traceable JSON/Markdown summary for the dashboard and GitHub artifacts."
+    }
+  ],
+  "steps": [
+    {
+      "id": "audit_data_quality",
+      "status": "completed",
+      "output": "app/static/data/data_quality_latest.json",
+      "detail": {
+        "overall_status": "usable"
+      },
+      "time": "2026-06-04T03:08:15.178316+00:00"
+    },
+    {
+      "id": "build_evidence_index",
+      "status": "completed",
+      "output": "data/processed/evidence/evidence_index.json",
+      "detail": {
+        "documents": 3792,
+        "types": {
+          "article": 165,
+          "briefing": 1,
+          "club_dossier": 10,
+          "match_result": 353,
+          "reporter_profile": 12,
+          "scenario": 1,
+          "signal": 92,
+          "stock_path": 10,
+          "transfer": 3148
+        },
+        "source_paths": {
+          "app/static/data/dashboard_data.json": 3657,
+          "app/static/data/scenario_latest.json": 1,
+          "data/raw/articles/current_fast.jsonl": 23,
+          "data/raw/articles/current_live.jsonl": 110,
+          "data/reports/daily_briefing.md": 1
+        }
+      },
+      "time": "2026-06-04T03:08:15.509191+00:00"
+    },
+    {
+      "id": "generate_briefing",
+      "status": "completed",
+      "output": "data/reports/daily_briefing.md",
+      "detail": {
+        "json": "data/reports/daily_briefing.json"
+      },
+      "time": "2026-06-04T03:08:15.541806+00:00"
+    },
+    {
+      "id": "run_analyst_agent",
+      "status": "completed",
+      "output": "data/agents/autopilot-20260604T030815Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
+      "detail": {
+        "intent": "explain_rumor"
+      },
+      "time": "2026-06-04T03:08:25.915760+00:00"
+    },
+    {
+      "id": "audit_rag_grounding",
+      "status": "completed",
+      "output": "app/static/data/rag_audit_latest.json",
+      "detail": {
+        "overall_status": "usable"
+      },
+      "time": "2026-06-04T03:08:25.916616+00:00"
+    }
+  ],
+  "audit_summary": {
+    "overall_status": "usable",
+    "overall_score": 0.7244,
+    "summary": "Data quality is usable (72%)."
+  },
+  "agent_summary": {
+    "run_id": "autopilot-20260604T030815Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
+    "answer": {
+      "intent": "explain_rumor",
+      "short_answer": "Alex Oxlade-Chamberlain maps to Celtic plc as buyer. The signal is positive with model label neutral and confidence 80.8%.",
+      "confidence": 0.86,
+      "citation_count": 6
+    },
+    "run_dir": "data/agents/autopilot-20260604T030815Z-explain-alex-oxlade-chamberlain-at-celtic-plc"
+  },
+  "recommended_commands": [
+    "PYTHONPATH=src python3 -m transfer_stock.cli ask-rag --question \"Explain the strongest current rumor\" --rebuild-index",
+    "PYTHONPATH=src python3 -m transfer_stock.cli agent-autopilot",
+    "PYTHONPATH=src python3 -m transfer_stock.cli refresh-live-fetch --source-preset scrapling_wide_no_api --max-records 30 --resume"
+  ],
+  "outputs": {
+    "data_quality": "app/static/data/data_quality_latest.json",
+    "evidence_index": "data/processed/evidence/evidence_index.json",
+    "daily_briefing": "data/reports/daily_briefing.md",
+    "agent_run": "data/agents/autopilot-20260604T030815Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
+    "rag_audit": "app/static/data/rag_audit_latest.json",
+    "autopilot_json": "data/agents/autopilot_latest.json",
+    "autopilot_report": "data/agents/autopilot_latest.md",
+    "dashboard_autopilot": "app/static/data/autopilot_latest.json"
+  }
+}

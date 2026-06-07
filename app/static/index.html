@@ -3,41 +3,82 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Transfer Impact Dashboard</title>
+    <meta name="description" content="Evidence-backed football transfer intelligence, reporter credibility, and listed-club market context.">
+    <meta name="theme-color" content="#070909">
+    <title>Transfer Stock Analyst</title>
     <link rel="stylesheet" href="./styles.css">
   </head>
   <body>
+    <a class="skip-link" href="#marketCockpitSection">Skip to analysis</a>
     <div class="shell">
       <header class="topbar">
         <div class="topbar-copy">
-          <p class="eyebrow">Transfer + Stock Signals</p>
-          <h1>Transfer Stock Dashboard</h1>
-          <p class="topbar-subtitle">A local AI research terminal for football rumors, reporter credibility, and listed-club market context.</p>
+          <p class="eyebrow">Independent Football-Finance Intelligence</p>
+          <h1><span>Transfer Stock</span><em>Analyst.</em></h1>
+          <p class="topbar-subtitle">See which transfer stories deserve attention before the market narrative settles.</p>
+          <div class="topbar-actions">
+            <button type="button" data-jump="marketCockpitSection">Enter observatory</button>
+            <button type="button" data-jump="askAnalystSection">Ask the analyst</button>
+          </div>
         </div>
-        <div class="topbar-meta">
-          <div class="meta-block">
-            <span class="meta-label">Season View</span>
-            <strong id="seasonLabel">-</strong>
+        <div class="topbar-observatory">
+          <div class="observatory-frame">
+            <div class="observatory-head">
+              <span>Live evidence field</span>
+              <span id="heroFreshness">Awaiting payload</span>
+            </div>
+            <div id="heroSignalVisual" class="hero-signal-visual" aria-live="polite">
+              <span class="observatory-loading">Loading evidence trajectory</span>
+            </div>
           </div>
-          <div class="meta-block">
-            <span class="meta-label" id="countLabel">Signals</span>
-            <strong id="signalCount">-</strong>
-          </div>
-          <div class="meta-block">
-            <span class="meta-label">Last Refresh</span>
-            <strong id="refreshStamp">-</strong>
+          <div class="topbar-meta">
+            <div class="meta-block">
+              <span class="meta-label">Season View</span>
+              <strong id="seasonLabel">-</strong>
+            </div>
+            <div class="meta-block">
+              <span class="meta-label" id="countLabel">Signals</span>
+              <strong id="signalCount">-</strong>
+            </div>
+            <div class="meta-block">
+              <span class="meta-label">Last Refresh</span>
+              <strong id="refreshStamp">-</strong>
+            </div>
           </div>
         </div>
       </header>
 
       <nav class="command-rail" aria-label="Dashboard shortcuts">
+        <button type="button" class="rail-menu-button" id="sectionMenuToggle" aria-expanded="false" aria-controls="sectionDrawer" title="Open section menu">
+          <span class="hamburger-icon" aria-hidden="true"><span></span><span></span><span></span></span>
+          Sections
+        </button>
         <button type="button" data-jump="askAnalystSection">Ask</button>
+        <button type="button" data-jump="runbookSection">Runbooks</button>
         <button type="button" data-jump="signalCardsSection">Live Cards</button>
         <button type="button" data-jump="workspaceSection">Signals</button>
         <button type="button" data-jump="clubDossierSection">Clubs</button>
-        <button type="button" data-jump="leaderboardsSection">Reporters</button>
-        <button type="button" data-jump="dataQualitySection">Quality</button>
+        <span class="rail-spacer" aria-hidden="true"></span>
+        <button type="button" class="rail-accent-button" id="demoModeButton">Demo Mode</button>
+        <button type="button" id="expandAllTop">Expand</button>
+        <button type="button" id="collapseAllTop">Collapse</button>
       </nav>
+
+      <div class="section-scrim" id="sectionScrim" hidden></div>
+      <aside class="section-drawer" id="sectionDrawer" hidden aria-label="Section menu">
+        <div class="section-drawer-head">
+          <div>
+            <p class="eyebrow">Dashboard Sections</p>
+            <h2>Jump or Collapse</h2>
+          </div>
+          <button type="button" class="drawer-close" id="sectionDrawerClose" title="Close section menu">Close</button>
+        </div>
+        <div class="section-drawer-actions">
+          <button type="button" id="expandAllSections">Expand all</button>
+          <button type="button" id="collapseAllSections">Collapse reports</button>
+        </div>
+        <div class="section-menu-list" id="sectionMenuList"></div>
+      </aside>
 
       <section class="route-band" id="routeBand" hidden>
         <div class="route-band-inner">
@@ -82,6 +123,22 @@
         <div id="marketCockpit"></div>
       </section>
 
+      <section class="report-band runbook-band" id="runbookSection">
+        <div class="section-head">
+          <h2>Research Runbooks</h2>
+          <span class="section-meta">One-click workflows inspired by modern agent and finance research tools.</span>
+        </div>
+        <div id="researchRunbooks"></div>
+      </section>
+
+      <section class="focus-band" id="focusBriefSection">
+        <div class="section-head">
+          <h2>Focus Brief</h2>
+          <span class="section-meta">A compressed read so the dashboard does not feel like a data dump.</span>
+        </div>
+        <div id="focusBrief"></div>
+      </section>
+
       <section class="insight-band" id="insightSection">
         <div class="section-head">
           <h2>What You Can Get</h2>
@@ -116,12 +173,44 @@
         <div class="ask-answer" id="askAnalystAnswer"></div>
       </section>
 
+      <section class="report-band agent-access-band" id="agentAccessSection">
+        <div class="section-head">
+          <h2>Agent Access</h2>
+          <span class="section-meta">NLWeb-style natural-language access for external AI agents and local tools.</span>
+        </div>
+        <div id="agentAccessPanel"></div>
+      </section>
+
+      <section class="report-band rumor-graph-band" id="rumorGraphSection">
+        <div class="section-head">
+          <h2>Temporal Rumor Graph</h2>
+          <span class="section-meta">Changing evidence relationships across reporters, sources, players, clubs, stages, and market reads.</span>
+        </div>
+        <div id="rumorGraphPanel"></div>
+      </section>
+
       <section class="report-band agent-band" id="agentRunSection">
         <div class="section-head">
           <h2>Latest Agent Run</h2>
           <span class="section-meta" id="agentRunMeta">Goal, plan, evidence, memory, and report from the local agent.</span>
         </div>
         <div id="agentRun"></div>
+      </section>
+
+      <section class="report-band agent-band" id="ragAuditSection">
+        <div class="section-head">
+          <h2>RAG Trust Audit</h2>
+          <span class="section-meta" id="ragAuditMeta">Grounding score for the latest agent answer and citations.</span>
+        </div>
+        <div id="ragAuditPanel"></div>
+      </section>
+
+      <section class="report-band agent-band" id="autopilotSection">
+        <div class="section-head">
+          <h2>Agent Autopilot</h2>
+          <span class="section-meta" id="autopilotMeta">Bounded local automation: audit, RAG, briefing, and analyst run.</span>
+        </div>
+        <div id="autopilotPanel"></div>
       </section>
 
       <section class="report-band scenario-band" id="scenarioSwarmSection">

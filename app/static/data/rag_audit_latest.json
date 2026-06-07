@@ -1,0 +1,108 @@
+{
+  "available": true,
+  "generated_at": "2026-06-04T03:08:25.916195+00:00",
+  "agent_run_id": "autopilot-20260604T030815Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
+  "agent_goal": "Explain Alex Oxlade-Chamberlain at Celtic plc",
+  "answer": "Alex Oxlade-Chamberlain maps to Celtic plc as buyer. The signal is positive with model label neutral and confidence 80.8%.",
+  "overall_score": 0.7641,
+  "overall_status": "usable",
+  "summary": "RAG trust audit is usable (76%).",
+  "dimensions": [
+    {
+      "name": "Answer Support",
+      "score": 0.6364,
+      "status": "usable",
+      "evidence": {
+        "answer_terms": 11,
+        "covered_terms": 7,
+        "missing_terms": [
+          "confidence",
+          "label",
+          "maps",
+          "model"
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "name": "Citation Strength",
+      "score": 0.6273,
+      "status": "usable",
+      "evidence": {
+        "citation_count": 6,
+        "avg_normalized_score": 0.6273,
+        "doc_type_mix": {
+          "signal": 3,
+          "transfer": 1,
+          "club_dossier": 1,
+          "stock_path": 1
+        }
+      },
+      "warnings": []
+    },
+    {
+      "name": "Source Diversity",
+      "score": 0.675,
+      "status": "usable",
+      "evidence": {
+        "unique_sources": 3,
+        "top_sources": {
+          "app/static/data/dashboard_data.json": 3,
+          "Celtic FC News": 2,
+          "BBC Sport Football RSS": 1
+        }
+      },
+      "warnings": []
+    },
+    {
+      "name": "Retrieval Health",
+      "score": 1.0,
+      "status": "strong",
+      "evidence": {
+        "query_count": 6,
+        "retrieval_methods": [
+          "lexical",
+          "recency",
+          "semantic_chargram",
+          "structured_entity"
+        ],
+        "total_candidates": 31,
+        "empty_queries": []
+      },
+      "warnings": []
+    },
+    {
+      "name": "Citation Freshness",
+      "score": 0.76,
+      "status": "usable",
+      "evidence": {
+        "dated_citations": 5,
+        "latest_citation_date": "2026-06-02",
+        "avg_citation_age_days": 27.6
+      },
+      "warnings": []
+    },
+    {
+      "name": "Uncertainty Disclosure",
+      "score": 1.0,
+      "status": "strong",
+      "evidence": {
+        "warnings": [
+          "This is a model-assisted research summary, not a trade recommendation.",
+          "Evidence citations use local hybrid retrieval; read them as grounded context, not proof of causality."
+        ],
+        "what_would_change_mind": [
+          "More primary article evidence would improve the answer.",
+          "Newer high-credibility reports or official club disclosures can overturn the current read."
+        ]
+      },
+      "warnings": []
+    }
+  ],
+  "recommendations": [
+    "Improve grounding: answer terms should appear in retrieved titles/snippets/entities."
+  ],
+  "source_paths": {
+    "agent_snapshot": "app/static/data/agent_latest.json"
+  }
+}

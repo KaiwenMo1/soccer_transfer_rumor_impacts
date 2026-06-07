@@ -33,6 +33,7 @@ Important outputs:
 ```text
 app/static/data/scenario_latest.json
 app/static/data/scenario_latest_report.md
+app/static/data/rumor_graph.json
 data/simulations/<simulation_id>/
 data/reports/daily_briefing.md
 data/reports/daily_briefing.json
@@ -71,6 +72,85 @@ Health check:
 ```bash
 curl http://127.0.0.1:8010/health
 ```
+
+## NLWeb-Style Website Endpoint
+
+The project also exposes a lightweight NLWeb-inspired contract so the dashboard
+can behave like an AI-readable website.
+
+Static manifest:
+
+```text
+app/static/.well-known/transfer-stock-agent.json
+```
+
+Publish it:
+
+```bash
+PYTHONPATH=src python3 -m transfer_stock.cli publish-agent-manifest
+```
+
+HTTP:
+
+```http
+GET  /nlweb/manifest
+POST /nlweb/ask
+GET  /.well-known/transfer-stock-agent.json
+```
+
+Example:
+
+```bash
+curl -X POST http://127.0.0.1:8010/nlweb/ask \
+  -H "Content-Type: application/json" \
+  -d '{"question":"What changed today?"}'
+```
+
+This endpoint is intentionally research-only. It wraps the local analyst and
+Evidence RAG layers; it does not execute trades or fetch private credentials.
+
+## Temporal Rumor Graph
+
+The project includes a lightweight Graphiti-inspired temporal graph over local
+rumor evidence.
+
+CLI:
+
+```bash
+PYTHONPATH=src python3 -m transfer_stock.cli build-rumor-graph
+```
+
+HTTP:
+
+```http
+GET /graphs/rumors
+```
+
+Output includes:
+
+```json
+{
+  "summary": {
+    "node_count": 0,
+    "edge_count": 0,
+    "timeline_count": 0,
+    "top_clubs": [],
+    "top_sources": [],
+    "stage_mix": []
+  },
+  "nodes": [],
+  "edges": [],
+  "timelines": []
+}
+```
+
+Use it to inspect evidence paths such as:
+
+```text
+Reporter -> Source -> Player -> Club -> Rumor Stage -> Market Read
+```
+
+This is relationship context, not causal market proof.
 
 ## Response Style
 

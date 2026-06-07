@@ -1,0 +1,141 @@
+{
+  "available": true,
+  "generated_at": "2026-06-04T03:08:25.945615+00:00",
+  "status": "completed",
+  "mode": "research",
+  "purpose": "Turn noisy football transfer coverage into a daily, evidence-backed intelligence brief for publicly listed clubs.",
+  "user_outcome": "Know what changed, how credible it is, whether a listed club is directly exposed, what could move the same stock, and what deserves inspection next.",
+  "summary": "Verify next: Alex Oxlade-Chamberlain at Celtic plc. Potentially relevant, but it needs stronger confirmation or cleaner market context.",
+  "preflight": {
+    "overall_status": "usable",
+    "overall_score": 0.7244,
+    "freshness_status": "strong",
+    "freshness_summary": "Latest signal date: 2026-06-02"
+  },
+  "refresh": {
+    "requested": false,
+    "allowed": false,
+    "status": "not_needed",
+    "source_preset": "fast_no_api",
+    "max_records": 20,
+    "error": "",
+    "outputs": {}
+  },
+  "decision_queue": [
+    {
+      "action": "verify",
+      "label": "Verify next",
+      "priority_score": 0.7368,
+      "reason": "Potentially relevant, but it needs stronger confirmation or cleaner market context.",
+      "player": "Alex Oxlade-Chamberlain",
+      "club": "Celtic plc",
+      "ticker": "CCP.L",
+      "target_role": "buyer",
+      "rumor_stage": "medical",
+      "published_at": "2026-06-02T06:57:56+00:00",
+      "credibility_score": 0.7312,
+      "prediction_confidence": 0.8082,
+      "source_count": 1,
+      "group_key": "Celtic plc::Alex Oxlade-Chamberlain"
+    },
+    {
+      "action": "monitor",
+      "label": "Monitor closely",
+      "priority_score": 0.7241,
+      "reason": "Direct listed-club exposure with comparatively strong evidence and source breadth.",
+      "player": "Serhou Guirassy",
+      "club": "Borussia Dortmund",
+      "ticker": "BVB.DE",
+      "target_role": "seller",
+      "rumor_stage": "official",
+      "published_at": "2026-06-01T19:04:34+00:00",
+      "credibility_score": 0.5316,
+      "prediction_confidence": 0.8718,
+      "source_count": 2,
+      "group_key": "Borussia Dortmund::Serhou Guirassy"
+    },
+    {
+      "action": "verify",
+      "label": "Verify next",
+      "priority_score": 0.6333,
+      "reason": "Potentially relevant, but it needs stronger confirmation or cleaner market context.",
+      "player": "Alejandro Mart\u00ednez",
+      "club": "Juventus",
+      "ticker": "JUVE.MI",
+      "target_role": "seller",
+      "rumor_stage": "agreed",
+      "published_at": "2026-06-02T10:25:00+00:00",
+      "credibility_score": 0.4978,
+      "prediction_confidence": 0.7349,
+      "source_count": 1,
+      "group_key": "Juventus::Alejandro Mart\u00ednez"
+    },
+    {
+      "action": "verify",
+      "label": "Verify next",
+      "priority_score": 0.628,
+      "reason": "Potentially relevant, but it needs stronger confirmation or cleaner market context.",
+      "player": "Rafa Silva",
+      "club": "Benfica SAD",
+      "ticker": "SLBEN.LS",
+      "target_role": "buyer",
+      "rumor_stage": "talks",
+      "published_at": "2026-06-02T12:45:00+00:00",
+      "credibility_score": 0.4844,
+      "prediction_confidence": 0.7427,
+      "source_count": 2,
+      "group_key": "Benfica SAD::Rafa Silva"
+    },
+    {
+      "action": "verify",
+      "label": "Verify next",
+      "priority_score": 0.6205,
+      "reason": "Potentially relevant, but it needs stronger confirmation or cleaner market context.",
+      "player": "Mason Greenwood",
+      "club": "Borussia Dortmund",
+      "ticker": "BVB.DE",
+      "target_role": "seller",
+      "rumor_stage": "bid",
+      "published_at": "2026-06-01T12:47:59+00:00",
+      "credibility_score": 0.4666,
+      "prediction_confidence": 0.8531,
+      "source_count": 1,
+      "group_key": "Borussia Dortmund::Mason Greenwood"
+    },
+    {
+      "action": "verify",
+      "label": "Verify next",
+      "priority_score": 0.5781,
+      "reason": "Potentially relevant, but it needs stronger confirmation or cleaner market context.",
+      "player": "Pedro Gomes",
+      "club": "FC Porto SAD",
+      "ticker": "FCP.LS",
+      "target_role": "seller",
+      "rumor_stage": "linked",
+      "published_at": "2026-06-02T10:41:06+00:00",
+      "credibility_score": 0.4277,
+      "prediction_confidence": 0.7999,
+      "source_count": 1,
+      "group_key": "FC Porto SAD::Pedro Gomes"
+    }
+  ],
+  "trust_state": {
+    "data_quality_status": "usable",
+    "data_quality_score": 0.7244,
+    "agent_confidence": 0.86,
+    "agent_citations": 6,
+    "prediction_scope_rule": "Stock impact only when a listed-club ticker is directly mapped."
+  },
+  "warnings": [
+    "Football-club stocks can also move because of match results, ownership news, earnings, liquidity, qualification, and broader markets."
+  ],
+  "outputs": {
+    "dashboard_payload": "app/static/data/dashboard_data.json",
+    "autopilot": "data/agents/autopilot_latest.json",
+    "autopilot_report": "data/agents/autopilot_latest.md",
+    "evidence_index": "data/processed/evidence/evidence_index.json",
+    "operator_json": "data/operators/operator_latest.json",
+    "operator_report": "data/operators/operator_latest.md",
+    "dashboard_operator": "app/static/data/operator_latest.json"
+  }
+}

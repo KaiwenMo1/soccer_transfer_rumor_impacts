@@ -1,3 +1,50 @@
+const SECTION_STORAGE_KEY = "transferStockCollapsedSections";
+
+const SECTION_NAV_ITEMS = [
+  { id: "overviewSection", label: "Overview", bodySelectors: [".metric-card"], keepOpen: true },
+  { id: "marketCockpitSection", label: "Analyst Cockpit", bodySelectors: ["#marketCockpit"], keepOpen: true },
+  { id: "runbookSection", label: "Research Runbooks", keepOpen: true },
+  { id: "focusBriefSection", label: "Focus Brief", keepOpen: true },
+  { id: "insightSection", label: "What You Can Get" },
+  { id: "dataQualitySection", label: "Data Quality Audit" },
+  { id: "askAnalystSection", label: "Ask The Analyst", keepOpen: true },
+  { id: "agentAccessSection", label: "Agent Access" },
+  { id: "rumorGraphSection", label: "Temporal Rumor Graph" },
+  { id: "agentRunSection", label: "Latest Agent Run" },
+  { id: "ragAuditSection", label: "RAG Trust Audit" },
+  { id: "autopilotSection", label: "Agent Autopilot" },
+  { id: "scenarioSwarmSection", label: "Scenario Swarm" },
+  { id: "scenarioSimulatorSection", label: "Scenario Simulator" },
+  { id: "controlsSection", label: "Filters", bodySelectors: [".control"], keepOpen: true },
+  { id: "workspaceSection", label: "Signals Workspace", bodySelectors: [".table-pane .table-wrap", "#detailPane"], keepOpen: true },
+  { id: "clubDossierSection", label: "Club Dossier" },
+  { id: "clubComparisonSection", label: "Club vs Club" },
+  { id: "watchlistSection", label: "Live Watchlist" },
+  { id: "signalCardsSection", label: "Live Signal Cards" },
+  { id: "coverageSection", label: "Live Coverage" },
+  { id: "leaderboardsSection", label: "Credibility Leaderboards" },
+  { id: "trustGraphSection", label: "Reporter Trust Graph" },
+  { id: "reporterProfilesSection", label: "Reporter Profiles" },
+  { id: "seasonHistorySection", label: "Season History" },
+  { id: "backtestsSection", label: "Backtest Summary" },
+];
+
+const DEMO_MODE_OPEN_SECTIONS = new Set([
+  "overviewSection",
+  "marketCockpitSection",
+  "runbookSection",
+  "focusBriefSection",
+  "askAnalystSection",
+  "agentRunSection",
+  "ragAuditSection",
+  "autopilotSection",
+  "scenarioSwarmSection",
+  "signalCardsSection",
+  "workspaceSection",
+  "dataQualitySection",
+  "agentAccessSection",
+]);
+
 const state = {
   payload: null,
   page: "market",
@@ -14,9 +61,17 @@ const state = {
   askQuestion: "",
   askResult: null,
   agent: null,
+  ragAudit: null,
+  autopilot: null,
+  operator: null,
+  operatorRuntime: null,
+  runbooks: null,
+  agentManifest: null,
+  rumorGraph: null,
   scenario: null,
   dataQuality: null,
   simulatorResult: null,
+  collapsedSections: new Set(),
 };
 
 function pillClass(label) {
@@ -92,6 +147,184 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll("\"", "&quot;")
     .replaceAll("'", "&#39;");
+}
+
+function loadCollapsedSections() {
+  try {
+    const raw = window.localStorage.getItem(SECTION_STORAGE_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return new Set(Array.isArray(parsed) ? parsed : []);
+  } catch (error) {
+    return new Set();
+  }
+}
+
+function saveCollapsedSections() {
+  try {
+    window.localStorage.setItem(SECTION_STORAGE_KEY, JSON.stringify(Array.from(state.collapsedSections)));
+  } catch (error) {
+    // localStorage can be unavailable from file:// or locked-down browsers.
+  }
+}
+
+function sectionConfig(sectionId) {
+  return SECTION_NAV_ITEMS.find((item) => item.id === sectionId) || null;
+}
+
+function sectionHead(section) {
+  if (!section) return null;
+  return section.querySelector(":scope > .section-head")
+    || section.querySelector(":scope > .table-pane > .section-head")
+    || null;
+}
+
+function sectionBodyElements(section, config) {
+  if (!section) return [];
+  if (config?.bodySelectors?.length) {
+    return config.bodySelectors.flatMap((selector) => Array.from(section.querySelectorAll(selector)));
+  }
+  const head = sectionHead(section);
+  return Array.from(section.children).filter((child) => child !== head);
+}
+
+function isSectionCollapsed(sectionId) {
+  return state.collapsedSections.has(sectionId);
+}
+
+function applySectionCollapseState() {
+  SECTION_NAV_ITEMS.forEach((item) => {
+    const section = document.getElementById(item.id);
+    if (!section) return;
+    const collapsed = isSectionCollapsed(item.id);
+    section.classList.toggle("is-collapsed", collapsed);
+    sectionBodyElements(section, item).forEach((element) => {
+      element.hidden = collapsed;
+    });
+    const button = section.querySelector(`[data-section-collapse="${item.id}"]`);
+    if (button) {
+      button.setAttribute("aria-expanded", String(!collapsed));
+      button.textContent = collapsed ? "Expand" : "Collapse";
+      button.title = collapsed ? `Expand ${item.label}` : `Collapse ${item.label}`;
+    }
+  });
+  renderSectionMenu();
+}
+
+function toggleSectionCollapsed(sectionId, nextValue = null) {
+  const collapsed = nextValue === null ? !isSectionCollapsed(sectionId) : Boolean(nextValue);
+  if (collapsed) {
+    state.collapsedSections.add(sectionId);
+  } else {
+    state.collapsedSections.delete(sectionId);
+  }
+  saveCollapsedSections();
+  applySectionCollapseState();
+}
+
+function expandAllDashboardSections() {
+  state.collapsedSections.clear();
+  saveCollapsedSections();
+  applySectionCollapseState();
+}
+
+function collapseDashboardSections({ reportsOnly = false } = {}) {
+  state.collapsedSections.clear();
+  SECTION_NAV_ITEMS.forEach((item) => {
+    if (reportsOnly && item.keepOpen) return;
+    state.collapsedSections.add(item.id);
+  });
+  saveCollapsedSections();
+  applySectionCollapseState();
+}
+
+function applyDemoMode() {
+  state.page = "market";
+  state.routeClub = null;
+  state.selectedSeason = state.payload.latest_season;
+  state.selectedView = "rumors";
+  state.clubFilter = "All";
+  state.sortMode = "impact";
+  state.search = "";
+  const topLive = (state.payload.live_watchlist || [])[0];
+  const topSeason = (state.payload.signals_by_season?.[state.payload.latest_season] || [])[0];
+  const demoRow = topLive || topSeason || null;
+  state.selectedKey = demoRow ? (demoRow.group_key || demoRow.claim_ids || null) : null;
+  const player = demoRow?.player || "the strongest current rumor";
+  const club = demoRow?.target_club || demoRow?.club || "";
+  state.askQuestion = club ? `Explain ${player} at ${club}` : `Explain ${player}`;
+  state.askResult = askAnalyst(state.askQuestion);
+  state.collapsedSections.clear();
+  SECTION_NAV_ITEMS.forEach((item) => {
+    if (!DEMO_MODE_OPEN_SECTIONS.has(item.id)) state.collapsedSections.add(item.id);
+  });
+  saveCollapsedSections();
+  syncHash();
+  renderAll();
+  document.getElementById("askAnalystSection")?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function setupSectionChrome() {
+  SECTION_NAV_ITEMS.forEach((item) => {
+    const section = document.getElementById(item.id);
+    const head = sectionHead(section);
+    if (!section || !head || head.querySelector(`[data-section-collapse="${item.id}"]`)) return;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "section-collapse-button";
+    button.dataset.sectionCollapse = item.id;
+    button.setAttribute("aria-expanded", "true");
+    button.textContent = "Collapse";
+    head.appendChild(button);
+  });
+  renderSectionMenu();
+  applySectionCollapseState();
+}
+
+function renderSectionMenu() {
+  const list = document.getElementById("sectionMenuList");
+  if (!list) return;
+  list.innerHTML = SECTION_NAV_ITEMS.map((item) => {
+    const collapsed = isSectionCollapsed(item.id);
+    return `
+      <div class="section-menu-item">
+        <button type="button" class="section-menu-jump" data-jump="${escapeHtml(item.id)}">
+          <span>${escapeHtml(item.label)}</span>
+          <small>${collapsed ? "Collapsed" : "Visible"}</small>
+        </button>
+        <button type="button" class="section-menu-toggle" data-section-collapse="${escapeHtml(item.id)}" aria-expanded="${String(!collapsed)}">
+          ${collapsed ? "Show" : "Hide"}
+        </button>
+      </div>
+    `;
+  }).join("");
+}
+
+function openSectionDrawer() {
+  const drawer = document.getElementById("sectionDrawer");
+  const scrim = document.getElementById("sectionScrim");
+  const toggle = document.getElementById("sectionMenuToggle");
+  if (!drawer || !scrim || !toggle) return;
+  drawer.hidden = false;
+  scrim.hidden = false;
+  requestAnimationFrame(() => {
+    drawer.classList.add("is-open");
+    scrim.classList.add("is-open");
+  });
+  toggle.setAttribute("aria-expanded", "true");
+}
+
+function closeSectionDrawer() {
+  const drawer = document.getElementById("sectionDrawer");
+  const scrim = document.getElementById("sectionScrim");
+  const toggle = document.getElementById("sectionMenuToggle");
+  if (!drawer || !scrim || !toggle) return;
+  drawer.classList.remove("is-open");
+  scrim.classList.remove("is-open");
+  toggle.setAttribute("aria-expanded", "false");
+  window.setTimeout(() => {
+    if (!drawer.classList.contains("is-open")) drawer.hidden = true;
+    if (!scrim.classList.contains("is-open")) scrim.hidden = true;
+  }, 160);
 }
 
 function clubMedia(name) {
@@ -733,52 +966,130 @@ function chartMarkersForRow(row) {
     .sort((a, b) => a.index - b.index);
 }
 
+function chartPointChange(points) {
+  if (!Array.isArray(points) || points.length < 2) return null;
+  const first = Number(points[0]);
+  const last = Number(points[points.length - 1]);
+  if (!Number.isFinite(first) || !Number.isFinite(last) || first === 0) return null;
+  return (last / first) - 1;
+}
+
+function markerSentimentClass(marker) {
+  if (marker.sentiment === "positive") return "positive";
+  if (marker.sentiment === "negative") return "negative";
+  return "neutral";
+}
+
+function markerLabel(marker) {
+  if (marker.kind === "match") {
+    return `${marker.result || "Match"} ${marker.score || ""} vs ${marker.opponent || ""}`.trim();
+  }
+  if (marker.count) {
+    return `${marker.count} article${marker.count === 1 ? "" : "s"}`;
+  }
+  return marker.date || "Event";
+}
+
+function groupChartMarkers(markers = [], pointCount = 0) {
+  const grouped = new Map();
+  markers.forEach((marker) => {
+    const index = Number(marker.index);
+    if (!Number.isFinite(index) || index < 0 || index >= pointCount) return;
+    const key = `${index}:${marker.kind || "event"}`;
+    if (!grouped.has(key)) {
+      grouped.set(key, {
+        ...marker,
+        index,
+        count: 0,
+        sentimentCounts: { positive: 0, negative: 0, neutral: 0 },
+        items: [],
+      });
+    }
+    const entry = grouped.get(key);
+    const sentiment = markerSentimentClass(marker);
+    entry.count += Number(marker.count || 1);
+    entry.sentimentCounts[sentiment] += 1;
+    entry.items.push(marker);
+    if (marker.match_date || marker.date) entry.match_date = marker.match_date || marker.date;
+    if (marker.trading_date) entry.trading_date = marker.trading_date;
+  });
+  return Array.from(grouped.values()).map((entry) => {
+    const counts = entry.sentimentCounts || {};
+    const sentiment = counts.negative > counts.positive && counts.negative >= counts.neutral
+      ? "negative"
+      : counts.positive >= counts.neutral
+        ? "positive"
+        : "neutral";
+    const sample = entry.items[entry.items.length - 1] || entry;
+    return {
+      ...entry,
+      sentiment,
+      result: sample.result || entry.result,
+      score: sample.score || entry.score,
+      opponent: sample.opponent || entry.opponent,
+      title: markerLabel(sample),
+    };
+  }).sort((a, b) => a.index - b.index);
+}
+
 function sparklineSvg(chart, markers = []) {
   const points = chart?.points || [];
   if (!points.length) return "";
-  const width = 360;
-  const height = 112;
-  const padding = 12;
+  const width = 720;
+  const height = 210;
+  const paddingX = 18;
+  const paddingY = 16;
   const min = Math.min(...points);
   const max = Math.max(...points);
   const span = Math.max(max - min, 1e-6);
-  const xFor = (index) => padding + (index * (width - padding * 2)) / Math.max(points.length - 1, 1);
-  const yFor = (value) => height - padding - ((value - min) / span) * (height - padding * 2);
-  const polyline = points.map((value, index) => `${xFor(index)},${yFor(value)}`).join(" ");
+  const xFor = (index) => paddingX + (index * (width - paddingX * 2)) / Math.max(points.length - 1, 1);
+  const yFor = (value) => height - paddingY - ((value - min) / span) * (height - paddingY * 2);
+  const linePath = points.map((value, index) => `${index === 0 ? "M" : "L"} ${xFor(index).toFixed(2)} ${yFor(value).toFixed(2)}`).join(" ");
+  const bottomY = height - paddingY;
+  const areaPath = `${linePath} L ${xFor(points.length - 1).toFixed(2)} ${bottomY} L ${xFor(0).toFixed(2)} ${bottomY} Z`;
   const baselineY = yFor(100);
   const hasEvent = chart.event_index !== undefined && chart.event_index !== null && chart.event_index !== "";
   const eventX = hasEvent ? xFor(Number(chart.event_index)) : 0;
   const latestX = xFor(points.length - 1);
   const latestY = yFor(points[points.length - 1]);
-  const gridLines = [0.25, 0.5, 0.75].map((ratio) => padding + ratio * (height - padding * 2));
-  const markerSvg = markers.map((marker) => {
-    const markerIndex = Number(marker.index);
-    if (!Number.isFinite(markerIndex) || markerIndex < 0 || markerIndex >= points.length) return "";
-    const x = xFor(markerIndex);
+  const gridLines = [0.2, 0.4, 0.6, 0.8].map((ratio) => paddingY + ratio * (height - paddingY * 2));
+  const groupedMarkers = groupChartMarkers(markers, points.length);
+  const visibleMarkers = groupedMarkers.length > 26 ? groupedMarkers.slice(-26) : groupedMarkers;
+  const markerSvg = visibleMarkers.map((marker) => {
+    const x = xFor(marker.index);
+    const y = yFor(points[marker.index]);
+    const sentiment = marker.sentiment || "neutral";
+    const title = marker.kind === "match"
+      ? `${marker.result || "Match"} ${marker.score || ""} vs ${marker.opponent || ""} (${marker.match_date || marker.date || ""})`
+      : `${marker.count || 1} linked article(s) on ${marker.date || ""}`;
     if (marker.kind === "match") {
-      const y = yFor(points[markerIndex]);
-      const sentiment = marker.sentiment || "neutral";
-      const title = `${marker.result || "Match"} ${marker.score || ""} vs ${marker.opponent || ""} (${marker.match_date || marker.date || ""})`;
       return `
-        <g class="sparkline-match-point">
+        <g class="sparkline-match-point sparkline-match-group">
           <title>${escapeHtml(title)}</title>
-          <circle class="sparkline-match-dot sparkline-match-${sentiment}" cx="${x}" cy="${y}" r="4.4"></circle>
+          <line class="sparkline-marker-guide" x1="${x}" y1="${paddingY}" x2="${x}" y2="${height - paddingY}"></line>
+          <circle class="sparkline-match-dot sparkline-match-${sentiment}" cx="${x}" cy="${y}" r="${marker.count > 1 ? 6 : 4.8}"></circle>
+          ${marker.count > 1 ? `<text class="sparkline-marker-count" x="${x}" y="${Math.max(paddingY + 10, y - 9)}">${marker.count}</text>` : ""}
         </g>
       `;
     }
     return `
-      <line class="sparkline-marker" x1="${x}" y1="${padding + 4}" x2="${x}" y2="${height - padding}"></line>
-      <circle class="sparkline-marker-dot" cx="${x}" cy="${height - padding}" r="2.2"></circle>
+      <g>
+        <title>${escapeHtml(title)}</title>
+        <line class="sparkline-marker" x1="${x}" y1="${paddingY + 4}" x2="${x}" y2="${height - paddingY}"></line>
+        <circle class="sparkline-marker-dot" cx="${x}" cy="${height - paddingY}" r="${marker.count > 1 ? 4.2 : 2.8}"></circle>
+      </g>
     `;
   }).join("");
+  const directionClass = chartPointChange(points) >= 0 ? "positive" : "negative";
   return `
     <svg class="sparkline-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" aria-hidden="true">
-      ${gridLines.map((y) => `<line class="sparkline-grid" x1="${padding}" y1="${y}" x2="${width - padding}" y2="${y}"></line>`).join("")}
-      <line class="sparkline-baseline" x1="${padding}" y1="${baselineY}" x2="${width - padding}" y2="${baselineY}"></line>
-      ${hasEvent ? `<line class="sparkline-event" x1="${eventX}" y1="${padding}" x2="${eventX}" y2="${height - padding}"></line>` : ""}
-      <polyline class="sparkline-line" points="${polyline}"></polyline>
+      ${gridLines.map((y) => `<line class="sparkline-grid" x1="${paddingX}" y1="${y}" x2="${width - paddingX}" y2="${y}"></line>`).join("")}
+      <line class="sparkline-baseline" x1="${paddingX}" y1="${baselineY}" x2="${width - paddingX}" y2="${baselineY}"></line>
+      ${hasEvent ? `<line class="sparkline-event" x1="${eventX}" y1="${paddingY}" x2="${eventX}" y2="${height - paddingY}"></line>` : ""}
+      <path class="sparkline-area sparkline-area-${directionClass}" d="${areaPath}"></path>
+      <path class="sparkline-line sparkline-line-${directionClass}" d="${linePath}"></path>
       ${markerSvg}
-      <circle class="sparkline-latest" cx="${latestX}" cy="${latestY}" r="2.8"></circle>
+      <circle class="sparkline-latest" cx="${latestX}" cy="${latestY}" r="5.2"></circle>
     </svg>
   `;
 }
@@ -787,20 +1098,43 @@ function stockChartMarkup(chart, markers = []) {
   if (!chart || !(chart.points || []).length) {
     return `<div class="sparkline-empty">No stock history slice yet</div>`;
   }
+  const points = chart.points || [];
+  const groupedMarkers = groupChartMarkers(markers, points.length);
+  const plottedMarkers = groupedMarkers.length > 26 ? groupedMarkers.slice(-26) : groupedMarkers;
   const hasMatchMarkers = markers.some((marker) => marker.kind === "match");
   const markerLabel = hasMatchMarkers ? "match result" : "linked news date";
+  const totalChange = chart.latest_change ?? chartPointChange(points);
+  const high = Math.max(...points);
+  const low = Math.min(...points);
+  const latest = points[points.length - 1];
+  const direction = Number(totalChange || 0) >= 0 ? "positive" : "negative";
+  const latestDate = chart.latest_date || chart.dates?.[points.length - 1] || "";
   return `
-    <div class="sparkline-card">
-      <div class="sparkline-meta">
-        <span>Pre ${fmtSignedPct(chart.pre_change, 1)}</span>
-        <span>Since event ${fmtSignedPct(chart.latest_change, 1)}</span>
-        <span>${markers.length} ${markerLabel}${markers.length === 1 ? "" : "s"}</span>
+    <div class="sparkline-card market-chart-card">
+      <div class="market-chart-top">
+        <div>
+          <span class="metric-label">${escapeHtml(chart.ticker || "Stock Path")}</span>
+          <strong class="market-chart-price">${fmtNumber(latest, 2)}</strong>
+          <span class="detail-meta">${escapeHtml((chart.dates || [])[0] || "")} -> ${escapeHtml(latestDate)}</span>
+        </div>
+        <div class="market-chart-stats">
+          <span class="market-chart-stat ${direction}">Window ${fmtSignedPct(totalChange, 1)}</span>
+          <span class="market-chart-stat">High ${fmtNumber(high, 1)}</span>
+          <span class="market-chart-stat">Low ${fmtNumber(low, 1)}</span>
+          <span class="market-chart-stat">${plottedMarkers.length}/${groupedMarkers.length} ${markerLabel}${groupedMarkers.length === 1 ? "" : "s"}</span>
+        </div>
       </div>
-      <div class="sparkline-wrap">${sparklineSvg(chart, markers)}</div>
-      <div class="sparkline-meta">
-        <span>${escapeHtml(chart.dates?.[0] || "")}</span>
-        <span>${chart.event_date ? `Event ${escapeHtml(chart.event_date)}` : escapeHtml(chart.ticker || "")}</span>
-        <span>${escapeHtml(chart.latest_date || "")}</span>
+      <div class="sparkline-wrap">${sparklineSvg(chart, plottedMarkers)}</div>
+      <div class="market-chart-bottom">
+        <div class="market-chart-legend">
+          ${hasMatchMarkers ? `
+            <span><i class="legend-dot positive"></i>Win</span>
+            <span><i class="legend-dot negative"></i>Loss</span>
+            <span><i class="legend-dot neutral"></i>Draw/neutral</span>
+          ` : `<span><i class="legend-dot news"></i>News date</span>`}
+          ${groupedMarkers.length > plottedMarkers.length ? `<span>${groupedMarkers.length - plottedMarkers.length} older marker${groupedMarkers.length - plottedMarkers.length === 1 ? "" : "s"} hidden</span>` : ""}
+        </div>
+        <span>${chart.event_date ? `Event ${escapeHtml(chart.event_date)}` : "Indexed to 100"}</span>
       </div>
     </div>
   `;
@@ -1448,6 +1782,115 @@ function probabilityCard(label, value, barClass) {
   `;
 }
 
+function memoMetric(label, value) {
+  const clean = value === "" || value === undefined || value === null ? "-" : value;
+  return `- ${label}: ${clean}`;
+}
+
+function buildResearchMemo(row) {
+  const player = row.player || "-";
+  const club = row.target_club || row.club || "-";
+  const ticker = row.target_ticker || "no public ticker";
+  const scope = row.prediction_scope === "direct"
+    ? "Direct listed-club target"
+    : "Transfer intelligence only; no direct listed-club target";
+  const chart = row.stock_chart || {};
+  const similar = row.similar_examples || [];
+  const confirmed = row.confirmed_transfer_links || [];
+  const evidence = row.evidence_articles || [];
+  const headline = row.primary_headline || row.signal_summary || "No primary headline attached.";
+  const nextWatch = [
+    "Look for a second credible outlet or official club disclosure.",
+    "Check whether match results, ownership news, earnings, or broader markets could dominate the stock move.",
+    "Re-run agent-autopilot after fresh articles arrive.",
+    "Treat model output as research triage, not a trading instruction.",
+  ];
+  const lines = [
+    "# Transfer-Stock Research Memo",
+    "",
+    `Subject: ${player} -> ${club}`,
+    `Generated from dashboard payload: ${fmtDate(state.payload?.generated_at)}`,
+    "",
+    "## Bottom Line",
+    row.signal_summary || `${player} is the selected rumor signal for ${club}.`,
+    "",
+    "## Signal Snapshot",
+    memoMetric("Scope", scope),
+    memoMetric("Deal path", row.deal_path || row.target_role || "-"),
+    memoMetric("Rumor stage", row.latest_rumor_stage || row.rumor_stage || "-"),
+    memoMetric("Consensus", `${row.consensus_label || "-"} (${fmtNumber(row.consensus_score, 2)})`),
+    memoMetric("Credibility", fmtNumber(row.credibility_score, 3)),
+    memoMetric("Transfer indicator", fmtNumber(row.transfer_indicator, 3)),
+    memoMetric("Model label", `${displayModelLabel(row)} (${fmtPct(row.prediction_confidence, 0)} confidence)`),
+    memoMetric("Blended label", `${displayBlendLabel(row)} (${fmtNumber(row.blended_score, 1)})`),
+    "",
+    "## Evidence Stack",
+    memoMetric("Primary headline", headline),
+    memoMetric("Sources", `${row.source_count || evidence.length || 0}`),
+    memoMetric("Articles", `${row.article_count || evidence.length || 0}`),
+    memoMetric("Latest source", row.latest_source || row.source || "-"),
+    memoMetric("Latest journalist", row.latest_journalist || row.journalist || "-"),
+    memoMetric("Confidence reason", row.confidence_reason || "-"),
+    "",
+    "## Market Context",
+    memoMetric("Ticker", ticker),
+    memoMetric("Event date", chart.event_date || row.latest_published_at || "-"),
+    memoMetric("Latest stock window date", chart.latest_date || "-"),
+    memoMetric("Window change", fmtSignedPct(chart.latest_change, 1)),
+    memoMetric("Prediction scope", row.prediction_scope || "-"),
+    "",
+    "## Similar / Confirmed Context",
+  ];
+  if (similar.length) {
+    similar.slice(0, 3).forEach((item, index) => {
+      lines.push(`${index + 1}. ${item.player || "-"} / ${item.club || "-"} -> ${item.actual_label || "unlabeled"}; CAR t+3 ${fmtNumber(item.target_abnormal_return_p3, 4)}`);
+    });
+  } else if (row.top_similar_example?.player) {
+    const item = row.top_similar_example;
+    lines.push(`1. ${item.player || "-"} / ${item.club || "-"} -> ${item.actual_label || "unlabeled"}; CAR t+3 ${fmtNumber(item.target_abnormal_return_p3, 4)}`);
+  } else {
+    lines.push("- No similar historical examples are attached to this row.");
+  }
+  if (confirmed.length) {
+    lines.push("", "Confirmed-transfer links:");
+    confirmed.slice(0, 3).forEach((item, index) => {
+      lines.push(`${index + 1}. ${item.date || "-"}: ${item.seller_club || "-"} -> ${item.buyer_club || "-"}; match ${fmtNumber(item.match_score, 2)}; actual ${item.actual_label || "-"}`);
+    });
+  }
+  lines.push(
+    "",
+    "## Risk / Caveat",
+    focusRiskText(row),
+    "",
+    "## Next Watch Checklist",
+    ...nextWatch.map((item) => `- ${item}`),
+    "",
+    "This memo is deterministic research context generated from local project data. It is not investment advice.",
+  );
+  return lines.join("\n");
+}
+
+function researchMemoMarkup(row) {
+  const memo = buildResearchMemo(row);
+  const encoded = encodeURIComponent(memo);
+  const title = `${row.player || "signal"} research memo`;
+  return `
+    <div class="detail-card research-memo-card">
+      <div class="section-head">
+        <div>
+          <h3>Research Memo</h3>
+          <span class="section-meta">One-click digest for notes, demo, or follow-up research.</span>
+        </div>
+        <div class="memo-actions">
+          <button type="button" data-copy-memo="${encoded}">Copy</button>
+          <button type="button" data-download-memo="${encoded}" data-memo-title="${escapeHtml(title)}">Download</button>
+        </div>
+      </div>
+      <pre class="research-memo-preview"><code>${escapeHtml(memo)}</code></pre>
+    </div>
+  `;
+}
+
 function renderTransferDetail(row) {
   const pane = document.getElementById("detailPane");
   pane.innerHTML = `
@@ -1595,6 +2038,8 @@ function renderRumorDetail(row) {
         <p class="detail-note">${signalActionText(row)}</p>
         <p class="detail-note">${escapeHtml(row.signal_summary || "")}</p>
       </div>
+
+      ${researchMemoMarkup(row)}
 
       <div class="detail-grid">
         <div class="detail-card">
@@ -1907,6 +2352,248 @@ function renderTakeaways() {
   `).join("");
 }
 
+function renderHeroObservatory() {
+  const container = document.getElementById("heroSignalVisual");
+  const freshness = document.getElementById("heroFreshness");
+  if (!container || !state.payload) return;
+  const row = topFocusSignal();
+  const meta = state.payload.live_watchlist_meta || {};
+  if (freshness) {
+    freshness.textContent = meta.latest_published_at
+      ? `${meta.is_stale ? "Archive window" : "Live window"} · ${fmtDate(meta.latest_published_at)}`
+      : "No live window";
+  }
+  if (!row) {
+    container.innerHTML = `
+      <div class="observatory-empty">
+        <span class="metric-label">Evidence trajectory</span>
+        <strong>No current signal loaded</strong>
+        <span>Run today's research cycle to assemble the field.</span>
+      </div>
+    `;
+    return;
+  }
+  const credibility = clampNumber(Number(row.credibility_score || 0), 0, 1);
+  const confidence = clampNumber(Number(row.prediction_confidence || 0), 0, 1);
+  const sources = Math.min(Number(row.source_count || 1), 5) / 5;
+  const blend = clampNumber(Math.abs(Number(row.blended_score || 0)) / 100, 0.08, 1);
+  const bars = [
+    Math.max(18, credibility * 88),
+    Math.max(14, sources * 74),
+    Math.max(20, confidence * 94),
+    Math.max(16, blend * 82),
+    Math.max(24, ((credibility + confidence + sources) / 3) * 100),
+    Math.max(15, ((credibility + blend) / 2) * 86),
+    Math.max(22, ((confidence + sources) / 2) * 96),
+  ];
+  const targetClub = row.target_club || row.club || "-";
+  const scope = row.prediction_scope === "direct" ? "Listed-club exposure" : "Transfer intelligence only";
+  container.innerHTML = `
+    <div class="observatory-trajectory" aria-hidden="true">
+      <span class="trajectory-axis"></span>
+      ${bars.map((height, index) => `<i style="--trajectory-height:${height.toFixed(0)}%; --trajectory-delay:${index * 55}ms"></i>`).join("")}
+      <span class="trajectory-signal" style="--trajectory-position:${Math.max(10, Math.min(88, credibility * 92))}%"></span>
+    </div>
+    <div class="observatory-signal-copy">
+      <span class="metric-label">${escapeHtml(scope)}</span>
+      <h2>${escapeHtml(row.player || "-")}</h2>
+      <div class="observatory-club">${clubChip(targetClub)}</div>
+      <p>${escapeHtml(row.signal_summary || row.primary_headline || "Top current evidence cluster.")}</p>
+    </div>
+    <div class="observatory-score-row">
+      <span><small>Credibility</small><strong>${fmtPct(credibility, 0)}</strong></span>
+      <span><small>Consensus</small><strong>${row.source_count || 1}</strong></span>
+      <span><small>Confidence</small><strong>${fmtPct(confidence, 0)}</strong></span>
+    </div>
+  `;
+}
+
+function topFocusSignal() {
+  const rows = state.payload.live_watchlist || [];
+  if (!rows.length) return null;
+  return rows.slice().sort((a, b) => {
+    const aScore = Math.abs(Number(a.blended_score || 0)) + Number(a.credibility_score || 0) + Number(a.prediction_confidence || 0);
+    const bScore = Math.abs(Number(b.blended_score || 0)) + Number(b.credibility_score || 0) + Number(b.prediction_confidence || 0);
+    return bScore - aScore;
+  })[0];
+}
+
+function focusRiskText(row) {
+  if (!row) return "No live signal is loaded yet, so the useful next move is refreshing live news and rebuilding the dashboard.";
+  if (row.prediction_scope !== "direct") {
+    return "This maps to transfer intelligence, not a direct public equity target. Do not invent a stock impact where no listed-club ticker is attached.";
+  }
+  if ((state.dataQuality || {}).overall_status === "needs_refresh") {
+    return "Data quality says the board needs refresh, so treat the current read as stale until live news and market context are rebuilt.";
+  }
+  if (Number(row.source_count || 0) <= 1) {
+    return "The source mix is thin. A second credible outlet or official confirmation would materially improve confidence.";
+  }
+  return "Even credible football rumors can be overwhelmed by match results, ownership news, liquidity, earnings, or broader markets.";
+}
+
+function focusTrustLabel(row) {
+  if (!row) return "Needs data";
+  const tier = row.confidence_tier || "";
+  if (tier === "broad_consensus") return "High consensus";
+  if (tier === "strong") return "Strong but monitor";
+  if (tier === "developing") return "Developing";
+  return "Thin evidence";
+}
+
+function daysSince(value, referenceValue = null) {
+  if (!value) return null;
+  const date = new Date(value);
+  const reference = referenceValue ? new Date(referenceValue) : new Date();
+  if (Number.isNaN(date.getTime()) || Number.isNaN(reference.getTime())) return null;
+  return Math.max(0, (reference.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+}
+
+function triageRead(row) {
+  const quality = state.dataQuality || {};
+  const credibility = Number(row.credibility_score || 0);
+  const confidence = Number(row.prediction_confidence || 0);
+  const sourceCount = Number(row.source_count || 0);
+  const blend = Math.abs(Number(row.blended_score || 0));
+  const stage = String(row.latest_rumor_stage || row.rumor_stage || "").toLowerCase();
+  const direct = row.prediction_scope === "direct";
+  const generatedAt = state.payload?.generated_at || null;
+  const ageDays = daysSince(row.latest_published_at || row.published_at, generatedAt);
+  const stageBoosts = {
+    official: 0.2,
+    medical: 0.18,
+    agreed: 0.16,
+    advanced: 0.13,
+    bid: 0.1,
+    talks: 0.07,
+    linked: 0.03,
+  };
+  const recencyScore = ageDays === null ? 0.35 : clampNumber(1 - (ageDays / 10), 0, 1);
+  const evidenceScore = clampNumber((credibility * 0.42) + (confidence * 0.24) + (Math.min(sourceCount, 4) / 4 * 0.2) + (stageBoosts[stage] || 0.04), 0, 1);
+  const marketScore = direct ? clampNumber((blend / 70 * 0.66) + (confidence * 0.34), 0, 1) : 0;
+  const readiness = clampNumber((evidenceScore * 0.48) + (marketScore * 0.32) + (recencyScore * 0.2), 0, 1);
+
+  if (!direct) {
+    return {
+      label: "Intel only",
+      className: "triage-intel",
+      score: clampNumber((evidenceScore * 0.7) + (recencyScore * 0.3), 0, 1),
+      action: "Track credibility",
+      reason: "No listed-club equity target is mapped, so the useful output is source and transfer intelligence.",
+    };
+  }
+  if (quality.available && quality.overall_status === "needs_refresh") {
+    return {
+      label: "Refresh first",
+      className: "triage-refresh",
+      score: readiness,
+      action: "Audit data",
+      reason: "The signal maps to a public club, but the latest data-quality audit says the board needs a refresh.",
+    };
+  }
+  if (readiness >= 0.68 && sourceCount >= 2) {
+    return {
+      label: "Monitor",
+      className: "triage-monitor",
+      score: readiness,
+      action: "Open signal",
+      reason: "Direct public-club target with comparatively strong evidence, source breadth, and model confidence.",
+    };
+  }
+  if (readiness >= 0.48 || sourceCount >= 2 || credibility >= 0.55) {
+    return {
+      label: "Verify",
+      className: "triage-verify",
+      score: readiness,
+      action: "Check sources",
+      reason: "Potentially relevant, but it needs better source mix, clearer stage, or a cleaner market link.",
+    };
+  }
+  return {
+    label: "Low priority",
+    className: "triage-low",
+    score: readiness,
+    action: "Keep in queue",
+    reason: "Evidence is thin relative to the rest of the watchlist.",
+  };
+}
+
+function triageRows(limit = 4) {
+  return (state.payload.live_watchlist || [])
+    .map((row) => ({ row, triage: triageRead(row) }))
+    .sort((a, b) => Number(b.triage.score || 0) - Number(a.triage.score || 0))
+    .slice(0, limit);
+}
+
+function renderFocusBrief() {
+  const container = document.getElementById("focusBrief");
+  if (!container || !state.payload) return;
+  const row = topFocusSignal();
+  const quality = state.dataQuality || {};
+  const agent = state.agent || {};
+  const autopilot = state.autopilot || {};
+  if (!row) {
+    container.innerHTML = `
+      <div class="focus-brief empty">
+        <div>
+          <span class="metric-label">Focus Brief</span>
+          <h3>No live signal loaded yet</h3>
+          <p>Run the refresh workflow, then this panel will compress the board into a first-read path.</p>
+        </div>
+        <button type="button" data-jump="dataQualitySection">Check refresh commands</button>
+      </div>
+    `;
+    return;
+  }
+  const targetClub = row.target_club || row.club || "-";
+  const groupKey = row.group_key || "";
+  const impact = row.prediction_scope === "direct"
+    ? `${escapeHtml(displayBlendLabel(row))} / ${escapeHtml(row.predicted_label || "-")}`
+    : "intel only";
+  const agentCitations = (agent.evidence_citations || []).length;
+  const autopilotGoal = (autopilot.selected_goal || {}).goal || "";
+  container.innerHTML = `
+    <div class="focus-brief">
+      <div class="focus-brief-main">
+        <span class="metric-label">Start Here</span>
+        <h3>${escapeHtml(row.player || "-")} -> ${escapeHtml(targetClub)}</h3>
+        <p>${escapeHtml(row.signal_summary || row.primary_headline || "This is the strongest current item by credibility, model confidence, and signal magnitude.")}</p>
+        <div class="focus-action-row">
+          <button type="button" data-select-signal="${escapeHtml(groupKey)}">Open signal</button>
+          <button type="button" data-jump="agentRunSection">View RAG lens</button>
+          <button type="button" data-jump="signalCardsSection">Compare live cards</button>
+        </div>
+      </div>
+      <div class="focus-brief-grid">
+        <div class="focus-mini-card">
+          <span class="metric-label">Trust</span>
+          <strong>${escapeHtml(focusTrustLabel(row))}</strong>
+          <span>${row.source_count || 1} source${Number(row.source_count || 1) === 1 ? "" : "s"} · cred ${fmtNumber(row.credibility_score, 2)}</span>
+        </div>
+        <div class="focus-mini-card">
+          <span class="metric-label">Market Read</span>
+          <strong>${impact}</strong>
+          <span>${escapeHtml(row.target_ticker || "no public ticker")} · confidence ${fmtPct(row.prediction_confidence, 0)}</span>
+        </div>
+        <div class="focus-mini-card">
+          <span class="metric-label">Evidence</span>
+          <strong>${agentCitations || "-"} citations</strong>
+          <span>${escapeHtml((agent.rag_lens || {}).retriever || "hybrid RAG")} · quality ${quality.overall_score !== undefined ? fmtPct(quality.overall_score, 0) : "-"}</span>
+        </div>
+        <div class="focus-mini-card">
+          <span class="metric-label">Autopilot</span>
+          <strong>${autopilot.available ? "Ready" : "Not run"}</strong>
+          <span>${escapeHtml(autopilotGoal || "Run agent-autopilot for a compressed update")}</span>
+        </div>
+      </div>
+      <div class="focus-caution">
+        <span class="metric-label">Do Not Over-Read</span>
+        <p>${escapeHtml(focusRiskText(row))}</p>
+      </div>
+    </div>
+  `;
+}
+
 function renderMarketCockpit() {
   const container = document.getElementById("marketCockpit");
   if (!container || !state.payload) return;
@@ -1923,6 +2610,14 @@ function renderMarketCockpit() {
     : "No live window loaded";
   const warnings = quality.available ? (quality.warnings || []) : [];
   const topGroupKey = top.group_key || "";
+  const triage = triageRows(4);
+  const operator = state.operator || {};
+  const operatorRuntime = state.operatorRuntime || {};
+  const operatorStatus = operatorRuntime.status && operatorRuntime.status !== "idle"
+    ? operatorRuntime.status
+    : (operator.status || "not run");
+  const operatorRunning = operatorStatus === "running";
+  const operatorSummary = operatorRuntime.error || operator.summary || "One research cycle turns the full pipeline into a current evidence-backed brief.";
   container.innerHTML = `
     <div class="cockpit-shell">
       <div class="cockpit-main">
@@ -1940,8 +2635,15 @@ function renderMarketCockpit() {
         <p class="cockpit-summary">${escapeHtml(top.signal_summary || top.primary_headline || "The cockpit summarizes the latest direct-target rumor, data freshness, and audit warnings from local payload files.")}</p>
         <div class="cockpit-actions">
           ${topGroupKey ? `<button type="button" data-select-signal="${escapeHtml(topGroupKey)}">Inspect signal</button>` : ""}
+          <button type="button" class="operator-run-button" data-run-research-cycle ${operatorRunning ? "disabled" : ""}>${operatorRunning ? "Research cycle running" : "Run today's cycle"}</button>
+          <button type="button" data-jump="runbookSection">Choose runbook</button>
           <button type="button" data-jump="askAnalystSection">Ask analyst</button>
           <button type="button" data-jump="dataQualitySection">Audit details</button>
+        </div>
+        <div class="operator-status-line ${operatorRunning ? "is-running" : ""}">
+          <span class="status-dot ${operatorStatus === "failed" ? "status-warn" : "status-good"}"></span>
+          <strong>${escapeHtml(String(operatorStatus).replaceAll("_", " "))}</strong>
+          <span>${escapeHtml(operatorSummary)}</span>
         </div>
       </div>
       <div class="cockpit-side">
@@ -1966,8 +2668,401 @@ function renderMarketCockpit() {
           <span class="detail-meta">${escapeHtml(warnings[0] || "No audit warning loaded")}</span>
         </div>
       </div>
+      <div class="cockpit-triage">
+        <div class="cockpit-triage-head">
+          <div>
+            <span class="metric-label">Signal Triage Deck</span>
+            <strong>What deserves attention first</strong>
+          </div>
+          <span class="detail-meta">Ranked by evidence, recency, direct public-club mapping, and model confidence.</span>
+        </div>
+        <div class="triage-card-grid">
+          ${triage.length ? triage.map(({ row, triage: read }) => `
+            <button type="button" class="triage-card ${escapeHtml(read.className)}" data-select-signal="${escapeHtml(row.group_key || "")}">
+              <span class="triage-card-top">
+                <span class="pill">${escapeHtml(read.label)}</span>
+                <span class="triage-score">${fmtPct(read.score, 0)}</span>
+              </span>
+              <strong>${escapeHtml(row.player || "-")}</strong>
+              <span class="detail-meta">${escapeHtml(row.target_club || row.club || "-")} · ${escapeHtml(row.target_role || row.deal_path || "rumor")} · ${fmtDate(row.latest_published_at)}</span>
+              <span class="triage-meter"><i style="width:${clampNumber(read.score, 0, 1) * 100}%"></i></span>
+              <span class="detail-note">${escapeHtml(read.reason)}</span>
+              <span class="triage-action">${escapeHtml(read.action)}</span>
+            </button>
+          `).join("") : `
+            <div class="triage-empty">
+              <strong>No triage rows yet</strong>
+              <span class="detail-meta">Run a live refresh and rebuild the dashboard to populate this queue.</span>
+            </div>
+          `}
+        </div>
+      </div>
     </div>
   `;
+}
+
+function renderRunbooks() {
+  const container = document.getElementById("researchRunbooks");
+  if (!container) return;
+  const payload = state.runbooks || {};
+  const runbooks = payload.runbooks || [];
+  const runtime = state.operatorRuntime || {};
+  const running = runtime.status === "running";
+  if (!runbooks.length) {
+    container.innerHTML = `
+      <div class="runbook-empty">
+        <div>
+          <strong>No runbooks snapshot loaded</strong>
+          <span class="detail-meta">Publish the static runbook contract, then refresh the dashboard.</span>
+        </div>
+        <code>PYTHONPATH=src python3 -m transfer_stock.cli list-runbooks --publish</code>
+      </div>
+    `;
+    return;
+  }
+  container.innerHTML = `
+    <div class="runbook-shell">
+      <div class="runbook-intro">
+        <div>
+          <span class="metric-label">Workflow Gallery</span>
+          <strong>${runbooks.length} research runbooks</strong>
+          <p>${escapeHtml(payload.purpose || "Choose a workflow instead of memorizing CLI commands.")}</p>
+        </div>
+        <div class="operator-status-line ${running ? "is-running" : ""}">
+          <span class="status-dot ${runtime.status === "failed" ? "status-warn" : "status-good"}"></span>
+          <strong>${escapeHtml(String(runtime.status || "ready").replaceAll("_", " "))}</strong>
+          <span>${escapeHtml(runtime.runbook_id ? `Running ${runtime.runbook_id}` : "Local API can execute supported runbooks.")}</span>
+        </div>
+      </div>
+      <div class="runbook-grid">
+        ${runbooks.map((runbook) => {
+          const command = runbook.command || "";
+          const canRun = runbook.api_supported && !running;
+          return `
+            <article class="runbook-card">
+              <div class="runbook-card-top">
+                <span class="pill pill-info">${escapeHtml(runbook.automation === "operator" ? "Runnable" : "CLI")}</span>
+                <span class="detail-meta">${escapeHtml(runbook.estimated_time || "-")}</span>
+              </div>
+              <h3>${escapeHtml(runbook.title || runbook.id || "Runbook")}</h3>
+              <p>${escapeHtml(runbook.tagline || "")}</p>
+              <div class="runbook-meta-list">
+                <span><strong>Best for</strong>${escapeHtml(runbook.best_for || "-")}</span>
+                <span><strong>Pattern</strong>${escapeHtml(runbook.github_pattern || "-")}</span>
+                <span><strong>Guardrail</strong>${escapeHtml(runbook.guardrail || "-")}</span>
+              </div>
+              <div class="runbook-output-list">
+                ${(runbook.outputs || []).slice(0, 3).map((item) => `<code>${escapeHtml(item)}</code>`).join("")}
+              </div>
+              <div class="runbook-actions">
+                ${runbook.api_supported ? `<button type="button" class="operator-run-button" data-run-runbook="${escapeHtml(runbook.id)}" ${canRun ? "" : "disabled"}>${running ? "Running" : "Run"}</button>` : ""}
+                <button type="button" data-copy-memo="${encodeURIComponent(command)}">Copy command</button>
+              </div>
+            </article>
+          `;
+        }).join("")}
+      </div>
+      <p class="detail-note">${escapeHtml((payload.notes || [])[1] || "Static pages show commands; local FastAPI can run supported workflows.")}</p>
+    </div>
+  `;
+}
+
+function renderAgentAccess() {
+  const panel = document.getElementById("agentAccessPanel");
+  if (!panel) return;
+  const manifest = state.agentManifest || {};
+  const endpoint = manifest.endpoints?.ask || "/nlweb/ask";
+  const staticManifest = manifest.endpoints?.static_manifest || "/.well-known/transfer-stock-agent.json";
+  const example = (manifest.example_questions || [])[0] || "What changed today?";
+  const curl = `curl -X POST http://127.0.0.1:8011${endpoint} -H "Content-Type: application/json" -d '{"question":"${example.replaceAll("'", "\\'")}"}'`;
+  if (!manifest.name) {
+    panel.innerHTML = `
+      <div class="agent-access-empty">
+        <div>
+          <strong>Agent manifest not published</strong>
+          <span class="detail-meta">Generate the NLWeb-style contract, then refresh the dashboard.</span>
+        </div>
+        <code>PYTHONPATH=src python3 -m transfer_stock.cli publish-agent-manifest</code>
+      </div>
+    `;
+    return;
+  }
+  panel.innerHTML = `
+    <div class="agent-access-shell">
+      <div class="agent-access-hero">
+        <div>
+          <span class="metric-label">AI-Readable Website</span>
+          <h3>${escapeHtml(manifest.name)}</h3>
+          <p>${escapeHtml(manifest.description || "")}</p>
+        </div>
+        <span class="pill pill-info">NLWeb-style</span>
+      </div>
+      <div class="agent-access-grid">
+        <div class="agent-access-card">
+          <span class="metric-label">Ask Endpoint</span>
+          <code>${escapeHtml(endpoint)}</code>
+          <p>External agents can POST a natural-language question and receive grounded JSON.</p>
+        </div>
+        <div class="agent-access-card">
+          <span class="metric-label">Static Manifest</span>
+          <code>${escapeHtml(staticManifest)}</code>
+          <p>GitHub Pages can advertise the contract even without running the backend.</p>
+        </div>
+        <div class="agent-access-card">
+          <span class="metric-label">Safety</span>
+          <strong>${manifest.safety?.trading_advice === false ? "Research only" : "Check manifest"}</strong>
+          <p>${escapeHtml((manifest.safety?.notes || [])[0] || "Outputs should show uncertainty and source paths.")}</p>
+        </div>
+      </div>
+      <div class="agent-access-examples">
+        ${(manifest.example_questions || []).slice(0, 5).map((question) => `
+          <button type="button" data-agent-question="${escapeHtml(question)}">${escapeHtml(question)}</button>
+        `).join("")}
+      </div>
+      <div class="agent-access-command">
+        <code>${escapeHtml(curl)}</code>
+        <button type="button" data-copy-memo="${encodeURIComponent(curl)}">Copy curl</button>
+      </div>
+    </div>
+  `;
+}
+
+function graphNodeColumns(nodes) {
+  const columns = {
+    reporter: [],
+    source: [],
+    player: [],
+    club: [],
+    stage: [],
+    market: [],
+  };
+  (nodes || []).forEach((node) => {
+    if (!columns[node.type]) return;
+    columns[node.type].push(node);
+  });
+  Object.keys(columns).forEach((key) => {
+    columns[key] = columns[key]
+      .sort((a, b) => Number(b.weight || 0) - Number(a.weight || 0) || Number(b.score || 0) - Number(a.score || 0))
+      .slice(0, key === "player" || key === "club" ? 5 : 4);
+  });
+  return columns;
+}
+
+function rumorGraphPositions(columns, width, height) {
+  const order = ["reporter", "source", "player", "club", "stage", "market"];
+  const positions = new Map();
+  order.forEach((type, colIndex) => {
+    const nodes = columns[type] || [];
+    const x = 74 + colIndex * ((width - 148) / Math.max(order.length - 1, 1));
+    const gap = height / Math.max(nodes.length + 1, 2);
+    nodes.forEach((node, index) => {
+      positions.set(node.id, {
+        ...node,
+        x: Math.round(x),
+        y: Math.round(gap * (index + 1)),
+      });
+    });
+  });
+  return positions;
+}
+
+function rumorGraphNodeMarkup(node) {
+  const isClub = node.type === "club";
+  const width = node.type === "source" ? 135 : 128;
+  const height = 38;
+  const x = node.x - width / 2;
+  const y = node.y - height / 2;
+  const action = isClub ? `data-club-route="${escapeHtml(node.label)}"` : "";
+  return `
+    <g class="rumor-graph-node rumor-graph-node-${escapeHtml(node.type)}" ${action} tabindex="${isClub ? "0" : "-1"}" role="${isClub ? "button" : "img"}">
+      <rect x="${x}" y="${y}" width="${width}" height="${height}" rx="8"></rect>
+      <text x="${node.x}" y="${node.y - 3}" text-anchor="middle">${escapeHtml(node.label || "-").slice(0, 18)}</text>
+      <text class="rumor-graph-node-sub" x="${node.x}" y="${node.y + 11}" text-anchor="middle">${node.weight || 0} · ${fmtNumber(node.score, 2)}</text>
+    </g>
+  `;
+}
+
+function rumorGraphEdgeMarkup(edge, positions) {
+  const from = positions.get(edge.source);
+  const to = positions.get(edge.target);
+  if (!from || !to) return "";
+  const strokeWidth = Math.max(1.1, Math.min(6, 1 + Number(edge.weight || 1) * 0.45));
+  const opacity = Math.max(0.18, Math.min(0.76, Number(edge.score || 0.4)));
+  const controlA = from.x + (to.x - from.x) * 0.45;
+  const controlB = from.x + (to.x - from.x) * 0.55;
+  return `
+    <path class="rumor-graph-edge" d="M ${from.x} ${from.y} C ${controlA} ${from.y}, ${controlB} ${to.y}, ${to.x} ${to.y}" stroke-width="${strokeWidth}" opacity="${opacity}">
+      <title>${escapeHtml(edge.type || "edge")} · ${escapeHtml(edge.first_seen || "")} to ${escapeHtml(edge.last_seen || "")}</title>
+    </path>
+  `;
+}
+
+function renderRumorGraph() {
+  const panel = document.getElementById("rumorGraphPanel");
+  if (!panel) return;
+  const graph = state.rumorGraph || {};
+  if (!graph.nodes?.length) {
+    panel.innerHTML = `
+      <div class="rumor-graph-empty">
+        <div>
+          <strong>No rumor graph built yet</strong>
+          <span class="detail-meta">Build the temporal evidence graph, then refresh the dashboard.</span>
+        </div>
+        <code>PYTHONPATH=src python3 -m transfer_stock.cli build-rumor-graph</code>
+      </div>
+    `;
+    return;
+  }
+  const columns = graphNodeColumns(graph.nodes);
+  const width = 980;
+  const height = 390;
+  const positions = rumorGraphPositions(columns, width, height);
+  const visibleIds = new Set(Array.from(positions.keys()));
+  const visibleEdges = (graph.edges || [])
+    .filter((edge) => visibleIds.has(edge.source) && visibleIds.has(edge.target))
+    .slice(0, 80);
+  const columnLabels = [
+    ["Reporters", 74],
+    ["Sources", 74 + ((width - 148) / 5)],
+    ["Players", 74 + ((width - 148) / 5) * 2],
+    ["Clubs", 74 + ((width - 148) / 5) * 3],
+    ["Stages", 74 + ((width - 148) / 5) * 4],
+    ["Market", width - 74],
+  ];
+  const timelines = graph.timelines || [];
+  const summary = graph.summary || {};
+  panel.innerHTML = `
+    <div class="rumor-graph-shell">
+      <div class="rumor-graph-hero">
+        <div>
+          <span class="metric-label">Temporal Knowledge Graph</span>
+          <h3>${summary.timeline_count || 0} evolving rumor path${Number(summary.timeline_count || 0) === 1 ? "" : "s"}</h3>
+          <p>${escapeHtml(graph.inspired_by?.idea || "Track changing relationships across transfer evidence.")}</p>
+        </div>
+        <div class="headline-row">
+          <span class="pill pill-info">${summary.node_count || 0} nodes</span>
+          <span class="pill pill-neutral">${summary.edge_count || 0} edges</span>
+        </div>
+      </div>
+      <div class="rumor-graph-metrics">
+        <div class="cockpit-metric"><span class="metric-label">Top Club</span><strong>${escapeHtml(summary.top_clubs?.[0]?.club || "-")}</strong><span class="detail-meta">${summary.top_clubs?.[0]?.count || 0} links</span></div>
+        <div class="cockpit-metric"><span class="metric-label">Top Source</span><strong>${escapeHtml(summary.top_sources?.[0]?.source || "-")}</strong><span class="detail-meta">${summary.top_sources?.[0]?.count || 0} links</span></div>
+        <div class="cockpit-metric"><span class="metric-label">Main Stage</span><strong>${escapeHtml(summary.stage_mix?.[0]?.stage || "-")}</strong><span class="detail-meta">${summary.stage_mix?.[0]?.count || 0} rows</span></div>
+      </div>
+      <div class="rumor-graph-wrap">
+        <svg class="rumor-graph-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="Temporal rumor graph">
+          ${columnLabels.map(([label, x]) => `<text class="trust-column-label" x="${x}" y="20" text-anchor="middle">${label}</text>`).join("")}
+          ${visibleEdges.map((edge) => rumorGraphEdgeMarkup(edge, positions)).join("")}
+          ${Array.from(positions.values()).map(rumorGraphNodeMarkup).join("")}
+        </svg>
+      </div>
+      <div class="rumor-timeline-grid">
+        ${timelines.slice(0, 4).map((item) => `
+          <article class="rumor-timeline-card">
+            <div class="headline-row">
+              <strong>${escapeHtml(item.player || "-")}</strong>
+              <span class="pill pill-neutral">${escapeHtml(item.latest_stage || "-")}</span>
+            </div>
+            <span class="detail-meta">${clubChip(item.club || "")} · ${escapeHtml(item.first_seen || "-")} → ${escapeHtml(item.last_seen || "-")} · ${item.event_count || 0} events</span>
+            <div class="rumor-timeline-events">
+              ${(item.events || []).slice(-4).map((event) => `
+                <span><b>${escapeHtml(event.date || "-")}</b>${escapeHtml(event.stage || "-")} · ${escapeHtml(event.source || "-")}</span>
+              `).join("")}
+            </div>
+          </article>
+        `).join("")}
+      </div>
+      <p class="detail-note">${escapeHtml((graph.warnings || [])[0] || "This graph shows evidence relationships, not causal proof.")}</p>
+    </div>
+  `;
+}
+
+async function reloadResearchSnapshots() {
+  const response = await fetch("./data/dashboard_data.json", { cache: "no-store" });
+  if (response.ok) state.payload = await response.json();
+  state.agent = await loadAgentSnapshot();
+  state.ragAudit = await loadRagAuditSnapshot();
+  state.autopilot = await loadAutopilotSnapshot();
+  state.operator = await loadOperatorSnapshot();
+  state.runbooks = await loadRunbookSnapshot();
+  state.agentManifest = await loadAgentManifest();
+  state.rumorGraph = await loadRumorGraph();
+  state.dataQuality = await loadDataQualitySnapshot();
+  renderAll();
+}
+
+async function pollResearchCycle() {
+  try {
+    const response = await fetch("/operator/status", { cache: "no-store" });
+    if (!response.ok) throw new Error("Operator API unavailable");
+    state.operatorRuntime = await response.json();
+    if (state.operatorRuntime.latest?.available) state.operator = state.operatorRuntime.latest;
+    renderMarketCockpit();
+    renderRunbooks();
+    if (state.operatorRuntime.status === "running") {
+      window.setTimeout(pollResearchCycle, 1800);
+      return;
+    }
+    await reloadResearchSnapshots();
+  } catch (error) {
+    state.operatorRuntime = {
+      status: "static_mode",
+      error: "On-demand cycle is available from the FastAPI workbench; this static view uses the latest scheduled package.",
+    };
+    renderMarketCockpit();
+    renderRunbooks();
+  }
+}
+
+async function requestResearchCycle() {
+  state.operatorRuntime = { status: "running", mode: "smart", error: "" };
+  renderMarketCockpit();
+  renderRunbooks();
+  try {
+    const response = await fetch("/operator/run", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ mode: "smart", allow_network: true }),
+    });
+    if (!response.ok) {
+      const detail = await response.text();
+      throw new Error(detail || "Research cycle request failed");
+    }
+    state.operatorRuntime = await response.json();
+    window.setTimeout(pollResearchCycle, 900);
+  } catch (error) {
+    state.operatorRuntime = {
+      status: "static_mode",
+      error: "On-demand cycle is available from the FastAPI workbench; this static view uses the latest scheduled package.",
+    };
+    renderMarketCockpit();
+  }
+}
+
+async function requestRunbook(runbookId) {
+  state.operatorRuntime = { status: "running", mode: "runbook", runbook_id: runbookId, error: "" };
+  renderMarketCockpit();
+  renderRunbooks();
+  try {
+    const response = await fetch(`/runbooks/${encodeURIComponent(runbookId)}/run`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
+    if (!response.ok) {
+      const detail = await response.text();
+      throw new Error(detail || "Runbook request failed");
+    }
+    state.operatorRuntime = await response.json();
+    window.setTimeout(pollResearchCycle, 900);
+  } catch (error) {
+    state.operatorRuntime = {
+      status: "static_mode",
+      runbook_id: runbookId,
+      error: "Runbooks execute from the FastAPI workbench. On GitHub Pages, copy the command instead.",
+    };
+    renderMarketCockpit();
+    renderRunbooks();
+  }
 }
 
 function qualityStatusClass(status) {
@@ -2134,6 +3229,118 @@ function renderAskAnalyst() {
   });
 }
 
+function ragMethodLabel(method) {
+  const labels = {
+    lexical: "Lexical",
+    semantic_chargram: "Fuzzy semantic",
+    structured_entity: "Entity match",
+    recency: "Recency",
+  };
+  return labels[method] || String(method || "Method").replaceAll("_", " ");
+}
+
+function ragCitationMarkup(hit, maxScore) {
+  const score = Number(hit.score || 0);
+  const scorePct = clampNumber(maxScore ? score / maxScore : Number(hit.normalized_score || 0), 0, 1) * 100;
+  const breakdown = hit.score_breakdown || {};
+  const components = ["lexical", "semantic_chargram", "structured_entity", "recency"]
+    .map((key) => ({ key, value: Number(breakdown[key] || 0) }))
+    .filter((item) => item.value > 0);
+  const maxComponent = Math.max(...components.map((item) => item.value), 1);
+  return `
+    <a class="rag-citation-card" href="${escapeHtml(hit.url || "#")}" ${hit.url ? 'target="_blank" rel="noreferrer"' : ""}>
+      <div class="rag-citation-head">
+        <span class="pill pill-neutral">${escapeHtml(hit.doc_type || "evidence")}</span>
+        <span class="rag-score">${fmtNumber(hit.normalized_score ?? scorePct / 100, 2)}</span>
+      </div>
+      <strong>${escapeHtml(hit.title || "-")}</strong>
+      <span class="detail-meta">${fmtDate(hit.date)} · ${escapeHtml(hit.source || hit.source_path || "-")}</span>
+      <span class="rag-scorebar"><i style="width:${scorePct.toFixed(0)}%"></i></span>
+      ${components.length ? `
+        <div class="rag-component-grid">
+          ${components.map((item) => `
+            <span class="rag-component">
+              <span>${escapeHtml(ragMethodLabel(item.key))}</span>
+              <i style="width:${clampNumber(item.value / maxComponent, 0, 1) * 100}%"></i>
+            </span>
+          `).join("")}
+        </div>
+      ` : ""}
+    </a>
+  `;
+}
+
+function ragEvidenceLensMarkup(agent) {
+  const lens = agent.rag_lens || {};
+  const citations = agent.evidence_citations || [];
+  if (!lens.mode && !citations.length) return "";
+  const maxScore = Math.max(...citations.map((hit) => Number(hit.score || 0)), 1);
+  const methods = lens.retrieval_methods || [];
+  const docMix = lens.doc_type_mix || [];
+  const sourceMix = lens.source_mix || [];
+  const queryPlan = lens.query_plan || [];
+  const perQuery = lens.per_query || [];
+  return `
+    <details class="detail-card rag-lens-panel collapsible-panel" open>
+      <summary class="section-head">
+        <div>
+          <h3>RAG Evidence Lens</h3>
+          <span class="section-meta">${escapeHtml(lens.retriever || "local_hybrid")} · ${escapeHtml(lens.mode || "agentic retrieval")} · ${lens.total_candidates || citations.length} candidates</span>
+        </div>
+        <span class="pill pill-info">${methods.length || 0} retrieval signals</span>
+      </summary>
+      <div class="rag-lens-grid">
+        <div class="rag-lens-main">
+          <div class="rag-query-strip">
+            ${queryPlan.slice(0, 6).map((item, index) => `
+              <div class="rag-query-chip">
+                <span>${index + 1}</span>
+                <strong>${escapeHtml((item.purpose || "query").replaceAll("_", " "))}</strong>
+                <em>${escapeHtml(item.query || "")}</em>
+              </div>
+            `).join("") || `<p class="detail-note">No query plan was published for this run.</p>`}
+          </div>
+          <div class="rag-citation-grid">
+            ${citations.slice(0, 6).map((hit) => ragCitationMarkup(hit, maxScore)).join("") || `<p class="detail-note">No citations were attached.</p>`}
+          </div>
+        </div>
+        <aside class="rag-lens-side">
+          <div class="rag-mini-card">
+            <span class="metric-label">Retrieval Methods</span>
+            <div class="rag-pill-row">
+              ${methods.map((item) => `<span>${escapeHtml(ragMethodLabel(item.method))} <strong>${item.count}</strong></span>`).join("") || "<span>Not published</span>"}
+            </div>
+          </div>
+          <div class="rag-mini-card">
+            <span class="metric-label">Evidence Mix</span>
+            <div class="rag-mix-list">
+              ${docMix.slice(0, 5).map((item) => `<span><b>${escapeHtml(item.doc_type)}</b><i>${item.count}</i></span>`).join("") || "<span><b>-</b><i>0</i></span>"}
+            </div>
+          </div>
+          <div class="rag-mini-card">
+            <span class="metric-label">Top Sources</span>
+            <div class="rag-mix-list">
+              ${sourceMix.slice(0, 4).map((item) => `<span><b>${escapeHtml(item.source)}</b><i>${item.count}</i></span>`).join("") || "<span><b>-</b><i>0</i></span>"}
+            </div>
+          </div>
+          <div class="rag-mini-card">
+            <span class="metric-label">Subquery Hit Counts</span>
+            <div class="rag-mix-list">
+              ${perQuery.slice(0, 5).map((item) => `<span><b>${escapeHtml((item.purpose || "query").replaceAll("_", " "))}</b><i>${item.count || 0}</i></span>`).join("") || "<span><b>-</b><i>0</i></span>"}
+            </div>
+          </div>
+        </aside>
+      </div>
+      ${(lens.what_would_change_mind || []).length ? `
+        <div class="rag-uncertainty">
+          <span class="metric-label">What Would Change The Read</span>
+          ${(lens.what_would_change_mind || []).slice(0, 4).map((item) => `<p>${escapeHtml(item)}</p>`).join("")}
+        </div>
+      ` : ""}
+    </details>
+  `;
+}
+
 function renderAgentRun() {
   const container = document.getElementById("agentRun");
   const meta = document.getElementById("agentRunMeta");
@@ -2185,6 +3392,8 @@ function renderAgentRun() {
         <p>${escapeHtml(answer.short_answer || "-")}</p>
       </div>
 
+      ${ragEvidenceLensMarkup(agent)}
+
       <div class="agent-grid">
         <div class="detail-card">
           <div class="section-head"><h3>What Changed</h3></div>
@@ -2224,6 +3433,140 @@ function renderAgentRun() {
         </div>
         ${agent.report_href ? `<a class="route-back scenario-report-link" href="${escapeHtml(agent.report_href)}" target="_blank" rel="noreferrer">Open agent_report.md</a>` : ""}
       </details>
+    </div>
+  `;
+}
+
+function renderAutopilot() {
+  const container = document.getElementById("autopilotPanel");
+  const meta = document.getElementById("autopilotMeta");
+  if (!container || !meta) return;
+  const autopilot = state.autopilot;
+  if (!autopilot || !autopilot.available) {
+    meta.textContent = "No autopilot snapshot is published yet.";
+    container.innerHTML = `
+      <div class="scenario-empty">
+        <div>
+          <strong>No autopilot run yet</strong>
+          <p class="detail-note">Run the bounded local operator, then refresh this page.</p>
+        </div>
+        <pre><code>PYTHONPATH=src python3 -m transfer_stock.cli agent-autopilot</code></pre>
+      </div>
+    `;
+    return;
+  }
+  const selected = autopilot.selected_goal || {};
+  const audit = autopilot.audit_summary || {};
+  const agent = autopilot.agent_summary || {};
+  const answer = agent.answer || {};
+  const steps = autopilot.steps || [];
+  const completed = steps.filter((step) => step.status === "completed").length;
+  meta.textContent = `${fmtDate(autopilot.generated_at)} · ${completed}/${steps.length || 0} completed · ${escapeHtml(audit.overall_status || "unknown")}`;
+  container.innerHTML = `
+    <div class="agent-shell autopilot-shell">
+      <div class="scenario-hero agent-hero">
+        <div>
+          <span class="metric-label">Autopilot Selected Goal</span>
+          <h3>${escapeHtml(selected.goal || "-")}</h3>
+          <p class="detail-note">${escapeHtml(selected.reason || "Local agent selected this goal from the latest payload.")}</p>
+        </div>
+        <div class="scenario-verdict">
+          <span class="pill pill-info">${escapeHtml(audit.overall_status || "audit")}</span>
+          <strong>${audit.overall_score !== "" && audit.overall_score !== undefined ? fmtPct(audit.overall_score, 0) : "-"}</strong>
+          <span class="detail-meta">Data quality</span>
+        </div>
+      </div>
+      <div class="scenario-metrics">
+        <div class="metric-card"><span class="metric-label">Steps</span><strong>${completed}/${steps.length || 0}</strong><span class="metric-sub">bounded local run</span></div>
+        <div class="metric-card"><span class="metric-label">Agent Run</span><strong>${escapeHtml(agent.run_id || "-")}</strong><span class="metric-sub">${escapeHtml((answer.intent || "").replaceAll("_", " ") || "not run")}</span></div>
+        <div class="metric-card"><span class="metric-label">Confidence</span><strong>${answer.confidence !== undefined ? fmtPct(answer.confidence, 0) : "-"}</strong></div>
+        <div class="metric-card"><span class="metric-label">Dry Run</span><strong>${autopilot.dry_run ? "Yes" : "No"}</strong></div>
+      </div>
+      ${answer.short_answer ? `
+        <div class="detail-card agent-answer-card">
+          <div class="section-head"><h3>Autopilot Read</h3></div>
+          <p>${escapeHtml(answer.short_answer)}</p>
+        </div>
+      ` : ""}
+      <div class="agent-grid">
+        <div class="detail-card">
+          <div class="section-head"><h3>Execution Trace</h3></div>
+          <div class="autopilot-step-list">
+            ${steps.map((step) => `
+              <div class="autopilot-step ${step.status || "planned"}">
+                <span class="pill ${step.status === "completed" ? "pill-positive" : "pill-neutral"}">${escapeHtml(step.status || "planned")}</span>
+                <strong>${escapeHtml((step.id || "").replaceAll("_", " "))}</strong>
+                <span class="detail-meta">${escapeHtml(step.output || step.time || "-")}</span>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+        <div class="detail-card">
+          <div class="section-head"><h3>Recommended Commands</h3></div>
+          <div class="quality-command-list">
+            ${(autopilot.recommended_commands || []).slice(0, 5).map((command) => `<pre><code>${escapeHtml(command)}</code></pre>`).join("")}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function auditStatusClass(status) {
+  if (status === "strong") return "pill pill-positive";
+  if (status === "usable") return "pill pill-info";
+  if (status === "watch") return "pill pill-warning";
+  return "pill pill-negative";
+}
+
+function renderRagAudit() {
+  const container = document.getElementById("ragAuditPanel");
+  const meta = document.getElementById("ragAuditMeta");
+  if (!container || !meta) return;
+  const audit = state.ragAudit;
+  if (!audit || !audit.available) {
+    meta.textContent = "No RAG trust audit is published yet.";
+    container.innerHTML = `
+      <div class="scenario-empty">
+        <div>
+          <strong>No RAG audit yet</strong>
+          <p class="detail-note">Run the local RAG evaluator after an agent run.</p>
+        </div>
+        <pre><code>PYTHONPATH=src python3 -m transfer_stock.cli audit-rag</code></pre>
+      </div>
+    `;
+    return;
+  }
+  meta.textContent = `${fmtDate(audit.generated_at)} · ${audit.agent_run_id || "latest"} · ${escapeHtml((audit.overall_status || "unknown").replaceAll("_", " "))}`;
+  container.innerHTML = `
+    <div class="rag-audit-shell">
+      <div class="rag-audit-hero">
+        <div>
+          <span class="metric-label">RAG Trust Score</span>
+          <h3>${fmtPct(audit.overall_score, 0)}</h3>
+          <p>${escapeHtml(audit.summary || "Audit summary unavailable.")}</p>
+        </div>
+        <span class="${auditStatusClass(audit.overall_status)}">${escapeHtml((audit.overall_status || "unknown").replaceAll("_", " "))}</span>
+      </div>
+      <div class="rag-audit-grid">
+        ${(audit.dimensions || []).map((item) => `
+          <div class="rag-audit-card">
+            <div class="headline-row">
+              <strong>${escapeHtml(item.name || "-")}</strong>
+              <span class="${auditStatusClass(item.status)}">${escapeHtml((item.status || "").replaceAll("_", " "))}</span>
+            </div>
+            <div class="quality-meter" aria-label="${escapeHtml(item.name || "RAG dimension")} score">
+              <span style="width:${clampNumber(Number(item.score || 0), 0, 1) * 100}%"></span>
+            </div>
+            <span class="detail-meta">${fmtPct(item.score, 0)}</span>
+            ${(item.warnings || []).length ? `<p class="detail-note">${escapeHtml(item.warnings[0])}</p>` : ""}
+          </div>
+        `).join("")}
+      </div>
+      <div class="rag-audit-recommendations">
+        <span class="metric-label">Recommended Fixes</span>
+        ${(audit.recommendations || []).map((item) => `<p>${escapeHtml(item)}</p>`).join("")}
+      </div>
     </div>
   `;
 }
@@ -2891,11 +4234,18 @@ function renderAll() {
   renderClubFilters();
   renderRouteChrome();
   renderOverview();
+  renderHeroObservatory();
   renderMarketCockpit();
+  renderRunbooks();
+  renderFocusBrief();
   renderTakeaways();
   renderDataQuality();
   renderAskAnalyst();
+  renderAgentAccess();
+  renderRumorGraph();
   renderAgentRun();
+  renderRagAudit();
+  renderAutopilot();
   renderScenarioSwarm();
   renderScenarioSimulator();
   renderClubDossier();
@@ -2912,11 +4262,57 @@ function renderAll() {
   renderSeasonHistory();
   renderBacktests();
   renderDataFlow();
+  applySectionCollapseState();
+}
+
+function setupTasteReveals() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const sections = Array.from(document.querySelectorAll(".shell > section"));
+  if (!("IntersectionObserver" in window)) {
+    sections.forEach((section) => section.classList.add("is-visible"));
+    return;
+  }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("is-visible");
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.04, rootMargin: "0px 0px -7% 0px" });
+  sections.forEach((section) => {
+    section.classList.add("taste-reveal");
+    observer.observe(section);
+  });
 }
 
 function wireControls() {
+  setupSectionChrome();
   document.getElementById("backToBoard").addEventListener("click", () => {
     goToMarket();
+  });
+  document.getElementById("sectionMenuToggle")?.addEventListener("click", () => {
+    openSectionDrawer();
+  });
+  document.getElementById("sectionDrawerClose")?.addEventListener("click", () => {
+    closeSectionDrawer();
+  });
+  document.getElementById("sectionScrim")?.addEventListener("click", () => {
+    closeSectionDrawer();
+  });
+  document.getElementById("expandAllSections")?.addEventListener("click", () => {
+    expandAllDashboardSections();
+  });
+  document.getElementById("collapseAllSections")?.addEventListener("click", () => {
+    collapseDashboardSections({ reportsOnly: true });
+  });
+  document.getElementById("expandAllTop")?.addEventListener("click", () => {
+    expandAllDashboardSections();
+  });
+  document.getElementById("collapseAllTop")?.addEventListener("click", () => {
+    collapseDashboardSections();
+  });
+  document.getElementById("demoModeButton")?.addEventListener("click", () => {
+    applyDemoMode();
   });
   document.getElementById("compareClubA").addEventListener("change", (event) => {
     state.compareClubA = event.target.value;
@@ -2945,6 +4341,15 @@ function wireControls() {
       renderAskAnalyst();
     });
   });
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-agent-question]");
+    if (!button) return;
+    event.preventDefault();
+    state.askQuestion = button.dataset.agentQuestion || "";
+    state.askResult = askAnalyst(state.askQuestion);
+    renderAskAnalyst();
+    document.getElementById("askAnalystSection")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
   document.getElementById("scenarioSimulatorForm").addEventListener("submit", (event) => {
     event.preventDefault();
     state.simulatorResult = runScenarioSimulator();
@@ -2960,7 +4365,18 @@ function wireControls() {
     const section = document.getElementById(jump.dataset.jump);
     if (!section) return;
     event.preventDefault();
+    if (state.collapsedSections.has(jump.dataset.jump)) {
+      toggleSectionCollapsed(jump.dataset.jump, false);
+    }
+    closeSectionDrawer();
     section.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-section-collapse]");
+    if (!button) return;
+    event.preventDefault();
+    event.stopPropagation();
+    toggleSectionCollapsed(button.dataset.sectionCollapse);
   });
   document.addEventListener("click", (event) => {
     const signal = event.target.closest("[data-select-signal]");
@@ -2972,6 +4388,58 @@ function wireControls() {
     state.selectedKey = signal.dataset.selectSignal || null;
     renderAll();
     document.getElementById("workspaceSection")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-run-research-cycle]");
+    if (!button) return;
+    event.preventDefault();
+    requestResearchCycle();
+  });
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-run-runbook]");
+    if (!button) return;
+    event.preventDefault();
+    requestRunbook(button.dataset.runRunbook);
+  });
+  document.addEventListener("click", async (event) => {
+    const copy = event.target.closest("[data-copy-memo]");
+    if (!copy) return;
+    event.preventDefault();
+    const memo = decodeURIComponent(copy.dataset.copyMemo || "");
+    try {
+      await navigator.clipboard.writeText(memo);
+      copy.textContent = "Copied";
+      window.setTimeout(() => {
+        copy.textContent = "Copy";
+      }, 1400);
+    } catch (error) {
+      const textarea = document.createElement("textarea");
+      textarea.value = memo;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      textarea.remove();
+      copy.textContent = "Copied";
+      window.setTimeout(() => {
+        copy.textContent = "Copy";
+      }, 1400);
+    }
+  });
+  document.addEventListener("click", (event) => {
+    const download = event.target.closest("[data-download-memo]");
+    if (!download) return;
+    event.preventDefault();
+    const memo = decodeURIComponent(download.dataset.downloadMemo || "");
+    const filename = `${(download.dataset.memoTitle || "research-memo").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "research-memo"}.md`;
+    const blob = new Blob([memo], { type: "text/markdown;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
   });
   document.querySelectorAll("#sortFilters button").forEach((button) => {
     button.addEventListener("click", () => {
@@ -2999,6 +4467,10 @@ function wireControls() {
     goToClub(chip.dataset.clubRoute);
   }, true);
   document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeSectionDrawer();
+      return;
+    }
     const chip = event.target.closest?.("[data-club-route]");
     if (!chip) return;
     if (event.key !== "Enter" && event.key !== " ") return;
@@ -3012,8 +4484,15 @@ async function boot() {
   const response = await fetch("./data/dashboard_data.json", { cache: "no-store" });
   state.payload = await response.json();
   state.agent = await loadAgentSnapshot();
+  state.ragAudit = await loadRagAuditSnapshot();
+  state.autopilot = await loadAutopilotSnapshot();
+  state.operator = await loadOperatorSnapshot();
+  state.runbooks = await loadRunbookSnapshot();
+  state.agentManifest = await loadAgentManifest();
+  state.rumorGraph = await loadRumorGraph();
   state.scenario = await loadScenarioSnapshot();
   state.dataQuality = await loadDataQualitySnapshot();
+  state.collapsedSections = loadCollapsedSections();
   state.selectedSeason = state.payload.latest_season;
   applyRouteFromHash();
   wireControls();
@@ -3023,6 +4502,7 @@ async function boot() {
   });
   syncHash();
   renderAll();
+  setupTasteReveals();
 }
 
 async function loadScenarioSnapshot() {
@@ -3038,6 +4518,66 @@ async function loadScenarioSnapshot() {
 async function loadAgentSnapshot() {
   try {
     const response = await fetch("./data/agent_latest.json", { cache: "no-store" });
+    if (!response.ok) return null;
+    return await response.json();
+  } catch (error) {
+    return null;
+  }
+}
+
+async function loadRagAuditSnapshot() {
+  try {
+    const response = await fetch("./data/rag_audit_latest.json", { cache: "no-store" });
+    if (!response.ok) return null;
+    return await response.json();
+  } catch (error) {
+    return null;
+  }
+}
+
+async function loadAutopilotSnapshot() {
+  try {
+    const response = await fetch("./data/autopilot_latest.json", { cache: "no-store" });
+    if (!response.ok) return null;
+    return await response.json();
+  } catch (error) {
+    return null;
+  }
+}
+
+async function loadOperatorSnapshot() {
+  try {
+    const response = await fetch("./data/operator_latest.json", { cache: "no-store" });
+    if (!response.ok) return null;
+    return await response.json();
+  } catch (error) {
+    return null;
+  }
+}
+
+async function loadRunbookSnapshot() {
+  try {
+    const response = await fetch("./data/runbooks.json", { cache: "no-store" });
+    if (!response.ok) return null;
+    return await response.json();
+  } catch (error) {
+    return null;
+  }
+}
+
+async function loadAgentManifest() {
+  try {
+    const response = await fetch("./.well-known/transfer-stock-agent.json", { cache: "no-store" });
+    if (!response.ok) return null;
+    return await response.json();
+  } catch (error) {
+    return null;
+  }
+}
+
+async function loadRumorGraph() {
+  try {
+    const response = await fetch("./data/rumor_graph.json", { cache: "no-store" });
     if (!response.ok) return null;
     return await response.json();
   } catch (error) {
