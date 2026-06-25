@@ -32,7 +32,8 @@ system does not invent a stock-impact prediction.
 - **End-to-end data product:** ingestion, normalization, entity matching,
   feature engineering, temporal ML evaluation, backtesting, and presentation.
 - **Grounded AI workflows:** a deterministic analyst, local Evidence RAG,
-  bounded scenario agents, citations, uncertainty, and persistent run traces.
+  bounded scenario agents, agent reachability checks, citations, uncertainty,
+  and persistent run traces.
 - **Honest financial research:** temporal splits, anti-leakage rules, abnormal
   return windows, match-result context, and explicit data-quality warnings.
 - **Resilient ingestion:** API, RSS, multilingual sources, Google News URL
@@ -81,10 +82,40 @@ PYTHONPATH=src python -m transfer_stock.cli ask \
   --question "Compare Manchester United and Juventus"
 ```
 
+Publish the agent-reach report so external tools can discover safe commands,
+endpoints, readiness checks, and local data boundaries:
+
+```bash
+PYTHONPATH=src python -m transfer_stock.cli agent-reach
+```
+
+Optional: install [Panniantong/Agent-Reach](https://github.com/Panniantong/Agent-Reach)
+as an upstream internet capability layer for wider web/RSS/GitHub/social
+research. This project detects it when available and keeps cookie-based social
+channels local.
+
+```bash
+pipx install https://github.com/Panniantong/agent-reach/archive/main.zip
+agent-reach install --env=auto --safe
+PYTHONPATH=src python -m transfer_stock.cli agent-reach --external-doctor
+```
+
 Run the bounded research operator without fetching new data:
 
 ```bash
 PYTHONPATH=src python -m transfer_stock.cli research-cycle --mode research
+```
+
+Refresh live news and republish all dashboard snapshots locally:
+
+```bash
+bash scripts/auto_update_local.sh
+```
+
+Use a wider but slower source pass when you want more coverage:
+
+```bash
+SOURCE_PRESET=wide_no_api MAX_RECORDS=30 bash scripts/auto_update_local.sh
 ```
 
 Start the local dashboard and JSON API together:
@@ -140,7 +171,8 @@ data contracts, guardrails, and extension points.
 | Market research | Raw and abnormal returns, volatility, pre-event drift, match-result overlays |
 | Modeling | Logistic/XGBoost paths, temporal holdouts, leakage controls, feature importance |
 | Agent workflows | Local analyst, Evidence RAG, Scenario Swarm, daily briefing, research operator |
-| Interfaces | Premium static dashboard, CLI, FastAPI, NLWeb-style manifest |
+| Agent readiness | Agent-reach report with capability catalog, safe commands, endpoints, setup checks, and optional Panniantong/Agent-Reach detection |
+| Interfaces | Premium static dashboard, CLI, FastAPI, NLWeb-style manifest, agent-reach JSON |
 
 ## Repository Map
 
@@ -151,6 +183,7 @@ config/                  Club, source, and credibility configuration
 tests/                   Deterministic core behavior and pipeline tests
 docs/architecture.md     System design and engineering decisions
 docs/operations.md       Full command and pipeline reference
+docs/mcp_tools.md        Agent/MCP-style tool contract
 .github/workflows/       PR validation, Pages deployment, and nightly refresh
 ```
 
@@ -166,8 +199,31 @@ PYTHONPATH=src python -m transfer_stock.cli inspect-demo-data \
   --input app/static/data/dashboard_data.json
 ```
 
-The nightly workflow separately refreshes live evidence and republishes the
-GitHub Pages dashboard.
+The nightly workflow refreshes live evidence, republishes the GitHub Pages
+dashboard, and commits the refreshed static snapshots back to `main` on
+scheduled runs. That means your local machine can pick up the latest public
+dashboard package with:
+
+```bash
+git pull
+```
+
+You can also run the workflow manually from GitHub Actions:
+
+1. Open **Actions**.
+2. Choose **Nightly Live Refresh**.
+3. Click **Run workflow**.
+4. Pick `fast_no_api`, `balanced_no_api`, `wide_no_api`, or
+   `scrapling_wide_no_api`.
+5. For manual runs, enable `commit_refreshed_data` if you want the refreshed
+   static snapshots committed back to `main`. Scheduled runs commit them
+   automatically.
+
+To refresh automatically on your own machine, add a cron entry like:
+
+```cron
+15 7 */2 * * cd /path/to/transfer_scrape && /bin/bash scripts/auto_update_local.sh >> data/operators/local_auto_update.log 2>&1
+```
 
 ## Data And Modeling Guardrails
 
@@ -204,6 +260,8 @@ Strong engineering themes to discuss:
   features from post-event evaluation labels
 - built resilient source fallbacks and inspectable agent traces instead of
   relying on opaque end-to-end predictions
+- exposed agent-reach and MCP-style contracts so AI tools can discover safe
+  local capabilities without guessing commands
 - translated a research pipeline into a usable dashboard, API, CLI, and
   scheduled deployment
 

@@ -73,6 +73,86 @@ Health check:
 curl http://127.0.0.1:8010/health
 ```
 
+## Agent Reachability Report
+
+The project includes an AgentReach-style readiness report. It is a compact
+machine-readable entrypoint for external agents: what tools exist, which ones
+are read-only, which files must exist, what setup is missing, and what safety
+rules apply.
+
+This report can also detect the optional upstream
+[Panniantong/Agent-Reach](https://github.com/Panniantong/Agent-Reach) CLI.
+That external project is useful as an internet capability router for web, RSS,
+GitHub, YouTube, and optional social channels. This repo uses it only as an
+optional upstream discovery layer; transfer normalization, credibility,
+matching, modeling, and market research stay inside `transfer_stock`.
+
+CLI:
+
+```bash
+PYTHONPATH=src python3 -m transfer_stock.cli agent-reach
+```
+
+Print the full report without writing it:
+
+```bash
+PYTHONPATH=src python3 -m transfer_stock.cli agent-reach --print-only
+```
+
+Run the external Agent-Reach doctor when installed:
+
+```bash
+PYTHONPATH=src python3 -m transfer_stock.cli agent-reach --external-doctor --print-only
+```
+
+HTTP:
+
+```http
+GET /agent/reach
+```
+
+Static output:
+
+```text
+app/static/data/agent_reach.json
+```
+
+Core response fields:
+
+```json
+{
+  "schema_version": "0.1",
+  "status": "ready|partial|blocked",
+  "readiness_score": 0.0,
+  "summary": {
+    "latest_season": "2025-26",
+    "signal_count": 0,
+    "watchlist_count": 0,
+    "club_count": 0
+  },
+  "capabilities": [
+    {
+      "id": "ask_transfer_analyst",
+      "risk": "read_only",
+      "cli": "PYTHONPATH=src python -m transfer_stock.cli ask --question ...",
+      "http": "/ask"
+    }
+  ],
+  "readiness_checks": [],
+  "external_agent_reach": {
+    "available": false,
+    "useful_channels": []
+  },
+  "recommended_next_actions": [],
+  "agent_rules": []
+}
+```
+
+This is intentionally lighter than a full MCP server. A real MCP wrapper can
+consume this report to decide which local command or HTTP endpoint to call.
+Keep social/cookie channels local and out of GitHub Actions unless you are
+deliberately managing those credentials.
+
 ## NLWeb-Style Website Endpoint
 
 The project also exposes a lightweight NLWeb-inspired contract so the dashboard
@@ -163,6 +243,47 @@ Never phrase outputs as trading advice. Use language like research context,
 triage, watch item, historical comparison, and uncertainty.
 
 ## Tool Schemas
+
+### get_agent_reachability()
+
+Discover safe local commands, HTTP endpoints, readiness checks, and missing
+setup before an external agent operates the project.
+
+CLI:
+
+```bash
+PYTHONPATH=src python3 -m transfer_stock.cli agent-reach --print-only
+```
+
+HTTP:
+
+```http
+GET /agent/reach
+```
+
+Output schema:
+
+```json
+{
+  "schema_version": "string",
+  "status": "ready|partial|blocked",
+  "readiness_score": 0.0,
+  "capabilities": [
+    {
+      "id": "string",
+      "label": "string",
+      "risk": "read_only|writes_local_reports|writes_static_manifest",
+      "cli": "string",
+      "http": "string"
+    }
+  ],
+  "readiness_checks": [
+    {"id": "string", "status": "pass|warn|fail", "message": "string"}
+  ],
+  "recommended_next_actions": ["string"],
+  "agent_rules": ["string"]
+}
+```
 
 ### ask_transfer_analyst(question)
 
@@ -581,6 +702,7 @@ src/transfer_stock/mcp_server.py
 It should call the existing Python functions instead of reimplementing logic:
 
 ```text
+get_agent_reachability -> transfer_stock.agent_reach.build_agent_reach_report
 ask_transfer_analyst -> transfer_stock.analyst.ask_analyst
 get_current_signals -> transfer_stock.api.signals_current behavior
 get_club_dossier -> transfer_stock.api.club_dossier_response

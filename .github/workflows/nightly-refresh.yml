@@ -4,12 +4,36 @@ on:
   schedule:
     - cron: "15 6 * * *"
   workflow_dispatch:
+    inputs:
+      source_preset:
+        description: "News source preset"
+        required: false
+        default: "fast_no_api"
+        type: choice
+        options:
+          - fast_no_api
+          - balanced_no_api
+          - wide_no_api
+          - scrapling_wide_no_api
+      max_records:
+        description: "Maximum articles per source/club"
+        required: false
+        default: "20"
+      days_back:
+        description: "Lookback window in days"
+        required: false
+        default: "21"
+      commit_refreshed_data:
+        description: "Commit refreshed static snapshots back to main"
+        required: false
+        default: false
+        type: boolean
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -27,6 +51,9 @@ jobs:
       GUARDIAN_API_KEY: ${{ secrets.GUARDIAN_API_KEY }}
       GNEWS_API_KEY: ${{ secrets.GNEWS_API_KEY }}
       PAGES_PAT: ${{ secrets.PAGES_PAT }}
+      REFRESH_SOURCE_PRESET: ${{ inputs.source_preset || 'fast_no_api' }}
+      REFRESH_MAX_RECORDS: ${{ inputs.max_records || '20' }}
+      REFRESH_DAYS_BACK: ${{ inputs.days_back || '21' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -36,109 +63,34 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Backup current dashboard payload
-        run: |
-          mkdir -p /tmp/dashboard-backup
-          cp app/static/data/dashboard_data.json /tmp/dashboard-backup/dashboard_data.json
-
       - name: Install project
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[scrapling_scrape,market_research,ml_pipeline,api_server]"
 
-      - name: Fetch live articles
-        id: fetch
-        continue-on-error: true
+      - name: Auto update live dashboard package
+        id: auto_update
         run: |
-          PYTHONPATH=src python -m transfer_stock.cli refresh-live-fetch \
-            --start "$(python -c 'from datetime import date, timedelta; print((date.today() - timedelta(days=21)).isoformat())')" \
+          PYTHONPATH=src python -m transfer_stock.cli auto-update \
+            --start "$(python -c 'from datetime import date, timedelta; import os; print((date.today() - timedelta(days=int(os.environ.get("REFRESH_DAYS_BACK", "21")))).isoformat())')" \
             --end "$(python -c 'from datetime import date; print(date.today().isoformat())')" \
-            --source-preset scrapling_wide_no_api \
-            --max-records 10 \
+            --source-preset "$REFRESH_SOURCE_PRESET" \
+            --max-records "$REFRESH_MAX_RECORDS" \
             --pause 0.1 \
-            --clubs manchester_united borussia_dortmund juventus lazio ajax sporting_cp fc_porto celtic benfica eagle_football_group \
-            --output data/raw/articles/current_live.jsonl
-
-      - name: Analyze live articles and rebuild dashboard
-        id: analyze
-        if: ${{ steps.fetch.outcome == 'success' }}
-        continue-on-error: true
-        run: |
-          PYTHONPATH=src python -m transfer_stock.cli refresh-live-analyze \
-            --input data/raw/articles/current_live.jsonl \
+            --resume \
             --clubs manchester_united borussia_dortmund juventus lazio ajax sporting_cp fc_porto celtic benfica eagle_football_group \
             --slug nightly_live \
-            --dashboard-output app/static/data/dashboard_data.json
+            --dashboard-output app/static/data/dashboard_data.json \
+            --base-url "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
 
-      - name: Restore previous dashboard if refresh failed
-        if: ${{ steps.fetch.outcome != 'success' || steps.analyze.outcome == 'failure' }}
+      - name: Commit refreshed static data
+        if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.commit_refreshed_data) }}
         run: |
-          cp /tmp/dashboard-backup/dashboard_data.json app/static/data/dashboard_data.json
-
-      - name: Audit dashboard data quality
-        id: audit
-        if: ${{ always() }}
-        continue-on-error: true
-        run: |
-          PYTHONPATH=src python -m transfer_stock.cli audit-data-quality \
-            --payload app/static/data/dashboard_data.json \
-            --output app/static/data/data_quality_latest.json \
-            --markdown-output data/reports/data_quality_audit.md
-
-      - name: Build daily research operator package
-        id: operator
-        if: ${{ always() }}
-        continue-on-error: true
-        run: |
-          PYTHONPATH=src python -m transfer_stock.cli research-cycle \
-            --mode research \
-            --output data/operators/operator_latest.json \
-            --report data/operators/operator_latest.md \
-            --dashboard-output app/static/data/operator_latest.json
-
-      - name: Publish research runbooks
-        if: ${{ always() }}
-        continue-on-error: true
-        run: |
-          PYTHONPATH=src python -m transfer_stock.cli list-runbooks \
-            --publish \
-            --output app/static/data/runbooks.json
-
-      - name: Publish agent manifest
-        if: ${{ always() }}
-        continue-on-error: true
-        run: |
-          PYTHONPATH=src python -m transfer_stock.cli publish-agent-manifest \
-            --output app/static/.well-known/transfer-stock-agent.json
-
-      - name: Build temporal rumor graph
-        if: ${{ always() }}
-        continue-on-error: true
-        run: |
-          PYTHONPATH=src python -m transfer_stock.cli build-rumor-graph \
-            --payload app/static/data/dashboard_data.json \
-            --output data/processed/graphs/rumor_graph.json \
-            --dashboard-output app/static/data/rumor_graph.json
-
-      - name: Write refresh status
-        if: ${{ always() }}
-        run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          payload_path = Path("app/static/data/dashboard_data.json")
-          payload = json.loads(payload_path.read_text(encoding="utf-8"))
-          payload["automation"] = {
-              **payload.get("automation", {}),
-              "workflow_refresh_attempted": True,
-              "workflow_fetch_status": "${{ steps.fetch.outcome }}",
-              "workflow_analyze_status": "${{ steps.analyze.outcome || 'skipped' }}",
-              "workflow_audit_status": "${{ steps.audit.outcome || 'skipped' }}",
-              "workflow_operator_status": "${{ steps.operator.outcome || 'skipped' }}",
-              "workflow_source_preset": "scrapling_wide_no_api",
-          }
-          payload_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app/static/data app/static/.well-known data/reports/data_quality_audit.md data/reports/daily_briefing.md data/reports/daily_briefing.json data/operators/operator_latest.json data/operators/operator_latest.md data/processed/graphs/rumor_graph.json
+          git diff --cached --quiet || git commit -m "Refresh live dashboard data [skip ci]"
+          git push
 
       - name: Upload live artifacts
         if: ${{ always() }}
@@ -151,6 +103,7 @@ jobs:
             app/static/data/data_quality_latest.json
             app/static/data/operator_latest.json
             app/static/data/runbooks.json
+            app/static/data/agent_reach.json
             app/static/.well-known/transfer-stock-agent.json
             app/static/data/rumor_graph.json
             data/processed/graphs/rumor_graph.json

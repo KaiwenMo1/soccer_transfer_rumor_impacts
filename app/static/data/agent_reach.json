@@ -1,0 +1,254 @@
+{
+  "schema_version": "0.1",
+  "generated_at": "2026-06-21T14:07:45.526266+00:00",
+  "name": "Transfer Stock Analyst Agent Reachability",
+  "status": "ready",
+  "readiness_score": 0.95,
+  "summary": {
+    "available": true,
+    "generated_at": "2026-06-02T13:56:25.042727+00:00",
+    "latest_season": "2025-26",
+    "signal_count": 100,
+    "watchlist_count": 10,
+    "club_count": 10
+  },
+  "inspired_by": [
+    {
+      "pattern": "Panniantong/Agent-Reach capability router",
+      "adaptation": "Detect the optional external CLI and document which internet channels can feed this research pipeline.",
+      "url": "https://github.com/Panniantong/Agent-Reach"
+    },
+    {
+      "pattern": "MCP and NLWeb-style tool manifests",
+      "adaptation": "Keep this project usable by local agents without requiring a full MCP server dependency."
+    }
+  ],
+  "external_agent_reach": {
+    "project": "Panniantong/Agent-Reach",
+    "url": "https://github.com/Panniantong/Agent-Reach",
+    "available": false,
+    "command_path": "",
+    "role_in_this_project": "Optional upstream capability layer for web/RSS/GitHub/social discovery. This repo still normalizes, scores, matches, models, and publishes the football-finance research outputs.",
+    "useful_channels": [
+      {
+        "channel": "web",
+        "project_use": "Read arbitrary club, league, or publisher pages when RSS/API coverage is thin.",
+        "ci_safe": true
+      },
+      {
+        "channel": "rss",
+        "project_use": "Improve no-key feed collection and source freshness checks.",
+        "ci_safe": true
+      },
+      {
+        "channel": "github",
+        "project_use": "Research public source projects, data providers, and ingestion tools.",
+        "ci_safe": true
+      },
+      {
+        "channel": "youtube",
+        "project_use": "Summarize press conference or club media transcripts as future sentiment/context evidence.",
+        "ci_safe": false
+      },
+      {
+        "channel": "twitter/reddit/xueqiu/xiaohongshu",
+        "project_use": "Optional rumor/sentiment discovery. Keep cookies local and out of GitHub Actions.",
+        "ci_safe": false
+      }
+    ],
+    "install_hint": "pipx install https://github.com/Panniantong/agent-reach/archive/main.zip",
+    "safe_mode_hint": "agent-reach install --env=auto --safe",
+    "doctor": {}
+  },
+  "capabilities": [
+    {
+      "id": "ask_transfer_analyst",
+      "label": "Ask Transfer Analyst",
+      "purpose": "Answer grounded questions over the local dashboard payload.",
+      "risk": "read_only",
+      "cli": "PYTHONPATH=src python -m transfer_stock.cli ask --question \"Compare Manchester United and Juventus\"",
+      "http": "/ask",
+      "inputs": {
+        "question": "string"
+      },
+      "outputs": [
+        "short_answer",
+        "evidence_cards",
+        "tables",
+        "warnings",
+        "confidence"
+      ]
+    },
+    {
+      "id": "ask_rag",
+      "label": "Ask With Evidence RAG",
+      "purpose": "Attach local citations from dashboard, article, report, and scenario evidence.",
+      "risk": "read_only",
+      "cli": "PYTHONPATH=src python -m transfer_stock.cli ask-rag --question \"Explain Casemiro\" --rebuild-index",
+      "http": "/nlweb/ask",
+      "inputs": {
+        "question": "string",
+        "top_k": "integer"
+      },
+      "outputs": [
+        "short_answer",
+        "evidence",
+        "warnings",
+        "what_would_change_mind"
+      ]
+    },
+    {
+      "id": "research_cycle",
+      "label": "Research Cycle",
+      "purpose": "Run the local research operator and publish a decision queue.",
+      "risk": "writes_local_reports",
+      "cli": "PYTHONPATH=src python -m transfer_stock.cli research-cycle --mode research",
+      "http": "/operator/run",
+      "inputs": {
+        "mode": "research|smart|refresh",
+        "allow_network": "boolean"
+      },
+      "outputs": [
+        "data/operators/latest",
+        "app/static/data/operator_latest.json"
+      ]
+    },
+    {
+      "id": "scenario_swarm",
+      "label": "Scenario Swarm",
+      "purpose": "Run bounded role agents over one rumor as a research scenario.",
+      "risk": "writes_local_reports",
+      "cli": "PYTHONPATH=src python -m transfer_stock.cli simulate-scenario --player Casemiro --club \"Manchester United\"",
+      "http": "",
+      "inputs": {
+        "player": "string",
+        "club": "string",
+        "rounds": "integer"
+      },
+      "outputs": [
+        "data/simulations/<simulation_id>/",
+        "app/static/data/scenario_latest.json"
+      ]
+    },
+    {
+      "id": "daily_briefing",
+      "label": "Daily Briefing",
+      "purpose": "Generate a deterministic Markdown and JSON research brief.",
+      "risk": "writes_local_reports",
+      "cli": "PYTHONPATH=src python -m transfer_stock.cli generate-briefing",
+      "http": "",
+      "inputs": {},
+      "outputs": [
+        "data/reports/daily_briefing.md",
+        "data/reports/daily_briefing.json"
+      ]
+    },
+    {
+      "id": "agent_manifest",
+      "label": "Agent Manifest",
+      "purpose": "Publish the AI-readable website/tool manifest.",
+      "risk": "writes_static_manifest",
+      "cli": "PYTHONPATH=src python -m transfer_stock.cli publish-agent-manifest",
+      "http": "/nlweb/manifest",
+      "inputs": {},
+      "outputs": [
+        "app/static/.well-known/transfer-stock-agent.json"
+      ]
+    }
+  ],
+  "manifest_preview": {
+    "name": "Transfer Stock Analyst",
+    "capability_count": 4,
+    "endpoints": {
+      "manifest": "/nlweb/manifest",
+      "ask": "/nlweb/ask",
+      "static_manifest": "/.well-known/transfer-stock-agent.json"
+    },
+    "safety": {
+      "trading_advice": false,
+      "uses_local_data": true,
+      "requires_api_keys": false,
+      "notes": [
+        "Outputs are research context, not investment advice.",
+        "Stock-impact language is only valid when a listed-club ticker is directly mapped.",
+        "Football club stocks can move for match results, ownership news, liquidity, earnings, qualification, and broader markets."
+      ]
+    }
+  },
+  "readiness_checks": [
+    {
+      "id": "dashboard_payload",
+      "path": "app/static/data/dashboard_data.json",
+      "required": true,
+      "status": "pass",
+      "exists": true,
+      "size_bytes": 5757513,
+      "message": "available"
+    },
+    {
+      "id": "evidence_index",
+      "path": "/home/kaiwenmo/eecs486/transfer_scrape/data/processed/evidence/evidence_index.json",
+      "required": false,
+      "status": "pass",
+      "exists": true,
+      "size_bytes": 3545750,
+      "message": "available"
+    },
+    {
+      "id": "static_agent_manifest",
+      "path": "/home/kaiwenmo/eecs486/transfer_scrape/app/static/.well-known/transfer-stock-agent.json",
+      "required": false,
+      "status": "pass",
+      "exists": true,
+      "size_bytes": 2354,
+      "message": "available"
+    },
+    {
+      "id": "agent_instructions",
+      "path": "/home/kaiwenmo/eecs486/transfer_scrape/AGENTS.md",
+      "required": true,
+      "status": "pass",
+      "exists": true,
+      "size_bytes": 2625,
+      "message": "available"
+    },
+    {
+      "id": "mcp_tool_contract",
+      "path": "/home/kaiwenmo/eecs486/transfer_scrape/docs/mcp_tools.md",
+      "required": true,
+      "status": "pass",
+      "exists": true,
+      "size_bytes": 15935,
+      "message": "available"
+    },
+    {
+      "id": "fastapi_optional_api",
+      "required": false,
+      "status": "pass",
+      "module": "fastapi",
+      "available": true,
+      "message": "installed"
+    },
+    {
+      "id": "external_agent_reach_cli",
+      "required": false,
+      "status": "warn",
+      "command": "agent-reach",
+      "path": "",
+      "available": false,
+      "message": "Optional: install Panniantong/Agent-Reach for wider web/RSS/GitHub/social discovery."
+    }
+  ],
+  "recommended_next_actions": [
+    "Optional: pipx install https://github.com/Panniantong/agent-reach/archive/main.zip",
+    "PYTHONPATH=src python -m transfer_stock.cli agent-reach"
+  ],
+  "agent_rules": [
+    "Use local data by default.",
+    "Do not claim trading advice.",
+    "Show uncertainty and source paths.",
+    "Use stock-impact language only for directly mapped listed-club targets.",
+    "Keep cookie-based social channels local; never put platform cookies in GitHub Actions secrets unless you fully understand the risk.",
+    "Prefer research-cycle --mode research before network refreshes."
+  ]
+}

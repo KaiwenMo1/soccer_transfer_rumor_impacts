@@ -3,11 +3,13 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 from datetime import UTC, date, datetime, time, timedelta
 from pathlib import Path
 
 from .api import create_app
 from .agent import DEFAULT_AGENT_MEMORY, DEFAULT_AGENT_OUTPUT_DIR, DEFAULT_DASHBOARD_AGENT, DEFAULT_DASHBOARD_AGENT_REPORT, run_agent
+from .agent_reach import DEFAULT_AGENT_REACH, build_agent_reach_report, write_agent_reach_report
 from .analyst import ask_analyst
 from .article_store import article_store_stats, normalize_article_file, read_article_store
 from .autopilot import DEFAULT_AUTOPILOT_JSON, DEFAULT_AUTOPILOT_REPORT, DEFAULT_DASHBOARD_AUTOPILOT, run_autopilot
@@ -349,6 +351,28 @@ def cmd_publish_agent_manifest(args: argparse.Namespace) -> None:
         result = build_agent_manifest(base_url=args.base_url)
     else:
         result = write_agent_manifest(Path(args.output), base_url=args.base_url)
+    indent = None if args.compact else 2
+    print(json.dumps(result, indent=indent))
+
+
+def cmd_agent_reach(args: argparse.Namespace) -> None:
+    if args.print_only:
+        result = build_agent_reach_report(
+            payload_path=Path(args.payload),
+            evidence_index_path=Path(args.evidence_index),
+            agent_manifest_path=Path(args.agent_manifest),
+            base_url=args.base_url,
+            external_doctor=args.external_doctor,
+        )
+    else:
+        result = write_agent_reach_report(
+            Path(args.output),
+            payload_path=Path(args.payload),
+            evidence_index_path=Path(args.evidence_index),
+            agent_manifest_path=Path(args.agent_manifest),
+            base_url=args.base_url,
+            external_doctor=args.external_doctor,
+        )
     indent = None if args.compact else 2
     print(json.dumps(result, indent=indent))
 
@@ -1126,6 +1150,167 @@ def cmd_refresh_live_analyze(args: argparse.Namespace) -> None:
         print(f"{label}: {path}")
 
 
+def cmd_auto_update(args: argparse.Namespace) -> None:
+    clubs = load_clubs()
+    selected = selected_clubs(clubs, args.clubs)
+    payload_path = Path(args.dashboard_output)
+    backup_path = payload_path.with_suffix(payload_path.suffix + ".bak")
+    fetch_status = "skipped"
+    analyze_status = "skipped"
+    error = ""
+    outputs: dict[str, object] = {
+        "started_at": datetime.now(tz=UTC).isoformat(),
+        "dashboard": str(payload_path),
+    }
+    if payload_path.exists():
+        backup_path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(payload_path, backup_path)
+
+    try:
+        if not args.no_fetch:
+            source_keys = args.sources
+            if not source_keys and args.source_preset:
+                source_keys = list(SOURCE_PRESETS[args.source_preset])
+            methods = args.methods
+            if args.source_preset and methods == ["provider", "rss"]:
+                preset_methods = methods_for_preset(args.source_preset)
+                if preset_methods is not None:
+                    methods = preset_methods
+            fetch_result = fetch_live_articles(
+                selected,
+                start=parse_date(args.start),
+                end=parse_date(args.end),
+                provider=args.provider,
+                source_keys=source_keys,
+                methods=methods,
+                output_path=Path(args.articles_output),
+                max_records=args.max_records,
+                timeout=args.timeout,
+                retries=args.retries,
+                pause=args.pause,
+                resume=args.resume,
+            )
+            fetch_status = "success"
+            outputs["fetched_rows"] = fetch_result.fetched_rows
+            outputs["article_rows"] = len(fetch_result.rows)
+            outputs["skipped_duplicates"] = fetch_result.skipped_duplicates
+            outputs["fetch_warnings"] = fetch_result.warnings
+
+        if not args.no_analyze:
+            analyze_outputs = analyze_live_articles(
+                clubs,
+                selected,
+                articles_path=Path(args.articles_output),
+                transfers_path=Path(args.transfers),
+                claim_backend=args.backend,
+                train_end_season=args.train_end_season,
+                base_scored_claim_paths=[Path(item) for item in args.base_scored_claims],
+                stats_claim_paths=[Path(item) for item in args.stats_claims],
+                stats_match_paths=[Path(item) for item in args.stats_matches],
+                output_root=Path(args.output_root),
+                slug=args.slug,
+                dashboard_output=payload_path,
+            )
+            analyze_status = "success"
+            outputs["analyze_outputs"] = {key: str(value) for key, value in analyze_outputs.items()}
+    except Exception as exc:
+        error = str(exc)
+        if payload_path.exists() and backup_path.exists():
+            shutil.copy2(backup_path, payload_path)
+        if args.strict:
+            raise
+
+    followups: dict[str, object] = {}
+    try:
+        audit = write_data_quality_audit(
+            payload_path,
+            output_json=Path(args.quality_output),
+            output_markdown=Path(args.quality_markdown),
+        )
+        followups["data_quality"] = audit.get("json_path", str(args.quality_output))
+    except Exception as exc:
+        followups["data_quality_error"] = str(exc)
+    try:
+        operator = run_research_cycle(
+            payload_path=payload_path,
+            mode="research",
+            allow_network=False,
+            output_json=Path(args.operator_output),
+            output_report=Path(args.operator_report),
+            dashboard_output=Path(args.dashboard_operator_output),
+        )
+        followups["operator_status"] = operator.get("status", "completed")
+    except Exception as exc:
+        followups["operator_error"] = str(exc)
+    try:
+        runbook = write_runbook_snapshot(Path(args.runbooks_output))
+        followups["runbooks"] = runbook.get("output", str(args.runbooks_output))
+    except Exception as exc:
+        followups["runbooks_error"] = str(exc)
+    try:
+        manifest = write_agent_manifest(Path(args.agent_manifest_output), base_url=args.base_url)
+        followups["agent_manifest"] = manifest.get("output", str(args.agent_manifest_output))
+    except Exception as exc:
+        followups["agent_manifest_error"] = str(exc)
+    try:
+        rumor_graph = write_rumor_graph(
+            payload_path=payload_path,
+            output_path=Path(args.rumor_graph_output),
+            dashboard_output=Path(args.dashboard_rumor_graph_output),
+        )
+        followups["rumor_graph"] = rumor_graph.get("dashboard_output", str(args.dashboard_rumor_graph_output))
+    except Exception as exc:
+        followups["rumor_graph_error"] = str(exc)
+    try:
+        briefing = generate_daily_briefing(
+            payload_path=payload_path,
+            scenario_path=Path(args.scenario),
+            output_markdown=Path(args.briefing_output),
+            output_json=Path(args.briefing_json_output),
+        )
+        followups["briefing"] = briefing.get("markdown", str(args.briefing_output))
+    except Exception as exc:
+        followups["briefing_error"] = str(exc)
+    try:
+        reach = write_agent_reach_report(
+            Path(args.agent_reach_output),
+            payload_path=payload_path,
+            base_url=args.base_url,
+        )
+        followups["agent_reach"] = reach.get("output", str(args.agent_reach_output))
+    except Exception as exc:
+        followups["agent_reach_error"] = str(exc)
+
+    if payload_path.exists():
+        try:
+            payload = json.loads(payload_path.read_text(encoding="utf-8"))
+            payload["automation"] = {
+                **payload.get("automation", {}),
+                "auto_update_attempted": True,
+                "auto_update_completed_at": datetime.now(tz=UTC).isoformat(),
+                "auto_update_fetch_status": fetch_status,
+                "auto_update_analyze_status": analyze_status,
+                "auto_update_source_preset": args.source_preset,
+                "auto_update_error": error,
+                "auto_update_followups": followups,
+            }
+            payload_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+        except (OSError, json.JSONDecodeError) as exc:
+            outputs["automation_metadata_error"] = str(exc)
+
+    outputs.update(
+        {
+            "completed_at": datetime.now(tz=UTC).isoformat(),
+            "fetch_status": fetch_status,
+            "analyze_status": analyze_status,
+            "error": error,
+            "followups": followups,
+        }
+    )
+    indent = None if args.compact else 2
+    print(json.dumps(outputs, indent=indent))
+
+
 def cmd_serve_api(args: argparse.Namespace) -> None:
     try:
         import uvicorn
@@ -1505,6 +1690,72 @@ def build_parser() -> argparse.ArgumentParser:
     live_analyze.add_argument("--dashboard-output", default=str(Path("app") / "static" / "data" / "dashboard_data.json"))
     live_analyze.set_defaults(func=cmd_refresh_live_analyze)
 
+    auto_update = sub.add_parser("auto-update", help="Fetch live news, rebuild dashboard data, and republish static automation artifacts")
+    auto_default_end = date.today()
+    auto_default_start = auto_default_end - timedelta(days=21)
+    auto_update.add_argument("--start", default=auto_default_start.isoformat())
+    auto_update.add_argument("--end", default=auto_default_end.isoformat())
+    auto_update.add_argument("--clubs", nargs="*")
+    auto_update.add_argument("--provider", choices=["guardian", "gnews", "all"], default="all")
+    auto_update.add_argument("--sources", nargs="*")
+    auto_update.add_argument("--source-preset", choices=source_preset_names(), default="fast_no_api")
+    auto_update.add_argument("--methods", nargs="+", default=["provider", "rss"])
+    auto_update.add_argument("--articles-output", default=str(DATA_DIR / "raw" / "articles" / "current_live.jsonl"))
+    auto_update.add_argument("--transfers", default=str(DATA_DIR / "processed" / "transfers_exact_dates.csv"))
+    auto_update.add_argument(
+        "--base-scored-claims",
+        nargs="+",
+        default=[
+            str(DATA_DIR / "processed" / "credibility" / "historical_event_news_2021_25" / "scored_claims.csv"),
+            str(DATA_DIR / "processed" / "credibility" / "provider_event_news_2025_26_top50" / "scored_claims.csv"),
+        ],
+    )
+    auto_update.add_argument(
+        "--stats-claims",
+        nargs="+",
+        default=[
+            str(DATA_DIR / "processed" / "claims" / "historical_event_news_2021_25_claims.jsonl"),
+            str(DATA_DIR / "processed" / "claims" / "provider_event_news_2025_26_top50_claims.jsonl"),
+        ],
+    )
+    auto_update.add_argument(
+        "--stats-matches",
+        nargs="+",
+        default=[
+            str(DATA_DIR / "processed" / "matched_claims" / "historical_event_news_2021_25_matches.csv"),
+            str(DATA_DIR / "processed" / "matched_claims" / "provider_event_news_2025_26_top50_matches.csv"),
+        ],
+    )
+    auto_update.add_argument("--max-records", type=int, default=20)
+    auto_update.add_argument("--pause", type=float, default=0.1)
+    auto_update.add_argument("--timeout", type=int, default=45)
+    auto_update.add_argument("--retries", type=int, default=3)
+    auto_update.add_argument("--resume", action="store_true", help="Append only articles not already present in --articles-output")
+    auto_update.add_argument("--backend", choices=["auto", "heuristic", "dspy"], default="heuristic")
+    auto_update.add_argument("--train-end-season", default="2024-25")
+    auto_update.add_argument("--output-root", default=str(DATA_DIR / "live"))
+    auto_update.add_argument("--slug", default="auto_update")
+    auto_update.add_argument("--dashboard-output", default=str(Path("app") / "static" / "data" / "dashboard_data.json"))
+    auto_update.add_argument("--quality-output", default=str(Path("app") / "static" / "data" / "data_quality_latest.json"))
+    auto_update.add_argument("--quality-markdown", default=str(DATA_DIR / "reports" / "data_quality_audit.md"))
+    auto_update.add_argument("--operator-output", default=str(DATA_DIR / "operators" / "operator_latest.json"))
+    auto_update.add_argument("--operator-report", default=str(DATA_DIR / "operators" / "operator_latest.md"))
+    auto_update.add_argument("--dashboard-operator-output", default=str(Path("app") / "static" / "data" / "operator_latest.json"))
+    auto_update.add_argument("--runbooks-output", default=str(Path("app") / "static" / "data" / "runbooks.json"))
+    auto_update.add_argument("--agent-manifest-output", default=str(DEFAULT_AGENT_MANIFEST))
+    auto_update.add_argument("--rumor-graph-output", default=str(DATA_DIR / "processed" / "graphs" / "rumor_graph.json"))
+    auto_update.add_argument("--dashboard-rumor-graph-output", default=str(Path("app") / "static" / "data" / "rumor_graph.json"))
+    auto_update.add_argument("--scenario", default=str(DEFAULT_DASHBOARD_SCENARIO))
+    auto_update.add_argument("--briefing-output", default=str(DEFAULT_BRIEFING_MD))
+    auto_update.add_argument("--briefing-json-output", default=str(DEFAULT_BRIEFING_JSON))
+    auto_update.add_argument("--agent-reach-output", default=str(DEFAULT_AGENT_REACH))
+    auto_update.add_argument("--base-url", default="", help="Optional public base URL for manifest/reach endpoint examples")
+    auto_update.add_argument("--no-fetch", action="store_true", help="Skip live article fetch and analyze existing --articles-output")
+    auto_update.add_argument("--no-analyze", action="store_true", help="Skip claim/model/dashboard rebuild and only republish follow-up artifacts")
+    auto_update.add_argument("--strict", action="store_true", help="Fail instead of restoring the previous dashboard when fetch/analyze fails")
+    auto_update.add_argument("--compact", action="store_true", help="Print compact JSON instead of pretty JSON")
+    auto_update.set_defaults(func=cmd_auto_update)
+
     api = sub.add_parser("serve-api", help="Serve a small FastAPI interface over the dashboard payload")
     api.add_argument("--payload", default=str(Path("app") / "static" / "data" / "dashboard_data.json"))
     api.add_argument("--host", default="127.0.0.1")
@@ -1619,6 +1870,17 @@ def build_parser() -> argparse.ArgumentParser:
     agent_manifest.add_argument("--print-only", action="store_true", help="Print the manifest instead of writing it")
     agent_manifest.add_argument("--compact", action="store_true", help="Print compact JSON instead of pretty JSON")
     agent_manifest.set_defaults(func=cmd_publish_agent_manifest)
+
+    agent_reach = sub.add_parser("agent-reach", help="Publish an agent reachability report over commands, endpoints, data, and safety rules")
+    agent_reach.add_argument("--payload", default=str(Path("app") / "static" / "data" / "dashboard_data.json"))
+    agent_reach.add_argument("--evidence-index", default=str(DEFAULT_EVIDENCE_INDEX))
+    agent_reach.add_argument("--agent-manifest", default=str(DEFAULT_AGENT_MANIFEST))
+    agent_reach.add_argument("--output", default=str(DEFAULT_AGENT_REACH))
+    agent_reach.add_argument("--base-url", default="", help="Optional public base URL to include in endpoint examples")
+    agent_reach.add_argument("--external-doctor", action="store_true", help="Run external Panniantong/Agent-Reach doctor when the agent-reach CLI is installed")
+    agent_reach.add_argument("--print-only", action="store_true", help="Print the full reachability report instead of writing it")
+    agent_reach.add_argument("--compact", action="store_true", help="Print compact JSON instead of pretty JSON")
+    agent_reach.set_defaults(func=cmd_agent_reach)
 
     nlweb = sub.add_parser("nlweb-ask", help="Ask the NLWeb-style website endpoint from CLI")
     nlweb.add_argument("--question", required=True)

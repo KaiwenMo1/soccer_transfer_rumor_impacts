@@ -14,6 +14,7 @@ from transfer_stock.agent import (
     run_agent,
     update_agent_memory,
 )
+from transfer_stock.agent_reach import build_agent_reach_report, write_agent_reach_report
 from transfer_stock.analyst import ask_analyst
 from transfer_stock.api import ask_response, club_dossier_response, compare_response, operator_snapshot_response, reporter_profile_response, rumor_graph_response
 from transfer_stock.autopilot import choose_autopilot_goal, run_autopilot
@@ -560,6 +561,35 @@ class CoreTests(unittest.TestCase):
             )
             self.assertEqual(today["intent"], "today_brief")
             self.assertIn("Casemiro", today["short_answer"])
+
+    def test_agent_reach_report_lists_safe_capabilities(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            payload_path = root / "dashboard.json"
+            payload_path.write_text(json.dumps(self.sample_analyst_payload()), encoding="utf-8")
+            report = build_agent_reach_report(
+                payload_path=payload_path,
+                evidence_index_path=root / "missing_evidence_index.json",
+                agent_manifest_path=root / "missing_manifest.json",
+            )
+            self.assertEqual(report["schema_version"], "0.1")
+            self.assertIn(report["status"], {"ready", "partial"})
+            self.assertGreaterEqual(report["readiness_score"], 0.5)
+            self.assertIn("ask_transfer_analyst", {item["id"] for item in report["capabilities"]})
+            self.assertIn("Do not claim trading advice.", report["agent_rules"])
+            self.assertEqual(report["external_agent_reach"]["project"], "Panniantong/Agent-Reach")
+            self.assertIn("web", {item["channel"] for item in report["external_agent_reach"]["useful_channels"]})
+
+    def test_write_agent_reach_report_outputs_summary(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            payload_path = root / "dashboard.json"
+            output_path = root / "agent_reach.json"
+            payload_path.write_text(json.dumps(self.sample_analyst_payload()), encoding="utf-8")
+            result = write_agent_reach_report(output_path, payload_path=payload_path)
+            written = json.loads(output_path.read_text(encoding="utf-8"))
+            self.assertEqual(result["output"], str(output_path))
+            self.assertEqual(result["capability_count"], len(written["capabilities"]))
 
     def test_temporal_rumor_graph_contract(self):
         graph = build_rumor_graph(self.sample_analyst_payload())

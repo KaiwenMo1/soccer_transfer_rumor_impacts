@@ -6,6 +6,7 @@ from pathlib import Path
 from threading import Thread
 from typing import Any
 
+from .agent_reach import build_agent_reach_report
 from .analyst import ask_analyst
 from .config import ROOT
 from .nlweb import build_agent_manifest, nlweb_ask
@@ -208,6 +209,10 @@ def create_app(
     @app.get("/.well-known/transfer-stock-agent.json")
     def well_known_agent_manifest() -> dict[str, Any]:
         return build_agent_manifest()
+
+    @app.get("/agent/reach")
+    def agent_reach() -> dict[str, Any]:
+        return build_agent_reach_report(payload_path=payload_file)
 
     @app.post("/nlweb/ask")
     def nlweb_ask_route(request: AskRequest) -> dict[str, Any]:
