@@ -38,7 +38,7 @@ Goal: Explain Alex Oxlade-Chamberlain at Celtic plc
 | club_dossier | Celtic plc club dossier |  |  | app/static/data/dashboard_data.json |
 | signal | Celtic Manager Latest On O’Neill, Keane & Bellamy After Talks Held / Transfer Planning - Celtic news now | 2026-06-02 | Celtic FC News | app/static/data/dashboard_data.json |
 | signal | Celtic Wait On O’Neill Decision & Hold Talks With Keane / Manager Latest & A Big Celtic AM Update - Celtic news now - Celtic FC News | 2026-06-02 | Celtic FC News | app/static/data/dashboard_data.json |
-| stock_path | Celtic plc stock path context | 2026-05-20 |  | app/static/data/dashboard_data.json |
+| signal | How Celtic's January transfer window worked and what it tells us about this summer | 2026-06-02 | The Celtic Way | app/static/data/dashboard_data.json |
 
 ## Scenario Swarm
 
@@ -46,19 +46,30 @@ No scenario was run for this goal.
 
 ## What Changed Since Last Run
 
-Previous run: `autopilot-20260604T030606Z-explain-alex-oxlade-chamberlain-at-celtic-plc`
+Previous run: `latest_demo_agent`
 
-- No major answer/evidence change from the previous agent run.
+- The analyst short answer changed.
+- 6 new evidence citation(s) entered the top set.
+- 5 previous citation(s) left the top set.
+
+New top evidence:
+- transfer: Alex Oxlade-Chamberlain confirmed transfer / Celtic plc / 2025-26 (2026-02-07)
+- signal: 'O'Neill and Keane in battle for Celtic job' (2026-06-02)
+- club_dossier: Celtic plc club dossier
+- signal: Celtic Manager Latest On O’Neill, Keane & Bellamy After Talks Held | Transfer Planning - Celtic news now (2026-06-02)
+- signal: Celtic Wait On O’Neill Decision & Hold Talks With Keane | Manager Latest & A Big Celtic AM Update - Celtic news now - Celtic FC News (2026-06-02)
+- signal: How Celtic's January transfer window worked and what it tells us about this summer (2026-06-02)
 
 ## Persistent Agent Memory
 
-- Remembered runs: 7
-- Recurring entities: club: Celtic plc (44), player: Alex Oxlade-Chamberlain (24), source: BBC Sport Football RSS (12), club: Manchester United (10), club: Juventus (6)
-- Reused evidence: Rob Smyth reporter profile, 'O'Neill and Keane in battle for Celtic job', Alex Oxlade-Chamberlain confirmed transfer / Celtic plc / 2025-26, Juventus stock path context
+- Remembered runs: 1
+- Recurring entities: club: Celtic plc (9), player: Alex Oxlade-Chamberlain (4), source: BBC Sport Football RSS (2), source: Celtic FC News (2), club: Ajax NV (1)
+- Reused evidence: Manchester United stock path context, Tom Garry reporter profile, Ajax NV stock path context, Rob Smyth reporter profile
 
 ## What Would Change The Read
 
 - More primary article evidence would improve the answer.
+- Fresh stock and match-result context would reduce market-context uncertainty.
 - Newer high-credibility reports or official club disclosures can overturn the current read.
 
 ## Warnings
@@ -69,10 +80,10 @@ Previous run: `autopilot-20260604T030606Z-explain-alex-oxlade-chamberlain-at-cel
 
 ## Outputs
 
-- goal: `data/agents/autopilot-20260604T030815Z-explain-alex-oxlade-chamberlain-at-celtic-plc/goal.json`
-- plan: `data/agents/autopilot-20260604T030815Z-explain-alex-oxlade-chamberlain-at-celtic-plc/plan.json`
-- trace: `data/agents/autopilot-20260604T030815Z-explain-alex-oxlade-chamberlain-at-celtic-plc/trace.jsonl`
-- answer: `data/agents/autopilot-20260604T030815Z-explain-alex-oxlade-chamberlain-at-celtic-plc/answer.json`
-- evidence: `data/agents/autopilot-20260604T030815Z-explain-alex-oxlade-chamberlain-at-celtic-plc/evidence.json`
+- goal: `data/agents/autopilot-20260625T094345Z-explain-alex-oxlade-chamberlain-at-celtic-plc/goal.json`
+- plan: `data/agents/autopilot-20260625T094345Z-explain-alex-oxlade-chamberlain-at-celtic-plc/plan.json`
+- trace: `data/agents/autopilot-20260625T094345Z-explain-alex-oxlade-chamberlain-at-celtic-plc/trace.jsonl`
+- answer: `data/agents/autopilot-20260625T094345Z-explain-alex-oxlade-chamberlain-at-celtic-plc/answer.json`
+- evidence: `data/agents/autopilot-20260625T094345Z-explain-alex-oxlade-chamberlain-at-celtic-plc/evidence.json`
 - memory: `data/agents/memory.json`
-- report: `data/agents/autopilot-20260604T030815Z-explain-alex-oxlade-chamberlain-at-celtic-plc/agent_report.md`
+- report: `data/agents/autopilot-20260625T094345Z-explain-alex-oxlade-chamberlain-at-celtic-plc/agent_report.md`

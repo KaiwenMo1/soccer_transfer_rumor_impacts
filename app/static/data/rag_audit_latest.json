@@ -1,12 +1,12 @@
 {
   "available": true,
-  "generated_at": "2026-06-04T03:08:25.916195+00:00",
-  "agent_run_id": "autopilot-20260604T030815Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
+  "generated_at": "2026-06-25T09:44:03.090668+00:00",
+  "agent_run_id": "autopilot-20260625T094345Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
   "agent_goal": "Explain Alex Oxlade-Chamberlain at Celtic plc",
   "answer": "Alex Oxlade-Chamberlain maps to Celtic plc as buyer. The signal is positive with model label neutral and confidence 80.8%.",
-  "overall_score": 0.7641,
+  "overall_score": 0.7695,
   "overall_status": "usable",
-  "summary": "RAG trust audit is usable (76%).",
+  "summary": "RAG trust audit is usable (77%).",
   "dimensions": [
     {
       "name": "Answer Support",
@@ -26,30 +26,30 @@
     },
     {
       "name": "Citation Strength",
-      "score": 0.6273,
+      "score": 0.6226,
       "status": "usable",
       "evidence": {
         "citation_count": 6,
-        "avg_normalized_score": 0.6273,
+        "avg_normalized_score": 0.6226,
         "doc_type_mix": {
-          "signal": 3,
+          "signal": 4,
           "transfer": 1,
-          "club_dossier": 1,
-          "stock_path": 1
+          "club_dossier": 1
         }
       },
       "warnings": []
     },
     {
       "name": "Source Diversity",
-      "score": 0.675,
-      "status": "usable",
+      "score": 0.9,
+      "status": "strong",
       "evidence": {
-        "unique_sources": 3,
+        "unique_sources": 4,
         "top_sources": {
-          "app/static/data/dashboard_data.json": 3,
+          "app/static/data/dashboard_data.json": 2,
           "Celtic FC News": 2,
-          "BBC Sport Football RSS": 1
+          "BBC Sport Football RSS": 1,
+          "The Celtic Way": 1
         }
       },
       "warnings": []
@@ -73,12 +73,12 @@
     },
     {
       "name": "Citation Freshness",
-      "score": 0.76,
-      "status": "usable",
+      "score": 0.55,
+      "status": "watch",
       "evidence": {
         "dated_citations": 5,
         "latest_citation_date": "2026-06-02",
-        "avg_citation_age_days": 27.6
+        "avg_citation_age_days": 46.0
       },
       "warnings": []
     },
@@ -93,6 +93,7 @@
         ],
         "what_would_change_mind": [
           "More primary article evidence would improve the answer.",
+          "Fresh stock and match-result context would reduce market-context uncertainty.",
           "Newer high-credibility reports or official club disclosures can overturn the current read."
         ]
       },

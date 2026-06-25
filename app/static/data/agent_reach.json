@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1",
-  "generated_at": "2026-06-21T14:07:45.526266+00:00",
+  "generated_at": "2026-06-25T09:44:03.222035+00:00",
   "name": "Transfer Stock Analyst Agent Reachability",
   "status": "ready",
   "readiness_score": 0.95,
@@ -67,7 +67,7 @@
       "purpose": "Answer grounded questions over the local dashboard payload.",
       "risk": "read_only",
       "cli": "PYTHONPATH=src python -m transfer_stock.cli ask --question \"Compare Manchester United and Juventus\"",
-      "http": "/ask",
+      "http": "https://KaiwenMo1.github.io/soccer_transfer_rumor_impacts/ask",
       "inputs": {
         "question": "string"
       },
@@ -85,7 +85,7 @@
       "purpose": "Attach local citations from dashboard, article, report, and scenario evidence.",
       "risk": "read_only",
       "cli": "PYTHONPATH=src python -m transfer_stock.cli ask-rag --question \"Explain Casemiro\" --rebuild-index",
-      "http": "/nlweb/ask",
+      "http": "https://KaiwenMo1.github.io/soccer_transfer_rumor_impacts/nlweb/ask",
       "inputs": {
         "question": "string",
         "top_k": "integer"
@@ -103,7 +103,7 @@
       "purpose": "Run the local research operator and publish a decision queue.",
       "risk": "writes_local_reports",
       "cli": "PYTHONPATH=src python -m transfer_stock.cli research-cycle --mode research",
-      "http": "/operator/run",
+      "http": "https://KaiwenMo1.github.io/soccer_transfer_rumor_impacts/operator/run",
       "inputs": {
         "mode": "research|smart|refresh",
         "allow_network": "boolean"
@@ -149,7 +149,7 @@
       "purpose": "Publish the AI-readable website/tool manifest.",
       "risk": "writes_static_manifest",
       "cli": "PYTHONPATH=src python -m transfer_stock.cli publish-agent-manifest",
-      "http": "/nlweb/manifest",
+      "http": "https://KaiwenMo1.github.io/soccer_transfer_rumor_impacts/nlweb/manifest",
       "inputs": {},
       "outputs": [
         "app/static/.well-known/transfer-stock-agent.json"
@@ -160,9 +160,9 @@
     "name": "Transfer Stock Analyst",
     "capability_count": 4,
     "endpoints": {
-      "manifest": "/nlweb/manifest",
-      "ask": "/nlweb/ask",
-      "static_manifest": "/.well-known/transfer-stock-agent.json"
+      "manifest": "https://KaiwenMo1.github.io/soccer_transfer_rumor_impacts/nlweb/manifest",
+      "ask": "https://KaiwenMo1.github.io/soccer_transfer_rumor_impacts/nlweb/ask",
+      "static_manifest": "https://KaiwenMo1.github.io/soccer_transfer_rumor_impacts/.well-known/transfer-stock-agent.json"
     },
     "safety": {
       "trading_advice": false,
@@ -187,25 +187,25 @@
     },
     {
       "id": "evidence_index",
-      "path": "/home/kaiwenmo/eecs486/transfer_scrape/data/processed/evidence/evidence_index.json",
+      "path": "/home/runner/work/soccer_transfer_rumor_impacts/soccer_transfer_rumor_impacts/data/processed/evidence/evidence_index.json",
       "required": false,
       "status": "pass",
       "exists": true,
-      "size_bytes": 3545750,
+      "size_bytes": 3715966,
       "message": "available"
     },
     {
       "id": "static_agent_manifest",
-      "path": "/home/kaiwenmo/eecs486/transfer_scrape/app/static/.well-known/transfer-stock-agent.json",
+      "path": "/home/runner/work/soccer_transfer_rumor_impacts/soccer_transfer_rumor_impacts/app/static/.well-known/transfer-stock-agent.json",
       "required": false,
       "status": "pass",
       "exists": true,
-      "size_bytes": 2354,
+      "size_bytes": 2525,
       "message": "available"
     },
     {
       "id": "agent_instructions",
-      "path": "/home/kaiwenmo/eecs486/transfer_scrape/AGENTS.md",
+      "path": "/home/runner/work/soccer_transfer_rumor_impacts/soccer_transfer_rumor_impacts/AGENTS.md",
       "required": true,
       "status": "pass",
       "exists": true,
@@ -214,7 +214,7 @@
     },
     {
       "id": "mcp_tool_contract",
-      "path": "/home/kaiwenmo/eecs486/transfer_scrape/docs/mcp_tools.md",
+      "path": "/home/runner/work/soccer_transfer_rumor_impacts/soccer_transfer_rumor_impacts/docs/mcp_tools.md",
       "required": true,
       "status": "pass",
       "exists": true,

@@ -4,31 +4,34 @@ Generated from local dashboard payload: `app/static/data/dashboard_data.json`
 
 ## Freshness
 
-- Dashboard generated at: 2026-05-23T14:21:52.974300+00:00
+- Dashboard generated at: 2026-06-02T13:56:25.042727+00:00
 - Latest season: 2025-26
 - Live status: fresh
-- Latest live date: 2026-05-20
-- Recent live clusters: 5
+- Latest live date: 2026-06-02
+- Recent live clusters: 23
 
 ## Top Current Direct-Target Rumors
 
 | Player | Target club | Role | Stage | Sources | Cred | Blend | Model |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Marcus Rashford | Manchester United | seller | unclear | 1 | 0.412 | negative | negative |
-| Casemiro | Manchester United | seller | advanced | 3 | 0.461 | negative | negative |
-| Douglas Luiz | Juventus | seller | unclear | 1 | 0.374 | negative | neutral |
-| Jonathan Jesus | Juventus | seller | unclear | 1 | 0.416 | negative | neutral |
-| Alisson Safira | Juventus | buyer | unclear | 1 | 0.416 | neutral | neutral |
+| Alex Oxlade-Chamberlain | Celtic plc | buyer | medical | 1 | 0.731 | positive | neutral |
+| Pedro Gomes | FC Porto SAD | seller | linked | 1 | 0.428 | negative | neutral |
+| Samuel Iling-Junior | Celtic plc | seller | unclear | 1 | 0.433 | neutral | neutral |
+| Serhou Guirassy | Borussia Dortmund | seller | official | 2 | 0.532 | neutral | neutral |
+| Johnny Russell | Sporting CP SAD | seller | unclear | 1 | 0.448 | neutral | neutral |
+| Randal Kolo Muani | Juventus | seller | unclear | 1 | 0.456 | neutral | neutral |
+| Kieran Tierney | Celtic plc | buyer | unclear | 1 | 0.439 | neutral | neutral |
+| Rafa Silva | Benfica SAD | buyer | talks | 2 | 0.484 | neutral | neutral |
 
 ## Strongest Consensus Events
 
 | Player | Club | Tier | Consensus | Articles | Primary headline |
 | --- | --- | --- | --- | --- | --- |
-| Alisson Safira | Juventus | thin | Broad alignment (0.850) | 1 | Report: Alisson still keen on Juventus transfer despite Europa League likelihood |
-| Jonathan Jesus | Juventus | thin | Broad alignment (0.850) | 1 | Revealed: Transfer fee Arsenal will demand from Gabriel Jesus sale as £265,000-a-week salary provides stumbling block for Juventus & AC Milan |
-| Marcus Rashford | Manchester United | thin | Broad alignment (0.850) | 1 | Marcus Rashford reportedly weighing long-term or new loan deal at Barcelona to avoid Man United return |
-| Douglas Luiz | Juventus | thin | Broad alignment (0.850) | 1 | Spalletti ready to give Douglas Luiz second Juventus chance after Aston Villa loan stint |
-| Casemiro | Manchester United | strong | Aligned (0.717) | 3 | Man United transfer news: Spygate scandal could give Michael Carrick chance to sign 'affordable' star to replace Casemiro |
+| Rafa Silva | Benfica SAD | developing | Broad alignment (0.900) | 2 | Benfica in talks to appoint Fulham’s Silva as head coach |
+| Alex Oxlade-Chamberlain | Celtic plc | thin | Broad alignment (0.850) | 1 | 'O'Neill and Keane in battle for Celtic job' |
+| Alejandro Martínez | Juventus | thin | Broad alignment (0.850) | 1 | Juventus keen to pinch Atletico captain Koke as clubs discuss Nico Gonzalez deal |
+| Mason Greenwood | Borussia Dortmund | thin | Broad alignment (0.850) | 1 | Borussia Dortmund hold preliminary talks with Soule |
+| Pedro Gomes | FC Porto SAD | thin | Broad alignment (0.850) | 2 | FC Porto transfer market: William Gomes linked with English giant |
 
 ## Credibility Leaders
 
@@ -52,12 +55,12 @@ Generated from local dashboard payload: `app/static/data/dashboard_data.json`
 
 | Club | Live | Current | Avg cred | Avg transfer index | CAR t+3 |
 | --- | --- | --- | --- | --- | --- |
-| Juventus | 3 | 7 | 0.402 | 0.550 | -0.0036 |
-| Manchester United | 2 | 9 | 0.436 | 0.453 | -0.0111 |
-| Eagle Football Group | 0 | 0 | 0.000 | 0.563 | 0.0221 |
-| Benfica SAD | 0 | 0 | 0.000 | 0.480 | -0.0077 |
-| FC Porto SAD | 0 | 1 | 0.000 | 0.628 | 0.0061 |
-| Celtic plc | 0 | 0 | 0.000 | 0.598 | -0.0048 |
+| Celtic plc | 3 | 6 | 0.534 | 0.598 | -0.0048 |
+| Juventus | 2 | 7 | 0.477 | 0.550 | -0.0036 |
+| Borussia Dortmund | 2 | 10 | 0.499 | 0.532 | 0.0006 |
+| Benfica SAD | 1 | 2 | 0.484 | 0.480 | -0.0077 |
+| FC Porto SAD | 1 | 8 | 0.428 | 0.628 | 0.0061 |
+| Sporting CP SAD | 1 | 7 | 0.448 | 0.669 | 0.0029 |
 
 ## Match Result + Stock Context
 
@@ -73,11 +76,12 @@ Generated from local dashboard payload: `app/static/data/dashboard_data.json`
 
 | Rumor | Club | Confirmed row | Match | Actual | CAR t+3 |
 | --- | --- | --- | --- | --- | --- |
-| Douglas Luiz | Juventus | Douglas Luiz / 2026-01-28 | 1.029 | negative | -0.0441 |
-| Alisson Safira | Juventus | Alisson Safira / 2026-01-01 | 1.015 | negative | -0.0526 |
-| Marcus Rashford | Manchester United | Marcus Rashford / 2025-07-23 | 0.940 | negative | -0.0444 |
-| Casemiro | Manchester United | Casemiro / 2022-08-22 | 0.550 | neutral | -0.0024 |
-| Jonathan Jesus | Juventus | Jonathan Jesus / 2024-07-10 | 0.200 | negative | -0.0230 |
+| Alex Oxlade-Chamberlain | Celtic plc | Alex Oxlade-Chamberlain / 2026-02-07 | 1.026 | neutral | -0.0029 |
+| Rafa Silva | Benfica SAD | Rafa Silva / 2026-01-22 | 1.019 | neutral | -0.0098 |
+| Pedro Gomes | FC Porto SAD | Pedro Gomes / 2025-07-05 | 0.925 | positive | 0.0253 |
+| Kieran Tierney | Celtic plc | Kieran Tierney / 2025-07-01 | 0.923 | neutral | -0.0002 |
+| Johnny Russell | Sporting CP SAD | Johnny Russell / 2025-01-01 | 0.830 | positive | 0.0309 |
+| Randal Kolo Muani | Juventus | Randal Kolo Muani / 2025-01-23 | 0.550 | negative | -0.0249 |
 
 ## Latest Scenario Swarm
 
