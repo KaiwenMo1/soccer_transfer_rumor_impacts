@@ -121,7 +121,22 @@
   "automation": {
     "auto_refresh_ready": true,
     "recommended_cadence": "daily",
-    "generated_at": "2026-06-02T13:56:25.042727+00:00"
+    "generated_at": "2026-06-02T13:56:25.042727+00:00",
+    "auto_update_attempted": true,
+    "auto_update_completed_at": "2026-06-25T09:44:03.281812+00:00",
+    "auto_update_fetch_status": "success",
+    "auto_update_analyze_status": "skipped",
+    "auto_update_source_preset": "fast_no_api",
+    "auto_update_error": "[Errno 2] No such file or directory: '/home/runner/work/soccer_transfer_rumor_impacts/soccer_transfer_rumor_impacts/data/processed/transfers_exact_dates.csv'",
+    "auto_update_followups": {
+      "data_quality": "app/static/data/data_quality_latest.json",
+      "operator_status": "completed",
+      "runbooks": "app/static/data/runbooks.json",
+      "agent_manifest": "/home/runner/work/soccer_transfer_rumor_impacts/soccer_transfer_rumor_impacts/app/static/.well-known/transfer-stock-agent.json",
+      "rumor_graph": "app/static/data/rumor_graph.json",
+      "briefing": "/home/runner/work/soccer_transfer_rumor_impacts/soccer_transfer_rumor_impacts/data/reports/daily_briefing.md",
+      "agent_reach": "/home/runner/work/soccer_transfer_rumor_impacts/soccer_transfer_rumor_impacts/app/static/data/agent_reach.json"
+    }
   },
   "season_summaries": {
     "2025-26": {
