@@ -1,6 +1,6 @@
 # Transfer-Stock Research Operator
 
-Generated: 2026-06-27T08:50:07.966002+00:00
+Generated: 2026-06-28T09:32:24.195351+00:00
 
 **Purpose:** Turn noisy football transfer coverage into a daily, evidence-backed intelligence brief for publicly listed clubs.
 
