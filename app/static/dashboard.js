@@ -1,4 +1,47 @@
 const SECTION_STORAGE_KEY = "transferStockCollapsedSections";
+const SECTION_TAB_STORAGE_KEY = "transferStockSectionTab";
+
+const SECTION_TABS = {
+  main: {
+    label: "Main",
+    meta: "Useful first read: cockpit, focus brief, ask box, and live signal cards.",
+    sections: ["overviewSection", "marketCockpitSection", "focusBriefSection", "askAnalystSection", "signalCardsSection"],
+  },
+  signals: {
+    label: "Signals",
+    meta: "Current rumor cards, table filters, row detail, and direct-target watchlist.",
+    sections: ["signalCardsSection", "controlsSection", "workspaceSection", "watchlistSection", "coverageSection"],
+  },
+  clubs: {
+    label: "Clubs",
+    meta: "Public-club dossiers, club comparison, and season-level transfer history.",
+    sections: ["clubDossierSection", "clubComparisonSection", "seasonHistorySection"],
+  },
+  agents: {
+    label: "Agents",
+    meta: "Agent access, runbooks, RAG audit, autopilot, scenario swarm, and simulator.",
+    sections: ["runbookSection", "agentAccessSection", "agentRunSection", "ragAuditSection", "autopilotSection", "scenarioSwarmSection", "scenarioSimulatorSection", "rumorGraphSection"],
+  },
+  research: {
+    label: "Research",
+    meta: "Evidence quality, reporter credibility, trust graph, and backtest context.",
+    sections: ["insightSection", "dataQualitySection", "leaderboardsSection", "trustGraphSection", "reporterProfilesSection", "backtestsSection"],
+  },
+  data: {
+    label: "Data",
+    meta: "Rawer tables and file lineage for auditing the pipeline behind the dashboard.",
+    sections: ["controlsSection", "workspaceSection", "seasonHistorySection", "backtestsSection", "dataFlowSection"],
+  },
+};
+
+const CLUB_PAGE_SECTIONS = new Set([
+  "overviewSection",
+  "marketCockpitSection",
+  "controlsSection",
+  "workspaceSection",
+  "clubDossierSection",
+  "seasonHistorySection",
+]);
 
 const SECTION_NAV_ITEMS = [
   { id: "overviewSection", label: "Overview", bodySelectors: [".metric-card"], keepOpen: true },
@@ -27,6 +70,7 @@ const SECTION_NAV_ITEMS = [
   { id: "reporterProfilesSection", label: "Reporter Profiles" },
   { id: "seasonHistorySection", label: "Season History" },
   { id: "backtestsSection", label: "Backtest Summary" },
+  { id: "dataFlowSection", label: "Pipeline Files" },
 ];
 
 const DEMO_MODE_OPEN_SECTIONS = new Set([
@@ -72,6 +116,7 @@ const state = {
   dataQuality: null,
   simulatorResult: null,
   collapsedSections: new Set(),
+  sectionTab: "main",
 };
 
 function pillClass(label) {
@@ -167,6 +212,56 @@ function saveCollapsedSections() {
   }
 }
 
+function loadSectionTab() {
+  try {
+    const value = window.localStorage.getItem(SECTION_TAB_STORAGE_KEY);
+    return value && SECTION_TABS[value] ? value : "main";
+  } catch (error) {
+    return "main";
+  }
+}
+
+function saveSectionTab() {
+  try {
+    window.localStorage.setItem(SECTION_TAB_STORAGE_KEY, state.sectionTab);
+  } catch (error) {
+    // localStorage can be unavailable from file:// or locked-down browsers.
+  }
+}
+
+function tabForSection(sectionId) {
+  return Object.entries(SECTION_TABS).find(([, config]) => config.sections.includes(sectionId))?.[0] || "main";
+}
+
+function visibleSectionsForCurrentLens() {
+  if (state.page === "club" && state.routeClub) return CLUB_PAGE_SECTIONS;
+  const tab = SECTION_TABS[state.sectionTab] || SECTION_TABS.main;
+  return new Set(tab.sections);
+}
+
+function applySectionTabVisibility() {
+  const visibleSections = visibleSectionsForCurrentLens();
+  SECTION_NAV_ITEMS.forEach((item) => {
+    const section = document.getElementById(item.id);
+    if (!section) return;
+    section.hidden = !visibleSections.has(item.id);
+    section.dataset.sectionTabHidden = section.hidden ? "true" : "false";
+  });
+  const meta = document.getElementById("sectionTabMeta");
+  if (meta) {
+    const tab = SECTION_TABS[state.sectionTab] || SECTION_TABS.main;
+    meta.textContent = state.page === "club" && state.routeClub
+      ? "Club view keeps the dossier, stock path, table, and transfer history visible."
+      : tab.meta;
+  }
+  document.querySelectorAll("#sectionTabs button").forEach((button) => {
+    const active = button.dataset.sectionTab === state.sectionTab;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-selected", String(active));
+  });
+  renderSectionMenu();
+}
+
 function sectionConfig(sectionId) {
   return SECTION_NAV_ITEMS.find((item) => item.id === sectionId) || null;
 }
@@ -253,6 +348,8 @@ function applyDemoMode() {
   const club = demoRow?.target_club || demoRow?.club || "";
   state.askQuestion = club ? `Explain ${player} at ${club}` : `Explain ${player}`;
   state.askResult = askAnalyst(state.askQuestion);
+  state.sectionTab = "main";
+  saveSectionTab();
   state.collapsedSections.clear();
   SECTION_NAV_ITEMS.forEach((item) => {
     if (!DEMO_MODE_OPEN_SECTIONS.has(item.id)) state.collapsedSections.add(item.id);
@@ -285,11 +382,13 @@ function renderSectionMenu() {
   if (!list) return;
   list.innerHTML = SECTION_NAV_ITEMS.map((item) => {
     const collapsed = isSectionCollapsed(item.id);
+    const section = document.getElementById(item.id);
+    const hiddenByTab = section?.dataset.sectionTabHidden === "true";
     return `
       <div class="section-menu-item">
         <button type="button" class="section-menu-jump" data-jump="${escapeHtml(item.id)}">
           <span>${escapeHtml(item.label)}</span>
-          <small>${collapsed ? "Collapsed" : "Visible"}</small>
+          <small>${hiddenByTab ? `In ${escapeHtml(SECTION_TABS[tabForSection(item.id)]?.label || "another")} tab` : (collapsed ? "Collapsed" : "Visible")}</small>
         </button>
         <button type="button" class="section-menu-toggle" data-section-collapse="${escapeHtml(item.id)}" aria-expanded="${String(!collapsed)}">
           ${collapsed ? "Show" : "Hide"}
@@ -828,6 +927,7 @@ function applyRouteFromHash() {
     state.page = "club";
     state.routeClub = decodeURIComponent(clubMatch[1]);
     state.clubFilter = "All";
+    state.sectionTab = "clubs";
     return;
   }
   state.page = "market";
@@ -840,6 +940,8 @@ function goToClub(clubName) {
   state.routeClub = clubName;
   state.clubFilter = "All";
   state.selectedKey = null;
+  state.sectionTab = "clubs";
+  saveSectionTab();
   syncHash();
   renderAll();
 }
@@ -847,6 +949,10 @@ function goToClub(clubName) {
 function goToMarket() {
   state.page = "market";
   state.routeClub = null;
+  if (state.sectionTab === "clubs") {
+    state.sectionTab = "main";
+    saveSectionTab();
+  }
   syncHash();
   renderAll();
 }
@@ -1627,6 +1733,11 @@ function renderReporterProfiles() {
 function renderViewTabs() {
   document.querySelectorAll("#viewTabs button").forEach((button) => {
     button.classList.toggle("is-active", button.dataset.view === state.selectedView);
+  });
+  document.querySelectorAll("#sectionTabs button").forEach((button) => {
+    const active = button.dataset.sectionTab === state.sectionTab;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-selected", String(active));
   });
 }
 
@@ -4262,6 +4373,7 @@ function renderAll() {
   renderSeasonHistory();
   renderBacktests();
   renderDataFlow();
+  applySectionTabVisibility();
   applySectionCollapseState();
 }
 
@@ -4314,6 +4426,14 @@ function wireControls() {
   document.getElementById("demoModeButton")?.addEventListener("click", () => {
     applyDemoMode();
   });
+  document.querySelectorAll("#sectionTabs button").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.sectionTab = button.dataset.sectionTab || "main";
+      saveSectionTab();
+      renderAll();
+      document.getElementById("viewModeBand")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
   document.getElementById("compareClubA").addEventListener("change", (event) => {
     state.compareClubA = event.target.value;
     renderClubComparison();
@@ -4365,11 +4485,21 @@ function wireControls() {
     const section = document.getElementById(jump.dataset.jump);
     if (!section) return;
     event.preventDefault();
+    if (state.page !== "club") {
+      const nextTab = tabForSection(jump.dataset.jump);
+      if (nextTab !== state.sectionTab) {
+        state.sectionTab = nextTab;
+        saveSectionTab();
+        renderAll();
+      }
+    }
     if (state.collapsedSections.has(jump.dataset.jump)) {
       toggleSectionCollapsed(jump.dataset.jump, false);
     }
     closeSectionDrawer();
-    section.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.requestAnimationFrame(() => {
+      document.getElementById(jump.dataset.jump)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   });
   document.addEventListener("click", (event) => {
     const button = event.target.closest("[data-section-collapse]");
@@ -4385,6 +4515,8 @@ function wireControls() {
     state.selectedView = "rumors";
     state.selectedSeason = state.payload.latest_season;
     state.clubFilter = "All";
+    state.sectionTab = "signals";
+    saveSectionTab();
     state.selectedKey = signal.dataset.selectSignal || null;
     renderAll();
     document.getElementById("workspaceSection")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -4493,6 +4625,7 @@ async function boot() {
   state.scenario = await loadScenarioSnapshot();
   state.dataQuality = await loadDataQualitySnapshot();
   state.collapsedSections = loadCollapsedSections();
+  state.sectionTab = loadSectionTab();
   state.selectedSeason = state.payload.latest_season;
   applyRouteFromHash();
   wireControls();

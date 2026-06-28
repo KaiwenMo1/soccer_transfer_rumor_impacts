@@ -54,7 +54,6 @@
           Sections
         </button>
         <button type="button" data-jump="askAnalystSection">Ask</button>
-        <button type="button" data-jump="runbookSection">Runbooks</button>
         <button type="button" data-jump="signalCardsSection">Live Cards</button>
         <button type="button" data-jump="workspaceSection">Signals</button>
         <button type="button" data-jump="clubDossierSection">Clubs</button>
@@ -63,6 +62,22 @@
         <button type="button" id="expandAllTop">Expand</button>
         <button type="button" id="collapseAllTop">Collapse</button>
       </nav>
+
+      <section class="view-mode-band" id="viewModeBand">
+        <div class="view-mode-copy">
+          <p class="eyebrow">Dashboard Lens</p>
+          <h2>Start simple. Open depth when needed.</h2>
+          <span class="section-meta" id="sectionTabMeta">Main keeps the useful read visible. Other tabs hold the heavier research panels.</span>
+        </div>
+        <div class="view-mode-tabs" id="sectionTabs" role="tablist" aria-label="Dashboard section tabs">
+          <button type="button" data-section-tab="main" class="is-active">Main</button>
+          <button type="button" data-section-tab="signals">Signals</button>
+          <button type="button" data-section-tab="clubs">Clubs</button>
+          <button type="button" data-section-tab="agents">Agents</button>
+          <button type="button" data-section-tab="research">Research</button>
+          <button type="button" data-section-tab="data">Data</button>
+        </div>
+      </section>
 
       <div class="section-scrim" id="sectionScrim" hidden></div>
       <aside class="section-drawer" id="sectionDrawer" hidden aria-label="Section menu">

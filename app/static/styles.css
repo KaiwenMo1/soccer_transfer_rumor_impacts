@@ -5851,3 +5851,207 @@ pre,
     font-size: 2.55rem;
   }
 }
+
+/* Clarity layer: softer contrast plus high-level lens tabs. */
+:root {
+  --bg: #f7f8fb;
+  --surface: rgba(255, 255, 255, 0.84);
+  --surface-solid: #ffffff;
+  --surface-2: rgba(246, 248, 252, 0.94);
+  --surface-3: #edf1f7;
+  --glass: rgba(255, 255, 255, 0.76);
+  --border: rgba(43, 53, 72, 0.11);
+  --border-strong: rgba(43, 53, 72, 0.2);
+  --text: #283142;
+  --muted: #737f91;
+  --teal: #3d76bd;
+  --teal-soft: #eaf2ff;
+  --blue: #3d76bd;
+  --blue-soft: #eaf2ff;
+  --ring: rgba(61, 118, 189, 0.18);
+  --shadow: 0 18px 46px rgba(50, 62, 86, 0.09);
+  --shadow-soft: 0 1px 2px rgba(50, 62, 86, 0.045), 0 10px 26px rgba(50, 62, 86, 0.055);
+  --shadow-lift: 0 24px 62px rgba(50, 62, 86, 0.14);
+}
+
+body {
+  background:
+    linear-gradient(180deg, #fbfcff 0%, #f7f8fb 44%, #f1f4f8 100%),
+    repeating-linear-gradient(90deg, rgba(43, 53, 72, 0.018) 0 1px, transparent 1px 120px),
+    repeating-linear-gradient(180deg, rgba(43, 53, 72, 0.016) 0 1px, transparent 1px 120px);
+}
+
+.topbar {
+  min-height: 560px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(247, 249, 253, 0.86)),
+    linear-gradient(180deg, rgba(61, 118, 189, 0.07), transparent 58%);
+}
+
+.topbar h1,
+.cockpit-title-row h2,
+.section-head h2,
+.section-head h3 {
+  color: #283142;
+}
+
+.topbar h1 em {
+  color: #697486;
+}
+
+.topbar-subtitle,
+.section-meta,
+.detail-note,
+.metric-label,
+.meta-label,
+.list-label {
+  color: #737f91;
+}
+
+.topbar-actions button,
+.ask-form button,
+.cockpit-actions .operator-run-button,
+.rail-menu-button,
+.rail-accent-button,
+.focus-action-row button:first-child {
+  border-color: rgba(61, 118, 189, 0.2) !important;
+  background: #3d76bd !important;
+  color: #ffffff !important;
+  box-shadow: 0 12px 28px rgba(61, 118, 189, 0.22) !important;
+}
+
+.command-rail {
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.command-rail button,
+.cockpit-actions button,
+.section-drawer-actions button,
+.section-menu-toggle,
+.section-collapse-button,
+.route-back {
+  color: #344154;
+}
+
+.view-mode-band {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
+  gap: 18px;
+  align-items: end;
+  padding: 24px clamp(22px, 3vw, 40px) 12px;
+  scroll-margin-top: 84px;
+}
+
+.view-mode-copy {
+  display: grid;
+  gap: 6px;
+}
+
+.view-mode-copy h2 {
+  margin: 0;
+  max-width: 720px;
+  color: #283142;
+  font-size: clamp(26px, 3vw, 42px);
+  line-height: 1.02;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+
+.view-mode-tabs {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+  padding: 6px;
+  border: 1px solid rgba(43, 53, 72, 0.11);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(22px) saturate(1.25);
+}
+
+.view-mode-tabs button {
+  min-height: 42px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #667386;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.view-mode-tabs button.is-active {
+  background: #3d76bd;
+  color: #ffffff;
+  box-shadow: 0 10px 24px rgba(61, 118, 189, 0.22);
+}
+
+.view-mode-tabs button:hover,
+.view-mode-tabs button:focus-visible {
+  border-color: transparent !important;
+  box-shadow: 0 0 0 4px var(--ring) !important;
+}
+
+.metric-card,
+.meta-block,
+.cockpit-main,
+.cockpit-metric,
+.cockpit-triage,
+.focus-brief-main,
+.focus-mini-card,
+.focus-caution,
+.insight-card,
+.quality-card,
+.ask-answer-card,
+.ask-table,
+.detail-card,
+.signal-card,
+.market-chart-card,
+.comparison-table-card,
+.reporter-hero,
+.scenario-hero,
+.rag-audit-hero,
+.agent-access-hero,
+.agent-access-card,
+.rumor-graph-hero,
+.table-pane,
+.table-wrap {
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.cockpit-main {
+  min-height: 390px;
+}
+
+.cockpit-title-row h2 {
+  font-size: clamp(34px, 4.7vw, 62px);
+}
+
+.section-head h2,
+.section-head h3 {
+  font-size: clamp(28px, 3.4vw, 42px);
+}
+
+.signal-card {
+  min-height: 360px;
+}
+
+@media (max-width: 980px) {
+  .view-mode-band {
+    grid-template-columns: 1fr;
+  }
+
+  .view-mode-tabs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .view-mode-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .view-mode-tabs button {
+    min-height: 40px;
+  }
+}

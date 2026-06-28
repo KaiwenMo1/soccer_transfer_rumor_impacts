@@ -1154,7 +1154,8 @@ def cmd_auto_update(args: argparse.Namespace) -> None:
     clubs = load_clubs()
     selected = selected_clubs(clubs, args.clubs)
     payload_path = Path(args.dashboard_output)
-    backup_path = payload_path.with_suffix(payload_path.suffix + ".bak")
+    backup_dir = Path(os.environ.get("TRANSFER_STOCK_BACKUP_DIR", os.environ.get("TMPDIR", "/tmp"))) / "transfer_stock_auto_update"
+    backup_path = backup_dir / f"{payload_path.name}.bak"
     fetch_status = "skipped"
     analyze_status = "skipped"
     error = ""
@@ -1163,7 +1164,7 @@ def cmd_auto_update(args: argparse.Namespace) -> None:
         "dashboard": str(payload_path),
     }
     if payload_path.exists():
-        backup_path.parent.mkdir(parents=True, exist_ok=True)
+        backup_dir.mkdir(parents=True, exist_ok=True)
         shutil.copy2(payload_path, backup_path)
 
     try:
