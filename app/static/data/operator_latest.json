@@ -1,6 +1,6 @@
 {
   "available": true,
-  "generated_at": "2026-07-02T09:31:44.057825+00:00",
+  "generated_at": "2026-07-03T09:35:30.801037+00:00",
   "status": "completed",
   "mode": "research",
   "purpose": "Turn noisy football transfer coverage into a daily, evidence-backed intelligence brief for publicly listed clubs.",
@@ -8,7 +8,7 @@
   "summary": "Verify next: Alex Oxlade-Chamberlain at Celtic plc. Potentially relevant, but it needs stronger confirmation or cleaner market context.",
   "preflight": {
     "overall_status": "watch",
-    "overall_score": 0.5516,
+    "overall_score": 0.5132,
     "freshness_status": "needs_refresh",
     "freshness_summary": "Latest signal date: 2026-06-02"
   },
@@ -121,7 +121,7 @@
   ],
   "trust_state": {
     "data_quality_status": "watch",
-    "data_quality_score": 0.5516,
+    "data_quality_score": 0.5132,
     "agent_confidence": 0.86,
     "agent_citations": 6,
     "prediction_scope_rule": "Stock impact only when a listed-club ticker is directly mapped."

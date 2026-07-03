@@ -1,6 +1,6 @@
 # Transfer-Stock Research Operator
 
-Generated: 2026-07-02T09:31:44.057825+00:00
+Generated: 2026-07-03T09:35:30.801037+00:00
 
 **Purpose:** Turn noisy football transfer coverage into a daily, evidence-backed intelligence brief for publicly listed clubs.
 
@@ -28,7 +28,7 @@ Verify next: Alex Oxlade-Chamberlain at Celtic plc. Potentially relevant, but it
 ## Trust State
 
 - Data Quality Status: watch
-- Data Quality Score: 0.5516
+- Data Quality Score: 0.5132
 - Agent Confidence: 0.86
 - Agent Citations: 6
 - Prediction Scope Rule: Stock impact only when a listed-club ticker is directly mapped.

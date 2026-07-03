@@ -1,15 +1,15 @@
 # Data Quality Audit
 
-Generated: `2026-07-02T09:31:25.550440+00:00`
+Generated: `2026-07-03T09:35:12.404760+00:00`
 Payload: `app/static/data/dashboard_data.json`
 
-Overall: **watch** (55%)
+Overall: **watch** (51%)
 
 ## Dimensions
 
 | Area | Score | Status | Summary |
 | --- | ---: | --- | --- |
-| Freshness | 28% | needs refresh | Latest signal date: 2026-06-02 |
+| Freshness | 12% | needs refresh | Latest signal date: 2026-06-02 |
 | Source Coverage | 53% | watch | 10 live clusters, 12 sources, 0 journalists |
 | Market Context | 65% | usable | 10 stock paths, latest stock date 2026-05-20, 353 match markers |
 | Entity + Target Matching | 71% | usable | 73 direct public-target rows out of 92 total signals |
@@ -18,8 +18,8 @@ Overall: **watch** (55%)
 
 ## Warnings
 
-- Latest signal is 30 days old; refresh live news before presenting this as current.
-- Dashboard payload was generated 30 days ago.
+- Latest signal is 31 days old; refresh live news before presenting this as current.
+- Dashboard payload was generated 31 days ago.
 - 8 live clusters have only one article/source; consensus is thin.
 - 10 live clusters are missing journalist attribution.
 - 10 club stock paths are older than 14 days.
