@@ -1,12 +1,12 @@
 {
   "available": true,
-  "generated_at": "2026-07-04T08:50:37.917009+00:00",
-  "agent_run_id": "autopilot-20260704T085020Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
+  "generated_at": "2026-07-05T09:22:24.838043+00:00",
+  "agent_run_id": "autopilot-20260705T092207Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
   "agent_goal": "Explain Alex Oxlade-Chamberlain at Celtic plc",
   "answer": "Alex Oxlade-Chamberlain maps to Celtic plc as buyer. The signal is positive with model label neutral and confidence 80.8%.",
-  "overall_score": 0.7702,
+  "overall_score": 0.7509,
   "overall_status": "usable",
-  "summary": "RAG trust audit is usable (77%).",
+  "summary": "RAG trust audit is usable (75%).",
   "dimensions": [
     {
       "name": "Answer Support",
@@ -26,14 +26,15 @@
     },
     {
       "name": "Citation Strength",
-      "score": 0.6263,
+      "score": 0.6941,
       "status": "usable",
       "evidence": {
         "citation_count": 6,
-        "avg_normalized_score": 0.6263,
+        "avg_normalized_score": 0.6941,
         "doc_type_mix": {
-          "signal": 4,
+          "signal": 3,
           "transfer": 1,
+          "article": 1,
           "club_dossier": 1
         }
       },
@@ -41,15 +42,14 @@
     },
     {
       "name": "Source Diversity",
-      "score": 0.9,
-      "status": "strong",
+      "score": 0.675,
+      "status": "usable",
       "evidence": {
-        "unique_sources": 4,
+        "unique_sources": 3,
         "top_sources": {
           "app/static/data/dashboard_data.json": 2,
-          "Celtic FC News": 2,
-          "BBC Sport Football RSS": 1,
-          "The Celtic Way": 1
+          "BBC Sport Football RSS": 2,
+          "Celtic FC News": 2
         }
       },
       "warnings": []
@@ -66,7 +66,7 @@
           "semantic_chargram",
           "structured_entity"
         ],
-        "total_candidates": 31,
+        "total_candidates": 29,
         "empty_queries": []
       },
       "warnings": []
@@ -77,8 +77,8 @@
       "status": "watch",
       "evidence": {
         "dated_citations": 5,
-        "latest_citation_date": "2026-06-02",
-        "avg_citation_age_days": 55.0
+        "latest_citation_date": "2026-07-04",
+        "avg_citation_age_days": 49.6
       },
       "warnings": []
     },
@@ -92,7 +92,6 @@
           "Evidence citations use local hybrid retrieval; read them as grounded context, not proof of causality."
         ],
         "what_would_change_mind": [
-          "More primary article evidence would improve the answer.",
           "Fresh stock and match-result context would reduce market-context uncertainty.",
           "Newer high-credibility reports or official club disclosures can overturn the current read."
         ]

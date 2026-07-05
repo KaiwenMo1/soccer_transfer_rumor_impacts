@@ -1,7 +1,7 @@
 {
   "available": true,
-  "run_id": "autopilot-20260704T085020Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
-  "generated_at": "2026-07-04T08:50:20.050194+00:00",
+  "run_id": "autopilot-20260705T092207Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
+  "generated_at": "2026-07-05T09:22:07.730470+00:00",
   "goal": "Explain Alex Oxlade-Chamberlain at Celtic plc",
   "primary_question": "Explain Alex Oxlade-Chamberlain at Celtic plc",
   "freshness": {
@@ -24,7 +24,6 @@
       "Evidence citations use local hybrid retrieval; read them as grounded context, not proof of causality."
     ],
     "what_would_change_mind": [
-      "More primary article evidence would improve the answer.",
       "Fresh stock and match-result context would reduce market-context uncertainty.",
       "Newer high-credibility reports or official club disclosures can overturn the current read."
     ],
@@ -35,7 +34,7 @@
       "doc_id": "69e1b09034276633",
       "doc_type": "transfer",
       "title": "Alex Oxlade-Chamberlain confirmed transfer / Celtic plc / 2025-26",
-      "score": 164.027,
+      "score": 162.377,
       "normalized_score": 1.0,
       "matched_terms": [
         "alex",
@@ -57,11 +56,11 @@
         "recency"
       ],
       "score_breakdown": {
-        "lexical": 147.1004,
+        "lexical": 145.4504,
         "semantic_chargram": 2.4048,
         "structured_entity": 14.4219,
         "recency": 0.1,
-        "final": 164.027,
+        "final": 162.377,
         "retrieval_methods": [
           "lexical",
           "semantic_chargram",
@@ -92,8 +91,8 @@
       "doc_id": "63cf9ca0917658d1",
       "doc_type": "signal",
       "title": "'O'Neill and Keane in battle for Celtic job'",
-      "score": 161.8744,
-      "normalized_score": 0.9869,
+      "score": 160.53,
+      "normalized_score": 0.9886,
       "matched_terms": [
         "alex",
         "buyer",
@@ -118,11 +117,11 @@
         "recency"
       ],
       "score_breakdown": {
-        "lexical": 133.0313,
+        "lexical": 131.7749,
         "semantic_chargram": 1.9863,
         "structured_entity": 16.0469,
         "recency": 0.22,
-        "final": 161.8744,
+        "final": 160.53,
         "retrieval_methods": [
           "lexical",
           "semantic_chargram",
@@ -154,11 +153,62 @@
       }
     },
     {
+      "doc_id": "2810e2199f3b6335",
+      "doc_type": "article",
+      "title": "Oxlade-Chamberlain signs new one-year Celtic deal",
+      "score": 134.5129,
+      "normalized_score": 0.8284,
+      "matched_terms": [
+        "alex",
+        "celtic",
+        "oxlade-chamberlain",
+        "plc"
+      ],
+      "matched_fields": [
+        "club"
+      ],
+      "retrieval_methods": [
+        "lexical",
+        "semantic_chargram",
+        "structured_entity",
+        "recency"
+      ],
+      "score_breakdown": {
+        "lexical": 118.2467,
+        "semantic_chargram": 2.2413,
+        "structured_entity": 4.875,
+        "recency": 0.35,
+        "final": 134.5129,
+        "retrieval_methods": [
+          "lexical",
+          "semantic_chargram",
+          "structured_entity",
+          "recency"
+        ],
+        "matched_fields": [
+          "club"
+        ]
+      },
+      "snippet": "Oxlade-Chamberlain signs new one-year Celtic deal England-capped midfielder Alex Oxlade-Chamberlain signs a new one-year contract with Celtic. Source BBC Sport Football RSS. Journalist . Club candidates Celtic plc. Player candidates .",
+      "source_path": "data/raw/articles/current_live.jsonl",
+      "url": "https://www.bbc.co.uk/sport/football/articles/c77y5zvjd8zo?at_medium=RSS&at_campaign=rss",
+      "date": "2026-07-04",
+      "club": "Celtic plc",
+      "player": "",
+      "reporter": "",
+      "source": "BBC Sport Football RSS",
+      "metadata": {
+        "crawl_method": "rss",
+        "language": "English",
+        "extraction_confidence": 0.5
+      }
+    },
+    {
       "doc_id": "8c3f496d0844cdd5",
       "doc_type": "club_dossier",
       "title": "Celtic plc club dossier",
-      "score": 74.7156,
-      "normalized_score": 0.4555,
+      "score": 74.672,
+      "normalized_score": 0.4599,
       "matched_terms": [
         "celtic",
         "plc",
@@ -174,11 +224,11 @@
         "structured_entity"
       ],
       "score_breakdown": {
-        "lexical": 68.7846,
+        "lexical": 68.741,
         "semantic_chargram": 1.056,
         "structured_entity": 4.875,
         "recency": 0.0,
-        "final": 74.7156,
+        "final": 74.672,
         "retrieval_methods": [
           "lexical",
           "semantic_chargram",
@@ -206,8 +256,8 @@
       "doc_id": "e7ac1b25fd471a61",
       "doc_type": "signal",
       "title": "Celtic Manager Latest On O\u2019Neill, Keane & Bellamy After Talks Held | Transfer Planning - Celtic news now",
-      "score": 72.3698,
-      "normalized_score": 0.4412,
+      "score": 72.3425,
+      "normalized_score": 0.4455,
       "matched_terms": [
         "buyer",
         "celtic",
@@ -229,11 +279,11 @@
         "recency"
       ],
       "score_breakdown": {
-        "lexical": 58.5135,
+        "lexical": 58.488,
         "semantic_chargram": 1.3727,
         "structured_entity": 7.5292,
         "recency": 0.22,
-        "final": 72.3698,
+        "final": 72.3425,
         "retrieval_methods": [
           "lexical",
           "semantic_chargram",
@@ -268,8 +318,8 @@
       "doc_id": "ad2aaf83767bb099",
       "doc_type": "signal",
       "title": "Celtic Wait On O\u2019Neill Decision & Hold Talks With Keane | Manager Latest & A Big Celtic AM Update - Celtic news now - Celtic FC News",
-      "score": 71.8082,
-      "normalized_score": 0.4378,
+      "score": 71.7795,
+      "normalized_score": 0.4421,
       "matched_terms": [
         "buyer",
         "celtic",
@@ -291,11 +341,11 @@
         "recency"
       ],
       "score_breakdown": {
-        "lexical": 58.0874,
+        "lexical": 58.0606,
         "semantic_chargram": 1.2738,
         "structured_entity": 7.5292,
         "recency": 0.22,
-        "final": 71.8082,
+        "final": 71.7795,
         "retrieval_methods": [
           "lexical",
           "semantic_chargram",
@@ -323,68 +373,6 @@
         "prediction_scope": "none",
         "credibility_score": 0.4739,
         "prediction_confidence": 0.0,
-        "blended_label": "neutral"
-      }
-    },
-    {
-      "doc_id": "5b3e68f6c2c0e54b",
-      "doc_type": "signal",
-      "title": "How Celtic's January transfer window worked and what it tells us about this summer",
-      "score": 71.568,
-      "normalized_score": 0.4363,
-      "matched_terms": [
-        "buyer",
-        "celtic",
-        "confidence",
-        "label",
-        "neutral",
-        "plc",
-        "signal"
-      ],
-      "matched_fields": [
-        "club",
-        "doc_type",
-        "source"
-      ],
-      "retrieval_methods": [
-        "lexical",
-        "semantic_chargram",
-        "structured_entity",
-        "recency"
-      ],
-      "score_breakdown": {
-        "lexical": 57.287,
-        "semantic_chargram": 1.3352,
-        "structured_entity": 8.0438,
-        "recency": 0.22,
-        "final": 71.568,
-        "retrieval_methods": [
-          "lexical",
-          "semantic_chargram",
-          "structured_entity",
-          "recency"
-        ],
-        "matched_fields": [
-          "club",
-          "doc_type",
-          "source"
-        ]
-      },
-      "snippet": "Rumor signal for Samuel Iling-Junior. Target club Celtic plc. Target role seller. Counterparty . Buyer . Seller . Stage unclear. Source count 1. Sources . Journalists . Credibility score 0.4329. Transfer indicator 0.0. Rumor indicator . Prediction scope direct...",
-      "source_path": "app/static/data/dashboard_data.json",
-      "url": "",
-      "date": "2026-06-02",
-      "club": "Celtic plc",
-      "player": "Samuel Iling-Junior",
-      "reporter": "",
-      "source": "The Celtic Way",
-      "metadata": {
-        "group_key": "Celtic plc::Samuel Iling-Junior",
-        "stage": "unclear",
-        "target_role": "seller",
-        "prediction_scope": "direct",
-        "credibility_score": 0.4329,
-        "prediction_confidence": 0.7349,
         "blended_label": "neutral"
       }
     }
@@ -424,8 +412,8 @@
         "query": "Explain Alex Oxlade-Chamberlain at Celtic plc Explain Alex Oxlade-Chamberlain at Celtic plc",
         "count": 6,
         "top_doc_types": [
+          "article",
           "signal",
-          "stock_path",
           "transfer"
         ]
       },
@@ -434,6 +422,7 @@
         "query": "Alex Oxlade-Chamberlain rumor signal transfer indicator credibility",
         "count": 6,
         "top_doc_types": [
+          "article",
           "signal",
           "transfer"
         ]
@@ -443,6 +432,7 @@
         "query": "Alex Oxlade-Chamberlain confirmed transfer similar examples actual abnormal return",
         "count": 6,
         "top_doc_types": [
+          "article",
           "signal",
           "transfer"
         ]
@@ -472,7 +462,7 @@
         ]
       }
     ],
-    "total_candidates": 31,
+    "total_candidates": 29,
     "shown_citations": 6,
     "retrieval_methods": [
       {
@@ -495,10 +485,14 @@
     "doc_type_mix": [
       {
         "doc_type": "signal",
-        "count": 4
+        "count": 3
       },
       {
         "doc_type": "transfer",
+        "count": 1
+      },
+      {
+        "doc_type": "article",
         "count": 1
       },
       {
@@ -512,20 +506,15 @@
         "count": 2
       },
       {
-        "source": "Celtic FC News",
+        "source": "BBC Sport Football RSS",
         "count": 2
       },
       {
-        "source": "BBC Sport Football RSS",
-        "count": 1
-      },
-      {
-        "source": "The Celtic Way",
-        "count": 1
+        "source": "Celtic FC News",
+        "count": 2
       }
     ],
     "what_would_change_mind": [
-      "More primary article evidence would improve the answer.",
       "Fresh stock and match-result context would reduce market-context uncertainty.",
       "Newer high-credibility reports or official club disclosures can overturn the current read."
     ]
@@ -544,10 +533,10 @@
     "new_evidence": [
       "transfer: Alex Oxlade-Chamberlain confirmed transfer / Celtic plc / 2025-26 (2026-02-07)",
       "signal: 'O'Neill and Keane in battle for Celtic job' (2026-06-02)",
+      "article: Oxlade-Chamberlain signs new one-year Celtic deal (2026-07-04)",
       "club_dossier: Celtic plc club dossier",
       "signal: Celtic Manager Latest On O\u2019Neill, Keane & Bellamy After Talks Held | Transfer Planning - Celtic news now (2026-06-02)",
-      "signal: Celtic Wait On O\u2019Neill Decision & Hold Talks With Keane | Manager Latest & A Big Celtic AM Update - Celtic news now - Celtic FC News (2026-06-02)",
-      "signal: How Celtic's January transfer window worked and what it tells us about this summer (2026-06-02)"
+      "signal: Celtic Wait On O\u2019Neill Decision & Hold Talks With Keane | Manager Latest & A Big Celtic AM Update - Celtic news now - Celtic FC News (2026-06-02)"
     ],
     "dropped_evidence": [
       "signal: Man United transfer news: Spygate scandal could give Michael Carrick chance to sign 'affordable' star to replace Casemiro (2026-05-20)",
@@ -559,12 +548,12 @@
     "confidence_delta": 0.0,
     "persistent": {
       "runs_total": 1,
-      "updated_at": "2026-07-04T08:50:37.909064+00:00",
+      "updated_at": "2026-07-05T09:22:24.829170+00:00",
       "top_entities": [
         {
           "entity": "Celtic plc",
           "kind": "club",
-          "count": 9
+          "count": 10
         },
         {
           "entity": "Alex Oxlade-Chamberlain",
@@ -574,7 +563,7 @@
         {
           "entity": "BBC Sport Football RSS",
           "kind": "source",
-          "count": 2
+          "count": 4
         },
         {
           "entity": "Celtic FC News",
@@ -625,16 +614,16 @@
           "source_path": "app/static/data/dashboard_data.json"
         },
         {
+          "doc_id": "2810e2199f3b6335",
+          "count": 1,
+          "title": "Oxlade-Chamberlain signs new one-year Celtic deal",
+          "doc_type": "article",
+          "source_path": "data/raw/articles/current_live.jsonl"
+        },
+        {
           "doc_id": "42ef27b6c447bbb5",
           "count": 1,
           "title": "Rob Smyth reporter profile",
-          "doc_type": "reporter_profile",
-          "source_path": "app/static/data/dashboard_data.json"
-        },
-        {
-          "doc_id": "4919bcde4e70eb45",
-          "count": 1,
-          "title": "Yara El-Shaboury reporter profile",
           "doc_type": "reporter_profile",
           "source_path": "app/static/data/dashboard_data.json"
         },
@@ -657,13 +646,13 @@
     "report": ""
   },
   "outputs": {
-    "goal": "data/agents/autopilot-20260704T085020Z-explain-alex-oxlade-chamberlain-at-celtic-plc/goal.json",
-    "plan": "data/agents/autopilot-20260704T085020Z-explain-alex-oxlade-chamberlain-at-celtic-plc/plan.json",
-    "trace": "data/agents/autopilot-20260704T085020Z-explain-alex-oxlade-chamberlain-at-celtic-plc/trace.jsonl",
-    "answer": "data/agents/autopilot-20260704T085020Z-explain-alex-oxlade-chamberlain-at-celtic-plc/answer.json",
-    "evidence": "data/agents/autopilot-20260704T085020Z-explain-alex-oxlade-chamberlain-at-celtic-plc/evidence.json",
+    "goal": "data/agents/autopilot-20260705T092207Z-explain-alex-oxlade-chamberlain-at-celtic-plc/goal.json",
+    "plan": "data/agents/autopilot-20260705T092207Z-explain-alex-oxlade-chamberlain-at-celtic-plc/plan.json",
+    "trace": "data/agents/autopilot-20260705T092207Z-explain-alex-oxlade-chamberlain-at-celtic-plc/trace.jsonl",
+    "answer": "data/agents/autopilot-20260705T092207Z-explain-alex-oxlade-chamberlain-at-celtic-plc/answer.json",
+    "evidence": "data/agents/autopilot-20260705T092207Z-explain-alex-oxlade-chamberlain-at-celtic-plc/evidence.json",
     "memory": "data/agents/memory.json",
-    "report": "data/agents/autopilot-20260704T085020Z-explain-alex-oxlade-chamberlain-at-celtic-plc/agent_report.md"
+    "report": "data/agents/autopilot-20260705T092207Z-explain-alex-oxlade-chamberlain-at-celtic-plc/agent_report.md"
   },
   "report_href": "data/agent_latest_report.md"
 }
