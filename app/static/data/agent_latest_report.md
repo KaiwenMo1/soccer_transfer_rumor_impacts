@@ -36,9 +36,9 @@ Goal: Explain Alex Oxlade-Chamberlain at Celtic plc
 | transfer | Alex Oxlade-Chamberlain confirmed transfer / Celtic plc / 2025-26 | 2026-02-07 |  | app/static/data/dashboard_data.json |
 | signal | 'O'Neill and Keane in battle for Celtic job' | 2026-06-02 | BBC Sport Football RSS | app/static/data/dashboard_data.json |
 | article | Oxlade-Chamberlain signs new one-year Celtic deal | 2026-07-04 | BBC Sport Football RSS | data/raw/articles/current_live.jsonl |
+| article | Celtic transfer state of play on Saracchi and Mendy after Oxlade-Chamberlain signs up - The Celtic Way | 2026-07-04 | Google News Global EN | data/raw/articles/current_live.jsonl |
 | club_dossier | Celtic plc club dossier |  |  | app/static/data/dashboard_data.json |
 | signal | Celtic Manager Latest On O’Neill, Keane & Bellamy After Talks Held / Transfer Planning - Celtic news now | 2026-06-02 | Celtic FC News | app/static/data/dashboard_data.json |
-| signal | Celtic Wait On O’Neill Decision & Hold Talks With Keane / Manager Latest & A Big Celtic AM Update - Celtic news now - Celtic FC News | 2026-06-02 | Celtic FC News | app/static/data/dashboard_data.json |
 
 ## Scenario Swarm
 
@@ -56,15 +56,15 @@ New top evidence:
 - transfer: Alex Oxlade-Chamberlain confirmed transfer / Celtic plc / 2025-26 (2026-02-07)
 - signal: 'O'Neill and Keane in battle for Celtic job' (2026-06-02)
 - article: Oxlade-Chamberlain signs new one-year Celtic deal (2026-07-04)
+- article: Celtic transfer state of play on Saracchi and Mendy after Oxlade-Chamberlain signs up - The Celtic Way (2026-07-04)
 - club_dossier: Celtic plc club dossier
 - signal: Celtic Manager Latest On O’Neill, Keane & Bellamy After Talks Held | Transfer Planning - Celtic news now (2026-06-02)
-- signal: Celtic Wait On O’Neill Decision & Hold Talks With Keane | Manager Latest & A Big Celtic AM Update - Celtic news now - Celtic FC News (2026-06-02)
 
 ## Persistent Agent Memory
 
 - Remembered runs: 1
-- Recurring entities: club: Celtic plc (10), player: Alex Oxlade-Chamberlain (4), source: BBC Sport Football RSS (4), source: Celtic FC News (2), club: Ajax NV (1)
-- Reused evidence: Manchester United stock path context, Tom Garry reporter profile, Ajax NV stock path context, Oxlade-Chamberlain signs new one-year Celtic deal
+- Recurring entities: club: Celtic plc (11), player: Alex Oxlade-Chamberlain (4), source: BBC Sport Football RSS (4), source: Google News Global EN (2), club: Ajax NV (1)
+- Reused evidence: Manchester United stock path context, Ajax NV stock path context, Oxlade-Chamberlain signs new one-year Celtic deal, Rob Smyth reporter profile
 
 ## What Would Change The Read
 
@@ -79,10 +79,10 @@ New top evidence:
 
 ## Outputs
 
-- goal: `data/agents/autopilot-20260705T092207Z-explain-alex-oxlade-chamberlain-at-celtic-plc/goal.json`
-- plan: `data/agents/autopilot-20260705T092207Z-explain-alex-oxlade-chamberlain-at-celtic-plc/plan.json`
-- trace: `data/agents/autopilot-20260705T092207Z-explain-alex-oxlade-chamberlain-at-celtic-plc/trace.jsonl`
-- answer: `data/agents/autopilot-20260705T092207Z-explain-alex-oxlade-chamberlain-at-celtic-plc/answer.json`
-- evidence: `data/agents/autopilot-20260705T092207Z-explain-alex-oxlade-chamberlain-at-celtic-plc/evidence.json`
+- goal: `data/agents/autopilot-20260706T110138Z-explain-alex-oxlade-chamberlain-at-celtic-plc/goal.json`
+- plan: `data/agents/autopilot-20260706T110138Z-explain-alex-oxlade-chamberlain-at-celtic-plc/plan.json`
+- trace: `data/agents/autopilot-20260706T110138Z-explain-alex-oxlade-chamberlain-at-celtic-plc/trace.jsonl`
+- answer: `data/agents/autopilot-20260706T110138Z-explain-alex-oxlade-chamberlain-at-celtic-plc/answer.json`
+- evidence: `data/agents/autopilot-20260706T110138Z-explain-alex-oxlade-chamberlain-at-celtic-plc/evidence.json`
 - memory: `data/agents/memory.json`
-- report: `data/agents/autopilot-20260705T092207Z-explain-alex-oxlade-chamberlain-at-celtic-plc/agent_report.md`
+- report: `data/agents/autopilot-20260706T110138Z-explain-alex-oxlade-chamberlain-at-celtic-plc/agent_report.md`

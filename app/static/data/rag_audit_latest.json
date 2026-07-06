@@ -1,12 +1,12 @@
 {
   "available": true,
-  "generated_at": "2026-07-05T09:22:24.838043+00:00",
-  "agent_run_id": "autopilot-20260705T092207Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
+  "generated_at": "2026-07-06T11:01:56.451584+00:00",
+  "agent_run_id": "autopilot-20260706T110138Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
   "agent_goal": "Explain Alex Oxlade-Chamberlain at Celtic plc",
   "answer": "Alex Oxlade-Chamberlain maps to Celtic plc as buyer. The signal is positive with model label neutral and confidence 80.8%.",
-  "overall_score": 0.7509,
+  "overall_score": 0.8133,
   "overall_status": "usable",
-  "summary": "RAG trust audit is usable (75%).",
+  "summary": "RAG trust audit is usable (81%).",
   "dimensions": [
     {
       "name": "Answer Support",
@@ -26,15 +26,15 @@
     },
     {
       "name": "Citation Strength",
-      "score": 0.6941,
+      "score": 0.7257,
       "status": "usable",
       "evidence": {
         "citation_count": 6,
-        "avg_normalized_score": 0.6941,
+        "avg_normalized_score": 0.7257,
         "doc_type_mix": {
-          "signal": 3,
+          "signal": 2,
+          "article": 2,
           "transfer": 1,
-          "article": 1,
           "club_dossier": 1
         }
       },
@@ -42,14 +42,15 @@
     },
     {
       "name": "Source Diversity",
-      "score": 0.675,
-      "status": "usable",
+      "score": 0.9,
+      "status": "strong",
       "evidence": {
-        "unique_sources": 3,
+        "unique_sources": 4,
         "top_sources": {
           "app/static/data/dashboard_data.json": 2,
           "BBC Sport Football RSS": 2,
-          "Celtic FC News": 2
+          "Google News Global EN": 1,
+          "Celtic FC News": 1
         }
       },
       "warnings": []
@@ -73,12 +74,12 @@
     },
     {
       "name": "Citation Freshness",
-      "score": 0.55,
-      "status": "watch",
+      "score": 0.76,
+      "status": "usable",
       "evidence": {
         "dated_citations": 5,
         "latest_citation_date": "2026-07-04",
-        "avg_citation_age_days": 49.6
+        "avg_citation_age_days": 44.2
       },
       "warnings": []
     },
