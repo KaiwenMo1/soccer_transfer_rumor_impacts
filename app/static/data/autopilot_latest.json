@@ -1,6 +1,6 @@
 {
   "available": true,
-  "generated_at": "2026-07-08T08:43:43.264924+00:00",
+  "generated_at": "2026-07-09T10:05:46.417689+00:00",
   "dry_run": false,
   "payload_path": "app/static/data/dashboard_data.json",
   "selected_goal": {
@@ -56,16 +56,16 @@
       "detail": {
         "overall_status": "watch"
       },
-      "time": "2026-07-08T08:43:43.325803+00:00"
+      "time": "2026-07-09T10:05:46.476260+00:00"
     },
     {
       "id": "build_evidence_index",
       "status": "completed",
       "output": "data/processed/evidence/evidence_index.json",
       "detail": {
-        "documents": 3985,
+        "documents": 3967,
         "types": {
-          "article": 358,
+          "article": 340,
           "briefing": 1,
           "club_dossier": 10,
           "match_result": 353,
@@ -79,11 +79,11 @@
           "app/static/data/dashboard_data.json": 3657,
           "app/static/data/scenario_latest.json": 1,
           "data/raw/articles/current_fast.jsonl": 23,
-          "data/raw/articles/current_live.jsonl": 303,
+          "data/raw/articles/current_live.jsonl": 285,
           "data/reports/daily_briefing.md": 1
         }
       },
-      "time": "2026-07-08T08:43:43.589611+00:00"
+      "time": "2026-07-09T10:05:46.716297+00:00"
     },
     {
       "id": "generate_briefing",
@@ -92,16 +92,16 @@
       "detail": {
         "json": "data/reports/daily_briefing.json"
       },
-      "time": "2026-07-08T08:43:43.637634+00:00"
+      "time": "2026-07-09T10:05:46.760844+00:00"
     },
     {
       "id": "run_analyst_agent",
       "status": "completed",
-      "output": "data/agents/autopilot-20260708T084343Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
+      "output": "data/agents/autopilot-20260709T100546Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
       "detail": {
         "intent": "explain_rumor"
       },
-      "time": "2026-07-08T08:44:01.780087+00:00"
+      "time": "2026-07-09T10:06:03.805306+00:00"
     },
     {
       "id": "audit_rag_grounding",
@@ -110,7 +110,7 @@
       "detail": {
         "overall_status": "usable"
       },
-      "time": "2026-07-08T08:44:01.781192+00:00"
+      "time": "2026-07-09T10:06:03.806380+00:00"
     }
   ],
   "audit_summary": {
@@ -119,14 +119,14 @@
     "summary": "Data quality is watch (51%)."
   },
   "agent_summary": {
-    "run_id": "autopilot-20260708T084343Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
+    "run_id": "autopilot-20260709T100546Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
     "answer": {
       "intent": "explain_rumor",
       "short_answer": "Alex Oxlade-Chamberlain maps to Celtic plc as buyer. The signal is positive with model label neutral and confidence 80.8%.",
       "confidence": 0.86,
       "citation_count": 6
     },
-    "run_dir": "data/agents/autopilot-20260708T084343Z-explain-alex-oxlade-chamberlain-at-celtic-plc"
+    "run_dir": "data/agents/autopilot-20260709T100546Z-explain-alex-oxlade-chamberlain-at-celtic-plc"
   },
   "recommended_commands": [
     "PYTHONPATH=src python3 -m transfer_stock.cli refresh-live-fetch --source-preset wide_no_api --max-records 30 --resume",
@@ -139,7 +139,7 @@
     "data_quality": "app/static/data/data_quality_latest.json",
     "evidence_index": "data/processed/evidence/evidence_index.json",
     "daily_briefing": "data/reports/daily_briefing.md",
-    "agent_run": "data/agents/autopilot-20260708T084343Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
+    "agent_run": "data/agents/autopilot-20260709T100546Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
     "rag_audit": "app/static/data/rag_audit_latest.json",
     "autopilot_json": "data/agents/autopilot_latest.json",
     "autopilot_report": "data/agents/autopilot_latest.md",
