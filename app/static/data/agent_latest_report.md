@@ -80,10 +80,10 @@ New top evidence:
 
 ## Outputs
 
-- goal: `data/agents/autopilot-20260719T083215Z-explain-alex-oxlade-chamberlain-at-celtic-plc/goal.json`
-- plan: `data/agents/autopilot-20260719T083215Z-explain-alex-oxlade-chamberlain-at-celtic-plc/plan.json`
-- trace: `data/agents/autopilot-20260719T083215Z-explain-alex-oxlade-chamberlain-at-celtic-plc/trace.jsonl`
-- answer: `data/agents/autopilot-20260719T083215Z-explain-alex-oxlade-chamberlain-at-celtic-plc/answer.json`
-- evidence: `data/agents/autopilot-20260719T083215Z-explain-alex-oxlade-chamberlain-at-celtic-plc/evidence.json`
+- goal: `data/agents/autopilot-20260720T093300Z-explain-alex-oxlade-chamberlain-at-celtic-plc/goal.json`
+- plan: `data/agents/autopilot-20260720T093300Z-explain-alex-oxlade-chamberlain-at-celtic-plc/plan.json`
+- trace: `data/agents/autopilot-20260720T093300Z-explain-alex-oxlade-chamberlain-at-celtic-plc/trace.jsonl`
+- answer: `data/agents/autopilot-20260720T093300Z-explain-alex-oxlade-chamberlain-at-celtic-plc/answer.json`
+- evidence: `data/agents/autopilot-20260720T093300Z-explain-alex-oxlade-chamberlain-at-celtic-plc/evidence.json`
 - memory: `data/agents/memory.json`
-- report: `data/agents/autopilot-20260719T083215Z-explain-alex-oxlade-chamberlain-at-celtic-plc/agent_report.md`
+- report: `data/agents/autopilot-20260720T093300Z-explain-alex-oxlade-chamberlain-at-celtic-plc/agent_report.md`
