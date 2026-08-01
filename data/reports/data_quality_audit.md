@@ -1,6 +1,6 @@
 # Data Quality Audit
 
-Generated: `2026-07-31T09:15:35.218077+00:00`
+Generated: `2026-08-01T08:33:20.976169+00:00`
 Payload: `app/static/data/dashboard_data.json`
 
 Overall: **watch** (51%)
@@ -18,8 +18,8 @@ Overall: **watch** (51%)
 
 ## Warnings
 
-- Latest signal is 59 days old; refresh live news before presenting this as current.
-- Dashboard payload was generated 59 days ago.
+- Latest signal is 60 days old; refresh live news before presenting this as current.
+- Dashboard payload was generated 60 days ago.
 - 8 live clusters have only one article/source; consensus is thin.
 - 10 live clusters are missing journalist attribution.
 - 10 club stock paths are older than 14 days.
