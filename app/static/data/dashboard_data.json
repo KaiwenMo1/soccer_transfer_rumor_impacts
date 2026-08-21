@@ -123,7 +123,7 @@
     "recommended_cadence": "daily",
     "generated_at": "2026-06-02T13:56:25.042727+00:00",
     "auto_update_attempted": true,
-    "auto_update_completed_at": "2026-08-20T07:05:24.805903+00:00",
+    "auto_update_completed_at": "2026-08-21T07:06:35.735439+00:00",
     "auto_update_fetch_status": "success",
     "auto_update_analyze_status": "skipped",
     "auto_update_source_preset": "fast_no_api",
