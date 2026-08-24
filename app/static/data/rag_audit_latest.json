@@ -1,10 +1,10 @@
 {
   "available": true,
-  "generated_at": "2026-08-23T07:00:09.185166+00:00",
-  "agent_run_id": "autopilot-20260823T065950Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
+  "generated_at": "2026-08-24T07:19:34.598662+00:00",
+  "agent_run_id": "autopilot-20260824T071917Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
   "agent_goal": "Explain Alex Oxlade-Chamberlain at Celtic plc",
   "answer": "Alex Oxlade-Chamberlain maps to Celtic plc as buyer. The signal is positive with model label neutral and confidence 80.8%.",
-  "overall_score": 0.7699,
+  "overall_score": 0.77,
   "overall_status": "usable",
   "summary": "RAG trust audit is usable (77%).",
   "dimensions": [
@@ -26,11 +26,11 @@
     },
     {
       "name": "Citation Strength",
-      "score": 0.6249,
+      "score": 0.6251,
       "status": "usable",
       "evidence": {
         "citation_count": 6,
-        "avg_normalized_score": 0.6249,
+        "avg_normalized_score": 0.6251,
         "doc_type_mix": {
           "signal": 4,
           "transfer": 1,
@@ -78,7 +78,7 @@
       "evidence": {
         "dated_citations": 5,
         "latest_citation_date": "2026-06-02",
-        "avg_citation_age_days": 105.0
+        "avg_citation_age_days": 106.0
       },
       "warnings": []
     },
