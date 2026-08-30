@@ -38,7 +38,7 @@ Goal: Explain Alex Oxlade-Chamberlain at Celtic plc
 | club_dossier | Celtic plc club dossier |  |  | app/static/data/dashboard_data.json |
 | signal | Celtic Manager Latest On O’Neill, Keane & Bellamy After Talks Held / Transfer Planning - Celtic news now | 2026-06-02 | Celtic FC News | app/static/data/dashboard_data.json |
 | signal | Celtic Wait On O’Neill Decision & Hold Talks With Keane / Manager Latest & A Big Celtic AM Update - Celtic news now - Celtic FC News | 2026-06-02 | Celtic FC News | app/static/data/dashboard_data.json |
-| signal | How Celtic's January transfer window worked and what it tells us about this summer | 2026-06-02 | The Celtic Way | app/static/data/dashboard_data.json |
+| stock_path | Celtic plc stock path context | 2026-05-20 |  | app/static/data/dashboard_data.json |
 
 ## Scenario Swarm
 
@@ -58,7 +58,7 @@ New top evidence:
 - club_dossier: Celtic plc club dossier
 - signal: Celtic Manager Latest On O’Neill, Keane & Bellamy After Talks Held | Transfer Planning - Celtic news now (2026-06-02)
 - signal: Celtic Wait On O’Neill Decision & Hold Talks With Keane | Manager Latest & A Big Celtic AM Update - Celtic news now - Celtic FC News (2026-06-02)
-- signal: How Celtic's January transfer window worked and what it tells us about this summer (2026-06-02)
+- stock_path: Celtic plc stock path context (2026-05-20)
 
 ## Persistent Agent Memory
 
@@ -69,7 +69,6 @@ New top evidence:
 ## What Would Change The Read
 
 - More primary article evidence would improve the answer.
-- Fresh stock and match-result context would reduce market-context uncertainty.
 - Newer high-credibility reports or official club disclosures can overturn the current read.
 
 ## Warnings
@@ -80,10 +79,10 @@ New top evidence:
 
 ## Outputs
 
-- goal: `data/agents/autopilot-20260829T124041Z-explain-alex-oxlade-chamberlain-at-celtic-plc/goal.json`
-- plan: `data/agents/autopilot-20260829T124041Z-explain-alex-oxlade-chamberlain-at-celtic-plc/plan.json`
-- trace: `data/agents/autopilot-20260829T124041Z-explain-alex-oxlade-chamberlain-at-celtic-plc/trace.jsonl`
-- answer: `data/agents/autopilot-20260829T124041Z-explain-alex-oxlade-chamberlain-at-celtic-plc/answer.json`
-- evidence: `data/agents/autopilot-20260829T124041Z-explain-alex-oxlade-chamberlain-at-celtic-plc/evidence.json`
+- goal: `data/agents/autopilot-20260830T115415Z-explain-alex-oxlade-chamberlain-at-celtic-plc/goal.json`
+- plan: `data/agents/autopilot-20260830T115415Z-explain-alex-oxlade-chamberlain-at-celtic-plc/plan.json`
+- trace: `data/agents/autopilot-20260830T115415Z-explain-alex-oxlade-chamberlain-at-celtic-plc/trace.jsonl`
+- answer: `data/agents/autopilot-20260830T115415Z-explain-alex-oxlade-chamberlain-at-celtic-plc/answer.json`
+- evidence: `data/agents/autopilot-20260830T115415Z-explain-alex-oxlade-chamberlain-at-celtic-plc/evidence.json`
 - memory: `data/agents/memory.json`
-- report: `data/agents/autopilot-20260829T124041Z-explain-alex-oxlade-chamberlain-at-celtic-plc/agent_report.md`
+- report: `data/agents/autopilot-20260830T115415Z-explain-alex-oxlade-chamberlain-at-celtic-plc/agent_report.md`

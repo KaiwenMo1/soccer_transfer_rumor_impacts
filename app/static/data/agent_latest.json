@@ -1,7 +1,7 @@
 {
   "available": true,
-  "run_id": "autopilot-20260829T124041Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
-  "generated_at": "2026-08-29T12:40:41.791749+00:00",
+  "run_id": "autopilot-20260830T115415Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
+  "generated_at": "2026-08-30T11:54:15.246495+00:00",
   "goal": "Explain Alex Oxlade-Chamberlain at Celtic plc",
   "primary_question": "Explain Alex Oxlade-Chamberlain at Celtic plc",
   "freshness": {
@@ -25,7 +25,6 @@
     ],
     "what_would_change_mind": [
       "More primary article evidence would improve the answer.",
-      "Fresh stock and match-result context would reduce market-context uncertainty.",
       "Newer high-credibility reports or official club disclosures can overturn the current read."
     ],
     "citation_count": 6
@@ -35,7 +34,7 @@
       "doc_id": "69e1b09034276633",
       "doc_type": "transfer",
       "title": "Alex Oxlade-Chamberlain confirmed transfer / Celtic plc / 2025-26",
-      "score": 164.0266,
+      "score": 163.7473,
       "normalized_score": 1.0,
       "matched_terms": [
         "alex",
@@ -57,11 +56,11 @@
         "recency"
       ],
       "score_breakdown": {
-        "lexical": 147.1,
+        "lexical": 146.8207,
         "semantic_chargram": 2.4048,
         "structured_entity": 14.4219,
         "recency": 0.1,
-        "final": 164.0266,
+        "final": 163.7473,
         "retrieval_methods": [
           "lexical",
           "semantic_chargram",
@@ -92,8 +91,8 @@
       "doc_id": "63cf9ca0917658d1",
       "doc_type": "signal",
       "title": "'O'Neill and Keane in battle for Celtic job'",
-      "score": 161.7665,
-      "normalized_score": 0.9862,
+      "score": 161.3108,
+      "normalized_score": 0.9851,
       "matched_terms": [
         "alex",
         "buyer",
@@ -118,11 +117,11 @@
         "recency"
       ],
       "score_breakdown": {
-        "lexical": 133.0505,
+        "lexical": 132.6245,
         "semantic_chargram": 1.9863,
         "structured_entity": 16.0469,
         "recency": 0.1,
-        "final": 161.7665,
+        "final": 161.3108,
         "retrieval_methods": [
           "lexical",
           "semantic_chargram",
@@ -157,8 +156,8 @@
       "doc_id": "8c3f496d0844cdd5",
       "doc_type": "club_dossier",
       "title": "Celtic plc club dossier",
-      "score": 74.6405,
-      "normalized_score": 0.4551,
+      "score": 75.2075,
+      "normalized_score": 0.4593,
       "matched_terms": [
         "celtic",
         "plc",
@@ -174,11 +173,11 @@
         "structured_entity"
       ],
       "score_breakdown": {
-        "lexical": 68.7096,
+        "lexical": 69.2765,
         "semantic_chargram": 1.056,
         "structured_entity": 4.875,
         "recency": 0.0,
-        "final": 74.6405,
+        "final": 75.2075,
         "retrieval_methods": [
           "lexical",
           "semantic_chargram",
@@ -206,8 +205,8 @@
       "doc_id": "e7ac1b25fd471a61",
       "doc_type": "signal",
       "title": "Celtic Manager Latest On O\u2019Neill, Keane & Bellamy After Talks Held | Transfer Planning - Celtic news now",
-      "score": 72.2115,
-      "normalized_score": 0.4402,
+      "score": 72.3517,
+      "normalized_score": 0.4418,
       "matched_terms": [
         "buyer",
         "celtic",
@@ -229,11 +228,11 @@
         "recency"
       ],
       "score_breakdown": {
-        "lexical": 58.4855,
+        "lexical": 58.6165,
         "semantic_chargram": 1.3727,
         "structured_entity": 7.5292,
         "recency": 0.1,
-        "final": 72.2115,
+        "final": 72.3517,
         "retrieval_methods": [
           "lexical",
           "semantic_chargram",
@@ -268,8 +267,8 @@
       "doc_id": "ad2aaf83767bb099",
       "doc_type": "signal",
       "title": "Celtic Wait On O\u2019Neill Decision & Hold Talks With Keane | Manager Latest & A Big Celtic AM Update - Celtic news now - Celtic FC News",
-      "score": 71.6481,
-      "normalized_score": 0.4368,
+      "score": 71.8371,
+      "normalized_score": 0.4387,
       "matched_terms": [
         "buyer",
         "celtic",
@@ -291,11 +290,11 @@
         "recency"
       ],
       "score_breakdown": {
-        "lexical": 58.0579,
+        "lexical": 58.2345,
         "semantic_chargram": 1.2738,
         "structured_entity": 7.5292,
         "recency": 0.1,
-        "final": 71.6481,
+        "final": 71.8371,
         "retrieval_methods": [
           "lexical",
           "semantic_chargram",
@@ -327,24 +326,17 @@
       }
     },
     {
-      "doc_id": "5b3e68f6c2c0e54b",
-      "doc_type": "signal",
-      "title": "How Celtic's January transfer window worked and what it tells us about this summer",
-      "score": 71.4123,
-      "normalized_score": 0.4354,
+      "doc_id": "e302745bc33f87d5",
+      "doc_type": "stock_path",
+      "title": "Celtic plc stock path context",
+      "score": 71.7018,
+      "normalized_score": 0.4379,
       "matched_terms": [
-        "buyer",
         "celtic",
-        "confidence",
-        "label",
-        "neutral",
-        "plc",
-        "signal"
+        "plc"
       ],
       "matched_fields": [
-        "club",
-        "doc_type",
-        "source"
+        "club"
       ],
       "retrieval_methods": [
         "lexical",
@@ -353,11 +345,11 @@
         "recency"
       ],
       "score_breakdown": {
-        "lexical": 57.2615,
-        "semantic_chargram": 1.3352,
-        "structured_entity": 8.0438,
+        "lexical": 65.4982,
+        "semantic_chargram": 1.2286,
+        "structured_entity": 4.875,
         "recency": 0.1,
-        "final": 71.4123,
+        "final": 71.7018,
         "retrieval_methods": [
           "lexical",
           "semantic_chargram",
@@ -365,27 +357,20 @@
           "recency"
         ],
         "matched_fields": [
-          "club",
-          "doc_type",
-          "source"
+          "club"
         ]
       },
-      "snippet": "Rumor signal for Samuel Iling-Junior. Target club Celtic plc. Target role seller. Counterparty . Buyer . Seller . Stage unclear. Source count 1. Sources . Journalists . Credibility score 0.4329. Transfer indicator 0.0. Rumor indicator . Prediction scope direct...",
+      "snippet": "Stock path for Celtic plc. Ticker CCP.L. Latest date 2026-05-20. Latest change 0.1286. Match marker count 38.",
       "source_path": "app/static/data/dashboard_data.json",
       "url": "",
-      "date": "2026-06-02",
+      "date": "2026-05-20",
       "club": "Celtic plc",
-      "player": "Samuel Iling-Junior",
+      "player": "",
       "reporter": "",
-      "source": "The Celtic Way",
+      "source": "",
       "metadata": {
-        "group_key": "Celtic plc::Samuel Iling-Junior",
-        "stage": "unclear",
-        "target_role": "seller",
-        "prediction_scope": "direct",
-        "credibility_score": 0.4329,
-        "prediction_confidence": 0.7349,
-        "blended_label": "neutral"
+        "ticker": "CCP.L",
+        "latest_change": 0.1286
       }
     }
   ],
@@ -495,7 +480,7 @@
     "doc_type_mix": [
       {
         "doc_type": "signal",
-        "count": 4
+        "count": 3
       },
       {
         "doc_type": "transfer",
@@ -504,12 +489,16 @@
       {
         "doc_type": "club_dossier",
         "count": 1
+      },
+      {
+        "doc_type": "stock_path",
+        "count": 1
       }
     ],
     "source_mix": [
       {
         "source": "app/static/data/dashboard_data.json",
-        "count": 2
+        "count": 3
       },
       {
         "source": "Celtic FC News",
@@ -518,15 +507,10 @@
       {
         "source": "BBC Sport Football RSS",
         "count": 1
-      },
-      {
-        "source": "The Celtic Way",
-        "count": 1
       }
     ],
     "what_would_change_mind": [
       "More primary article evidence would improve the answer.",
-      "Fresh stock and match-result context would reduce market-context uncertainty.",
       "Newer high-credibility reports or official club disclosures can overturn the current read."
     ]
   },
@@ -547,7 +531,7 @@
       "club_dossier: Celtic plc club dossier",
       "signal: Celtic Manager Latest On O\u2019Neill, Keane & Bellamy After Talks Held | Transfer Planning - Celtic news now (2026-06-02)",
       "signal: Celtic Wait On O\u2019Neill Decision & Hold Talks With Keane | Manager Latest & A Big Celtic AM Update - Celtic news now - Celtic FC News (2026-06-02)",
-      "signal: How Celtic's January transfer window worked and what it tells us about this summer (2026-06-02)"
+      "stock_path: Celtic plc stock path context (2026-05-20)"
     ],
     "dropped_evidence": [
       "signal: Man United transfer news: Spygate scandal could give Michael Carrick chance to sign 'affordable' star to replace Casemiro (2026-05-20)",
@@ -559,7 +543,7 @@
     "confidence_delta": 0.0,
     "persistent": {
       "runs_total": 1,
-      "updated_at": "2026-08-29T12:41:00.193572+00:00",
+      "updated_at": "2026-08-30T11:54:32.492909+00:00",
       "top_entities": [
         {
           "entity": "Celtic plc",
@@ -657,13 +641,13 @@
     "report": ""
   },
   "outputs": {
-    "goal": "data/agents/autopilot-20260829T124041Z-explain-alex-oxlade-chamberlain-at-celtic-plc/goal.json",
-    "plan": "data/agents/autopilot-20260829T124041Z-explain-alex-oxlade-chamberlain-at-celtic-plc/plan.json",
-    "trace": "data/agents/autopilot-20260829T124041Z-explain-alex-oxlade-chamberlain-at-celtic-plc/trace.jsonl",
-    "answer": "data/agents/autopilot-20260829T124041Z-explain-alex-oxlade-chamberlain-at-celtic-plc/answer.json",
-    "evidence": "data/agents/autopilot-20260829T124041Z-explain-alex-oxlade-chamberlain-at-celtic-plc/evidence.json",
+    "goal": "data/agents/autopilot-20260830T115415Z-explain-alex-oxlade-chamberlain-at-celtic-plc/goal.json",
+    "plan": "data/agents/autopilot-20260830T115415Z-explain-alex-oxlade-chamberlain-at-celtic-plc/plan.json",
+    "trace": "data/agents/autopilot-20260830T115415Z-explain-alex-oxlade-chamberlain-at-celtic-plc/trace.jsonl",
+    "answer": "data/agents/autopilot-20260830T115415Z-explain-alex-oxlade-chamberlain-at-celtic-plc/answer.json",
+    "evidence": "data/agents/autopilot-20260830T115415Z-explain-alex-oxlade-chamberlain-at-celtic-plc/evidence.json",
     "memory": "data/agents/memory.json",
-    "report": "data/agents/autopilot-20260829T124041Z-explain-alex-oxlade-chamberlain-at-celtic-plc/agent_report.md"
+    "report": "data/agents/autopilot-20260830T115415Z-explain-alex-oxlade-chamberlain-at-celtic-plc/agent_report.md"
   },
   "report_href": "data/agent_latest_report.md"
 }
