@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1",
-  "generated_at": "2026-09-02T11:15:49.226594+00:00",
+  "generated_at": "2026-09-03T11:11:48.424960+00:00",
   "name": "Transfer Stock Analyst Agent Reachability",
   "status": "ready",
   "readiness_score": 0.95,
@@ -191,7 +191,7 @@
       "required": false,
       "status": "pass",
       "exists": true,
-      "size_bytes": 3764814,
+      "size_bytes": 3759077,
       "message": "available"
     },
     {
