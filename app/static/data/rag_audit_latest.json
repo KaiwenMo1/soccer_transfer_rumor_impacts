@@ -1,12 +1,12 @@
 {
   "available": true,
-  "generated_at": "2026-09-07T12:28:40.268911+00:00",
-  "agent_run_id": "autopilot-20260907T122822Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
+  "generated_at": "2026-09-08T11:16:03.010175+00:00",
+  "agent_run_id": "autopilot-20260908T111544Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
   "agent_goal": "Explain Alex Oxlade-Chamberlain at Celtic plc",
   "answer": "Alex Oxlade-Chamberlain maps to Celtic plc as buyer. The signal is positive with model label neutral and confidence 80.8%.",
-  "overall_score": 0.77,
+  "overall_score": 0.7448,
   "overall_status": "usable",
-  "summary": "RAG trust audit is usable (77%).",
+  "summary": "RAG trust audit is usable (74%).",
   "dimensions": [
     {
       "name": "Answer Support",
@@ -26,11 +26,11 @@
     },
     {
       "name": "Citation Strength",
-      "score": 0.6251,
+      "score": 0.6252,
       "status": "usable",
       "evidence": {
         "citation_count": 6,
-        "avg_normalized_score": 0.6251,
+        "avg_normalized_score": 0.6252,
         "doc_type_mix": {
           "signal": 4,
           "transfer": 1,
@@ -73,14 +73,16 @@
     },
     {
       "name": "Citation Freshness",
-      "score": 0.55,
-      "status": "watch",
+      "score": 0.34,
+      "status": "needs_refresh",
       "evidence": {
         "dated_citations": 5,
         "latest_citation_date": "2026-06-02",
-        "avg_citation_age_days": 120.0
+        "avg_citation_age_days": 121.0
       },
-      "warnings": []
+      "warnings": [
+        "Citations are old for a live market read."
+      ]
     },
     {
       "name": "Uncertainty Disclosure",
@@ -101,7 +103,8 @@
     }
   ],
   "recommendations": [
-    "Improve grounding: answer terms should appear in retrieved titles/snippets/entities."
+    "Improve grounding: answer terms should appear in retrieved titles/snippets/entities.",
+    "Refresh live articles and rerun agent-autopilot before using this as a current read."
   ],
   "source_paths": {
     "agent_snapshot": "app/static/data/agent_latest.json"
