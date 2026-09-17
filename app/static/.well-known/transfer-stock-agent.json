@@ -2,7 +2,7 @@
   "schema_version": "0.1",
   "name": "Transfer Stock Analyst",
   "description": "A local football-finance intelligence site for transfer rumors, reporter credibility, listed-club exposure, and market-context research.",
-  "generated_at": "2026-09-16T11:29:30.130088+00:00",
+  "generated_at": "2026-09-17T11:39:11.646786+00:00",
   "inspired_by": {
     "pattern": "NLWeb-style natural-language website endpoint",
     "source": "https://github.com/microsoft/NLWeb"
