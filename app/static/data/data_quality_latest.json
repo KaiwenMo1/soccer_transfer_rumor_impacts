@@ -1,6 +1,6 @@
 {
   "available": true,
-  "audit_generated_at": "2026-10-05T14:33:19.287875+00:00",
+  "audit_generated_at": "2026-10-06T13:16:36.989532+00:00",
   "payload_path": "app/static/data/dashboard_data.json",
   "overall_score": 0.5132,
   "overall_status": "watch",
@@ -12,14 +12,14 @@
       "status": "needs_refresh",
       "summary": "Latest signal date: 2026-06-02",
       "warnings": [
-        "Latest signal is 125 days old; refresh live news before presenting this as current.",
-        "Dashboard payload was generated 125 days ago."
+        "Latest signal is 126 days old; refresh live news before presenting this as current.",
+        "Dashboard payload was generated 126 days ago."
       ],
       "evidence": {
         "latest_signal_date": "2026-06-02",
-        "days_stale": 125,
+        "days_stale": 126,
         "payload_generated_at": "2026-06-02T00:00:00+00:00",
-        "payload_age_days": 125
+        "payload_age_days": 126
       }
     },
     {
@@ -106,8 +106,8 @@
     }
   ],
   "warnings": [
-    "Latest signal is 125 days old; refresh live news before presenting this as current.",
-    "Dashboard payload was generated 125 days ago.",
+    "Latest signal is 126 days old; refresh live news before presenting this as current.",
+    "Dashboard payload was generated 126 days ago.",
     "8 live clusters have only one article/source; consensus is thin.",
     "10 live clusters are missing journalist attribution.",
     "10 club stock paths are older than 14 days.",
