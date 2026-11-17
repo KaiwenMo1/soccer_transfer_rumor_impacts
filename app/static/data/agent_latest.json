@@ -1,7 +1,7 @@
 {
   "available": true,
-  "run_id": "autopilot-20261116T153855Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
-  "generated_at": "2026-11-16T15:38:55.723074+00:00",
+  "run_id": "autopilot-20261117T155714Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
+  "generated_at": "2026-11-17T15:57:14.377680+00:00",
   "goal": "Explain Alex Oxlade-Chamberlain at Celtic plc",
   "primary_question": "Explain Alex Oxlade-Chamberlain at Celtic plc",
   "freshness": {
@@ -34,7 +34,7 @@
       "doc_id": "69e1b09034276633",
       "doc_type": "transfer",
       "title": "Alex Oxlade-Chamberlain confirmed transfer / Celtic plc / 2025-26",
-      "score": 162.4843,
+      "score": 162.4435,
       "normalized_score": 1.0,
       "matched_terms": [
         "alex",
@@ -56,11 +56,11 @@
         "recency"
       ],
       "score_breakdown": {
-        "lexical": 145.5577,
+        "lexical": 145.5169,
         "semantic_chargram": 2.4048,
         "structured_entity": 14.4219,
         "recency": 0.1,
-        "final": 162.4843,
+        "final": 162.4435,
         "retrieval_methods": [
           "lexical",
           "semantic_chargram",
@@ -91,8 +91,8 @@
       "doc_id": "63cf9ca0917658d1",
       "doc_type": "signal",
       "title": "'O'Neill and Keane in battle for Celtic job'",
-      "score": 160.2894,
-      "normalized_score": 0.9865,
+      "score": 160.2627,
+      "normalized_score": 0.9866,
       "matched_terms": [
         "alex",
         "buyer",
@@ -117,11 +117,11 @@
         "recency"
       ],
       "score_breakdown": {
-        "lexical": 131.67,
+        "lexical": 131.6451,
         "semantic_chargram": 1.9863,
         "structured_entity": 16.0469,
         "recency": 0.1,
-        "final": 160.2894,
+        "final": 160.2627,
         "retrieval_methods": [
           "lexical",
           "semantic_chargram",
@@ -156,7 +156,7 @@
       "doc_id": "8252aeb389fcc0fd",
       "doc_type": "article",
       "title": "Alex Valle reveals how Brendan Rodgers transformed his game during Celtic loan spell - LiveScore",
-      "score": 84.3777,
+      "score": 84.3564,
       "normalized_score": 0.5193,
       "matched_terms": [
         "alex",
@@ -173,11 +173,11 @@
         "recency"
       ],
       "score_breakdown": {
-        "lexical": 72.6343,
+        "lexical": 72.6144,
         "semantic_chargram": 0.9984,
         "structured_entity": 4.875,
         "recency": 0.35,
-        "final": 84.3777,
+        "final": 84.3564,
         "retrieval_methods": [
           "lexical",
           "semantic_chargram",
@@ -206,7 +206,7 @@
       "doc_id": "8c3f496d0844cdd5",
       "doc_type": "club_dossier",
       "title": "Celtic plc club dossier",
-      "score": 74.3075,
+      "score": 74.2935,
       "normalized_score": 0.4573,
       "matched_terms": [
         "celtic",
@@ -223,11 +223,11 @@
         "structured_entity"
       ],
       "score_breakdown": {
-        "lexical": 68.3765,
+        "lexical": 68.3626,
         "semantic_chargram": 1.056,
         "structured_entity": 4.875,
         "recency": 0.0,
-        "final": 74.3075,
+        "final": 74.2935,
         "retrieval_methods": [
           "lexical",
           "semantic_chargram",
@@ -255,8 +255,8 @@
       "doc_id": "e7ac1b25fd471a61",
       "doc_type": "signal",
       "title": "Celtic Manager Latest On O\u2019Neill, Keane & Bellamy After Talks Held | Transfer Planning - Celtic news now",
-      "score": 71.7713,
-      "normalized_score": 0.4417,
+      "score": 71.7614,
+      "normalized_score": 0.4418,
       "matched_terms": [
         "buyer",
         "celtic",
@@ -278,11 +278,11 @@
         "recency"
       ],
       "score_breakdown": {
-        "lexical": 58.0742,
+        "lexical": 58.0649,
         "semantic_chargram": 1.3727,
         "structured_entity": 7.5292,
         "recency": 0.1,
-        "final": 71.7713,
+        "final": 71.7614,
         "retrieval_methods": [
           "lexical",
           "semantic_chargram",
@@ -317,7 +317,7 @@
       "doc_id": "ad2aaf83767bb099",
       "doc_type": "signal",
       "title": "Celtic Wait On O\u2019Neill Decision & Hold Talks With Keane | Manager Latest & A Big Celtic AM Update - Celtic news now - Celtic FC News",
-      "score": 71.2293,
+      "score": 71.2202,
       "normalized_score": 0.4384,
       "matched_terms": [
         "buyer",
@@ -340,11 +340,11 @@
         "recency"
       ],
       "score_breakdown": {
-        "lexical": 57.6665,
+        "lexical": 57.658,
         "semantic_chargram": 1.2738,
         "structured_entity": 7.5292,
         "recency": 0.1,
-        "final": 71.2293,
+        "final": 71.2202,
         "retrieval_methods": [
           "lexical",
           "semantic_chargram",
@@ -549,7 +549,7 @@
     "confidence_delta": 0.0,
     "persistent": {
       "runs_total": 1,
-      "updated_at": "2026-11-16T15:39:11.728846+00:00",
+      "updated_at": "2026-11-17T15:57:30.362935+00:00",
       "top_entities": [
         {
           "entity": "Celtic plc",
@@ -647,13 +647,13 @@
     "report": ""
   },
   "outputs": {
-    "goal": "data/agents/autopilot-20261116T153855Z-explain-alex-oxlade-chamberlain-at-celtic-plc/goal.json",
-    "plan": "data/agents/autopilot-20261116T153855Z-explain-alex-oxlade-chamberlain-at-celtic-plc/plan.json",
-    "trace": "data/agents/autopilot-20261116T153855Z-explain-alex-oxlade-chamberlain-at-celtic-plc/trace.jsonl",
-    "answer": "data/agents/autopilot-20261116T153855Z-explain-alex-oxlade-chamberlain-at-celtic-plc/answer.json",
-    "evidence": "data/agents/autopilot-20261116T153855Z-explain-alex-oxlade-chamberlain-at-celtic-plc/evidence.json",
+    "goal": "data/agents/autopilot-20261117T155714Z-explain-alex-oxlade-chamberlain-at-celtic-plc/goal.json",
+    "plan": "data/agents/autopilot-20261117T155714Z-explain-alex-oxlade-chamberlain-at-celtic-plc/plan.json",
+    "trace": "data/agents/autopilot-20261117T155714Z-explain-alex-oxlade-chamberlain-at-celtic-plc/trace.jsonl",
+    "answer": "data/agents/autopilot-20261117T155714Z-explain-alex-oxlade-chamberlain-at-celtic-plc/answer.json",
+    "evidence": "data/agents/autopilot-20261117T155714Z-explain-alex-oxlade-chamberlain-at-celtic-plc/evidence.json",
     "memory": "data/agents/memory.json",
-    "report": "data/agents/autopilot-20261116T153855Z-explain-alex-oxlade-chamberlain-at-celtic-plc/agent_report.md"
+    "report": "data/agents/autopilot-20261117T155714Z-explain-alex-oxlade-chamberlain-at-celtic-plc/agent_report.md"
   },
   "report_href": "data/agent_latest_report.md"
 }
