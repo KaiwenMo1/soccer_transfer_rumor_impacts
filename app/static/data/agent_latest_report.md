@@ -35,7 +35,7 @@ Goal: Explain Alex Oxlade-Chamberlain at Celtic plc
 | --- | --- | --- | --- | --- |
 | transfer | Alex Oxlade-Chamberlain confirmed transfer / Celtic plc / 2025-26 | 2026-02-07 |  | app/static/data/dashboard_data.json |
 | signal | 'O'Neill and Keane in battle for Celtic job' | 2026-06-02 | BBC Sport Football RSS | app/static/data/dashboard_data.json |
-| article | Alex Valle reveals how Brendan Rodgers transformed his game during Celtic loan spell - LiveScore | 2026-11-16 | Google News Global EN | data/raw/articles/current_live.jsonl |
+| article | Alex Valle reveals how Brendan Rodgers transformed his game during Celtic loan spell - Yahoo Sports | 2026-11-16 | Google News Global EN | data/raw/articles/current_live.jsonl |
 | club_dossier | Celtic plc club dossier |  |  | app/static/data/dashboard_data.json |
 | signal | Celtic Manager Latest On O’Neill, Keane & Bellamy After Talks Held / Transfer Planning - Celtic news now | 2026-06-02 | Celtic FC News | app/static/data/dashboard_data.json |
 | signal | Celtic Wait On O’Neill Decision & Hold Talks With Keane / Manager Latest & A Big Celtic AM Update - Celtic news now - Celtic FC News | 2026-06-02 | Celtic FC News | app/static/data/dashboard_data.json |
@@ -55,7 +55,7 @@ Previous run: `latest_demo_agent`
 New top evidence:
 - transfer: Alex Oxlade-Chamberlain confirmed transfer / Celtic plc / 2025-26 (2026-02-07)
 - signal: 'O'Neill and Keane in battle for Celtic job' (2026-06-02)
-- article: Alex Valle reveals how Brendan Rodgers transformed his game during Celtic loan spell - LiveScore (2026-11-16)
+- article: Alex Valle reveals how Brendan Rodgers transformed his game during Celtic loan spell - Yahoo Sports (2026-11-16)
 - club_dossier: Celtic plc club dossier
 - signal: Celtic Manager Latest On O’Neill, Keane & Bellamy After Talks Held | Transfer Planning - Celtic news now (2026-06-02)
 - signal: Celtic Wait On O’Neill Decision & Hold Talks With Keane | Manager Latest & A Big Celtic AM Update - Celtic news now - Celtic FC News (2026-06-02)
@@ -79,10 +79,10 @@ New top evidence:
 
 ## Outputs
 
-- goal: `data/agents/autopilot-20261121T143701Z-explain-alex-oxlade-chamberlain-at-celtic-plc/goal.json`
-- plan: `data/agents/autopilot-20261121T143701Z-explain-alex-oxlade-chamberlain-at-celtic-plc/plan.json`
-- trace: `data/agents/autopilot-20261121T143701Z-explain-alex-oxlade-chamberlain-at-celtic-plc/trace.jsonl`
-- answer: `data/agents/autopilot-20261121T143701Z-explain-alex-oxlade-chamberlain-at-celtic-plc/answer.json`
-- evidence: `data/agents/autopilot-20261121T143701Z-explain-alex-oxlade-chamberlain-at-celtic-plc/evidence.json`
+- goal: `data/agents/autopilot-20261122T143050Z-explain-alex-oxlade-chamberlain-at-celtic-plc/goal.json`
+- plan: `data/agents/autopilot-20261122T143050Z-explain-alex-oxlade-chamberlain-at-celtic-plc/plan.json`
+- trace: `data/agents/autopilot-20261122T143050Z-explain-alex-oxlade-chamberlain-at-celtic-plc/trace.jsonl`
+- answer: `data/agents/autopilot-20261122T143050Z-explain-alex-oxlade-chamberlain-at-celtic-plc/answer.json`
+- evidence: `data/agents/autopilot-20261122T143050Z-explain-alex-oxlade-chamberlain-at-celtic-plc/evidence.json`
 - memory: `data/agents/memory.json`
-- report: `data/agents/autopilot-20261121T143701Z-explain-alex-oxlade-chamberlain-at-celtic-plc/agent_report.md`
+- report: `data/agents/autopilot-20261122T143050Z-explain-alex-oxlade-chamberlain-at-celtic-plc/agent_report.md`
