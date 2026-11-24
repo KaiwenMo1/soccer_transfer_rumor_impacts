@@ -1,7 +1,7 @@
 {
   "available": true,
-  "generated_at": "2026-11-23T18:00:58.659647+00:00",
-  "agent_run_id": "autopilot-20261123T180041Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
+  "generated_at": "2026-11-24T17:38:56.427506+00:00",
+  "agent_run_id": "autopilot-20261124T173841Z-explain-alex-oxlade-chamberlain-at-celtic-plc",
   "agent_goal": "Explain Alex Oxlade-Chamberlain at Celtic plc",
   "answer": "Alex Oxlade-Chamberlain maps to Celtic plc as buyer. The signal is positive with model label neutral and confidence 80.8%.",
   "overall_score": 0.747,
@@ -26,11 +26,11 @@
     },
     {
       "name": "Citation Strength",
-      "score": 0.6376,
+      "score": 0.6375,
       "status": "usable",
       "evidence": {
         "citation_count": 6,
-        "avg_normalized_score": 0.6376,
+        "avg_normalized_score": 0.6375,
         "doc_type_mix": {
           "signal": 3,
           "transfer": 1,
@@ -79,7 +79,7 @@
       "evidence": {
         "dated_citations": 5,
         "latest_citation_date": "2026-11-16",
-        "avg_citation_age_days": 163.6
+        "avg_citation_age_days": 164.6
       },
       "warnings": [
         "Citations are old for a live market read."
